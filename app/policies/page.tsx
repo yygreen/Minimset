@@ -31,7 +31,7 @@ const CONTENTS = [
   ["ordering", "Ordering"],
   ["payment", "Payment"],
   ["changes", "Changes and cancellation"],
-  ["collection", "Collection, not shipping"],
+  ["collection", "Collecting in person"],
   ["guarantee", "The exchange guarantee"],
   ["privacy", "What we store about you"],
   ["contact", "Questions"],
@@ -124,7 +124,7 @@ export default function PoliciesPage() {
             </p>
           </Section>
 
-          <Section id="collection" title="Collection, not shipping">
+          <Section id="collection" title="Collecting in person">
             <p>
               Nothing is posted or couriered. Every set is collected in person at your community&#39;s
               host Beis Medrash on distribution day, {pickupDate}, between {pickup.windowStart} and{" "}
@@ -137,7 +137,7 @@ export default function PoliciesPage() {
             </p>
             <p>
               The sets fly in from Eretz Yisrael sealed: esrog in its box, hadassim and aravos in a
-              sealed bag, lulav sealed. They are opened in your sukkah, not at the table.
+              sealed bag, lulav sealed. You open them in your sukkah.
             </p>
           </Section>
 
@@ -158,15 +158,15 @@ export default function PoliciesPage() {
               <li>your order code and the time it was placed</li>
             </ul>
             <p>
-              Records are held in a private server-side store, not in your browser and not publicly
-              readable. Staff running distribution for the season can see the orders for their
-              community; that is how a set gets handed to the right person on the day.
+              Records are held in a private server-side store that only the program can read. Staff
+              running distribution for the season see the orders for their community; that is how a
+              set gets handed to the right person on the day.
             </p>
             <p>
               Your email address is used for one thing: your order confirmation. There is no mailing
               list, and nothing is sold or passed to anyone outside the program. Confirmation sending
-              is currently switched off — messages are written to a log rather than sent — and will be
-              turned on when a sending domain is set up.
+              is currently switched off: messages are written to a log, and sending begins once a
+              sending domain is set up.
             </p>
             <p>
               Records are kept for the season and the reconciliation that follows it. To have yours

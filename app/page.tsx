@@ -94,7 +94,7 @@ const FAQ = [
   {
     q: "Why can't the deadline move?",
     a: [
-      "Because this is one shipment rather than a shop. When orders close the totals are pulled, that exact quantity is packed in Eretz Yisrael, and it flies in together with reserve stock for exchanges. An order placed afterwards has nothing to travel with.",
+      "The whole season travels as one shipment. When orders close the totals are pulled, that exact quantity is packed in Eretz Yisrael, and it flies in together with reserve stock for exchanges. Everything ordered by the deadline is on that flight.",
     ],
   },
 ];
@@ -179,29 +179,35 @@ export default function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* ---------- HERO ---------- */}
       <section className="relative overflow-hidden bg-white">
-        {/* A photo block above the text on phones. On desktop it holds the right
-            half and the type sits on clean white, rather than over the picture:
-            a near-black headline and a leaf-green subhead need a plain ground,
-            not a scrim. Only the photo's left edge is faded, so the two meet
-            without a visible join. */}
-        <div className="relative aspect-[16/11] w-full sm:aspect-[16/9] lg:absolute lg:inset-y-0 lg:right-0 lg:aspect-auto lg:w-[45%]">
-          <Image
-            src={IMG.hero.src}
-            alt={IMG.hero.alt}
-            fill
-            priority
-            fetchPriority="high"
-            decoding="sync"
-            quality={70}
-            sizes="(min-width: 1024px) 45vw, 100vw"
-            className="object-cover object-[58%_45%]"
-          />
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white to-transparent lg:hidden" />
-          <div className="photo-veil absolute inset-0 hidden lg:block" />
-        </div>
+        {/* A photo block above the text on phones; a two-column grid on desktop.
+            A grid rather than an absolutely positioned panel because the type
+            used to sit in a centred max-w-6xl container while the photo was
+            positioned against the viewport: the two measured from different
+            origins, so giving the picture more width risked running it under
+            the headline. Here the columns divide the full width between them
+            and cannot overlap, so the split is a number we can simply choose.
+            The type keeps the page's left margin via the padding below.
+            Near-black and leaf-green type needs plain ground, not a scrim, so
+            only the photo's leading edge is faded into the white. */}
+        <div className="lg:grid lg:grid-cols-[46%_54%]">
+          <div className="relative aspect-[16/11] w-full sm:aspect-[16/9] lg:order-2 lg:aspect-auto lg:min-h-[38rem]">
+            <Image
+              src={IMG.hero.src}
+              alt={IMG.hero.alt}
+              fill
+              priority
+              fetchPriority="high"
+              decoding="sync"
+              quality={70}
+              sizes="(min-width: 1024px) 54vw, 100vw"
+              className="object-cover object-[58%_45%]"
+            />
+            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white to-transparent lg:hidden" />
+            <div className="photo-veil absolute inset-0 hidden lg:block" />
+          </div>
 
-        <div className="relative mx-auto max-w-6xl px-4 pb-12 pt-4 sm:pb-16 sm:pt-6 lg:pb-28 lg:pt-24">
-          <div className="max-w-xl lg:max-w-[34rem]">
+          <div className="relative px-4 pb-12 pt-4 sm:pb-16 sm:pt-6 lg:order-1 lg:flex lg:flex-col lg:justify-center lg:py-24 lg:pl-[max(1rem,calc((100vw-72rem)/2))] lg:pr-8">
+          <div className="max-w-xl lg:max-w-none">
             <OpenOnly
               closed={
                 <p className="rise inline-flex items-center gap-2 rounded-full border border-sand-300 bg-white/90 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-ink-700">
@@ -215,7 +221,7 @@ export default function HomePage() {
                 {SEASON.name} pre-order is open
               </p>
             </OpenOnly>
-            <h1 className="rise rise-2 mt-5 font-display text-[2.5rem] font-bold leading-[1.04] text-ink-950 sm:text-[3.4rem] lg:text-[4.1rem]">
+            <h1 className="rise rise-2 mt-5 font-display text-[2.5rem] font-bold leading-[1.04] text-ink-950 sm:text-[3.4rem] lg:text-[3rem] xl:text-[3.5rem]">
               Your Arba Minim, chosen by a Rav.
               <span className="block text-leaf-800">Ready for you after Yom Kippur.</span>
             </h1>
@@ -257,6 +263,7 @@ export default function HomePage() {
               </p>
               <Countdown />
             </div>
+          </div>
           </div>
         </div>
       </section>
@@ -552,10 +559,10 @@ export default function HomePage() {
       </section>
 
       {/* ---------- THE PARTNERSHIP ---------- */}
-      {/* The operator's own account of what this is: not a shop, a communal
-          order that people join. Everything that follows -- the two ways in and
-          the immovable deadline -- only makes sense once that is said, so it is
-          said here rather than left on /about. */}
+      {/* The operator's own account of what this is: a communal order that people
+          join. Everything that follows -- the two ways in and the immovable
+          deadline -- only makes sense once that is said, so it belongs here and
+          not only on /about. */}
       <section className="border-t border-sand-200 bg-sand-100 py-14 sm:py-20">
         <div className="mx-auto max-w-6xl px-4">
           <div className="max-w-3xl">
@@ -567,9 +574,9 @@ export default function HomePage() {
             </h2>
             <p className="mt-4 text-[17px] leading-relaxed text-ink-900">{PARTNERSHIP_PARAGRAPH}</p>
             <p className="mt-3 text-[16px] leading-relaxed text-ink-700">
-              This is not a shop with stock on a shelf. Orders are counted, one shipment is packed
-              against those totals in Eretz Yisrael, and it is handed out in your Beis Medrash on
-              one day. It is how Arba Minim have been bought in Meah Shearim for years.
+              Orders are counted, one shipment is packed against those totals in Eretz Yisrael, and
+              it is handed out in your Beis Medrash on one day. It is how Arba Minim have been
+              bought in Meah Shearim for years.
             </p>
           </div>
 
@@ -599,8 +606,8 @@ export default function HomePage() {
                 gets packed and flown, along with reserve stock for exchanges on the day.
               </p>
               <p className="mt-3 text-[15px] leading-relaxed text-ink-700">
-                An order placed after that has nothing to travel with. The date is the shipment, not
-                a sales tactic.
+                Everything ordered by the deadline is on that flight. Anything after it waits for
+                next year.
               </p>
             </div>
           </div>
@@ -678,7 +685,7 @@ export default function HomePage() {
                   <p className="text-[14px] text-ink-700">{site.hostInstitution}</p>
 
                   {/* the detail the community pages used to carry */}
-                  <dl className="mt-4 space-y-2 text-[14px] leading-snug">
+                  <dl className="mt-4 mb-5 space-y-2 text-[14px] leading-snug">
                     <div>
                       <dt className="text-ink-500">Where</dt>
                       <dd className="text-ink-950">
@@ -709,14 +716,14 @@ export default function HomePage() {
 
                   <OpenOnly
                     closed={
-                      <p className="mt-5 text-[14px] font-semibold text-ink-700">
+                      <p className="mt-auto text-[14px] font-semibold text-ink-700">
                         Ordering closed. Already ordered? Speak to {site.repName}.
                       </p>
                     }
                   >
                     <Link
                       href={`/${site.slug}/order`}
-                      className="mt-5 flex h-11 items-center justify-center rounded-lg border-2 border-leaf-800 px-4 text-[15px] font-semibold text-leaf-900 transition hover:bg-leaf-800 hover:text-white"
+                      className="mt-auto flex h-11 items-center justify-center rounded-lg border-2 border-leaf-800 px-4 text-[15px] font-semibold text-leaf-900 transition hover:bg-leaf-800 hover:text-white"
                     >
                       Order for {site.name}
                     </Link>
