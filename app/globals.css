@@ -124,13 +124,17 @@ body {
 }
 
 @media (min-width: 1024px) {
+  /* The photo now spans the whole hero, so this is a contrast ramp for the
+     headline rather than a panel edge: never fully opaque, and clear of the
+     photo well before the right side. */
   .photo-veil {
     background: linear-gradient(
       90deg,
-      rgba(246, 240, 228, 1) 0%,
-      rgba(246, 240, 228, 0.94) 42%,
-      rgba(246, 240, 228, 0.35) 68%,
-      rgba(246, 240, 228, 0) 100%
+      rgba(246, 240, 228, 0.93) 0%,
+      rgba(246, 240, 228, 0.86) 26%,
+      rgba(246, 240, 228, 0.55) 48%,
+      rgba(246, 240, 228, 0.12) 68%,
+      rgba(246, 240, 228, 0) 82%
     );
   }
 }

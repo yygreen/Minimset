@@ -168,7 +168,7 @@ export default function HomePage() {
       {/* ---------- HERO ---------- */}
       <section className="relative overflow-hidden bg-sand-100">
         {/* one image: a photo block on phones, a veiled split hero on desktop */}
-        <div className="relative aspect-[16/11] w-full sm:aspect-[16/9] lg:absolute lg:inset-0 lg:left-auto lg:aspect-auto lg:w-[58%]">
+        <div className="relative aspect-[16/11] w-full sm:aspect-[16/9] lg:absolute lg:inset-0 lg:aspect-auto lg:w-full">
           <Image
             src={IMG.hero.src}
             alt={IMG.hero.alt}
@@ -177,7 +177,7 @@ export default function HomePage() {
             fetchPriority="high"
             decoding="sync"
             quality={70}
-            sizes="(min-width: 1024px) 60vw, 100vw"
+            sizes="100vw"
             className="object-cover object-[50%_45%]"
           />
           <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-sand-100 to-transparent lg:hidden" />
