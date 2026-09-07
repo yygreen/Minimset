@@ -80,12 +80,12 @@ export default function FaqPage() {
           }),
         }}
       />
-      <div className="mx-auto max-w-3xl px-4 py-14 sm:py-20">
+      <div className="mx-auto max-w-6xl px-4 py-14 sm:py-20">
       <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Questions</p>
-      <h1 className="mt-2 font-display text-[2.5rem] font-bold leading-[1.05] text-ink-950 sm:text-[3.4rem]">
+      <h1 className="mt-2 max-w-3xl font-display text-[2.5rem] font-bold leading-[1.05] text-ink-950 sm:text-[3.4rem]">
         New concept in America.
       </h1>
-      <p className="mt-4 text-[17px] leading-relaxed text-ink-700">
+      <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-ink-700">
         In Eretz Yisrael this is simply how Arba Minim are bought. Here is everything people ask
         before their first order.
       </p>

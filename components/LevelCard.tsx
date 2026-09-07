@@ -61,10 +61,10 @@ export function LevelCard({
         <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-esrog-800">
           {level.tier}
         </p>
-        <h3 className="mt-1.5 font-display text-2xl font-bold leading-tight text-ink-950 sm:text-[1.7rem]">
+        <h3 className="mt-1.5 font-display text-2xl font-bold leading-tight text-ink-950 sm:text-[1.7rem] md:min-h-[4.25rem]">
           {level.name}
         </h3>
-        <p className="mt-2 text-[15px] leading-relaxed text-ink-700">{WHO[level.key]}</p>
+        <p className="mt-2 text-[15px] leading-relaxed text-ink-700 md:min-h-[3.05rem]">{WHO[level.key]}</p>
 
         <div className="mt-5 flex items-baseline gap-2">
           <span className="tnum font-display text-[2.6rem] font-bold leading-none text-leaf-900">
@@ -73,17 +73,19 @@ export function LevelCard({
           <span className="text-sm text-ink-500">per set</span>
         </div>
         {level.pitomSurchargeCents ? (
-          <p className="mt-1.5 text-sm text-ink-700">
+          <p className="mt-1.5 text-sm text-ink-700 md:min-h-[2.6rem]">
             {money(level.basePriceCents + level.pitomSurchargeCents)} with a pitom - your choice at
             checkout
           </p>
         ) : (
-          <p className="mt-1.5 text-sm text-ink-500">Esrog, lulav, hadassim and aravos included</p>
+          <p className="mt-1.5 text-sm text-ink-500 md:min-h-[2.6rem]">
+            Esrog, lulav, hadassim and aravos included
+          </p>
         )}
 
         <p className="mt-3 text-[13px] text-ink-500">No shipping. Collect at your Beis Medrash. Change or cancel free until the deadline.</p>
 
-        <details className="group mt-4 rounded-xl border border-sand-200 bg-sand-50">
+        <details className="group mt-4 shrink-0 rounded-xl border border-sand-200 bg-sand-50">
           <summary className="flex items-center justify-between px-4 py-3 text-sm font-semibold text-leaf-800">
             The standard, word for word
             <svg
@@ -115,7 +117,7 @@ export function LevelCard({
 
         <Link
           href={href}
-          className={`mt-6 flex min-h-13 items-center justify-center rounded-lg px-5 py-3 text-center text-[15px] font-semibold leading-snug transition ${
+          className={`mt-6 flex min-h-13 items-center justify-center rounded-lg px-5 py-3 md:mt-auto md:pt-3 text-center text-[15px] font-semibold leading-snug transition ${
             featured
               ? "bg-leaf-800 text-white hover:bg-leaf-900"
               : "border-2 border-leaf-800 text-leaf-900 hover:bg-leaf-800 hover:text-white"

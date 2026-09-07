@@ -292,7 +292,7 @@ export function Footer() {
     );
   }
   return (
-    <footer dir={dir} className="mt-20 border-t border-sand-200 bg-sand-100 text-ink-900">
+    <footer dir={dir} className="border-t border-sand-200 bg-sand-100 text-ink-900">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
           <Logo he={he} />

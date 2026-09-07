@@ -246,7 +246,7 @@ export default function HomePage() {
       </section>
 
       {/* ---------- TRUST STRIP ---------- */}
-      <section className="border-y border-sand-200 bg-white">
+      <section className="border-b border-sand-200 bg-white">
         <ul className="mx-auto grid max-w-6xl grid-cols-1 divide-y divide-sand-200 px-4 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
           {[
             {
@@ -654,12 +654,12 @@ export default function HomePage() {
 
       {/* ---------- FAQ ---------- */}
       <section className="border-t border-sand-200 bg-white py-14 sm:py-20">
-        <div className="mx-auto max-w-3xl px-4">
+        <div className="mx-auto max-w-6xl px-4">
           <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Questions</p>
-          <h2 className="mt-2 font-display text-[2rem] font-bold leading-tight text-ink-950 sm:text-[2.6rem]">
+          <h2 className="mt-2 max-w-3xl font-display text-[2rem] font-bold leading-tight text-ink-950 sm:text-[2.6rem]">
             New concept in America. Old news in Yerushalayim.
           </h2>
-          <div className="mt-8">
+          <div className="mt-10">
             <Faq items={FAQ} />
           </div>
           <Link href="/faq" className="mt-6 inline-block text-[15px] font-semibold text-leaf-800 underline underline-offset-4">
