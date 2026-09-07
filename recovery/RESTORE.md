@@ -59,17 +59,20 @@ because it was the first branch pushed to an empty repo.
 cosmetic because "Vercel already targets `main` for production regardless".
 That was an assumption, and it does not hold. `main` was created and pushed
 at 469e5fd; **Vercel produced no deployment at all** — not a production one,
-not even a preview. Two explanations fit, and they need different fixes:
+not even a preview. **Resolved the same day.** A second push to `main`, carrying a genuinely new
+commit, produced `dpl_8tDcz33yw8AkhY8U4BXyDiCnZhdu` with
+`target: "production"` and `githubCommitRef: "main"`. So:
 
-- Vercel skipped the push because that exact commit SHA had already been built
-  from another branch a minute earlier. Vercel does not rebuild an identical
-  commit. A fresh commit on `main` settles this.
-- Or the project's **Production Branch** is not `main`. It cannot be read or
-  set through the Vercel MCP server, so this has to be checked in the dashboard
-  under **Settings → Git → Production Branch**.
+- `main` **is** the production branch. That much of the original guess was right.
+- The first push produced nothing because **Vercel does not rebuild a commit
+  SHA it has already built.** `main` had been created pointing at a commit
+  already deployed as a preview from another branch a minute earlier, so there
+  was nothing new to build. This is the trap: creating `main` from an
+  already-pushed branch head looks like a no-op.
 
-Until one of those is confirmed, do not assume a push to `main` reaches
-4minimset.com. Verify with `data-dpl-id` on the live page:
+To promote work that is already sitting on a branch preview, `main` needs a
+commit Vercel has not seen. Verify either way with `data-dpl-id` on the live
+page rather than trusting the push:
 
 ```bash
 curl -s https://4minimset.com/ | grep -o 'data-dpl-id="[^"]*"'
