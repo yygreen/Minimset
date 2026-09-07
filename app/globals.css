@@ -157,6 +157,26 @@ details > summary::-webkit-details-marker {
   display: none;
 }
 
+/* Tailwind v4's preflight leaves buttons on the default arrow cursor, so a
+   quantity stepper, a pitom toggle or a submit button gave no pointer feedback
+   on hover while every link on the page did. Put the hand back, and say plainly
+   when a control cannot be used.
+
+   In @layer base on purpose: a cursor-* utility written on a specific button
+   still overrides this, which it would not if these rules sat unlayered. */
+@layer base {
+  button:not(:disabled),
+  summary,
+  [role="button"]:not([aria-disabled="true"]),
+  label[for] {
+    cursor: pointer;
+  }
+  button:disabled,
+  [role="button"][aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+}
+
 /* Mobile bottom bar safe-area */
 .safe-bottom {
   padding-bottom: max(0.75rem, env(safe-area-inset-bottom));

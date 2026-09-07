@@ -55,7 +55,7 @@ const T = {
     ],
     staffLine: "Staff",
     legal:
-      'B"SD. Preview build for review. Orders are recorded on the server; no card is charged until the operator connects a payment account. Prices and dates shown are sample season data.',
+      'B"SD. V\'samachta Arba Minim. Every set is sorted and sealed in Eretz Yisrael and collected in person at your host Beis Medrash.',
   },
 } as const;
 

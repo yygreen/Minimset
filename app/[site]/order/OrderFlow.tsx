@@ -193,7 +193,7 @@ export function OrderFlow({ site }: { site: Site }) {
   const submitPayment = async () => {
     setPayError("");
     if (!payLive && card.replace(/\D/g, "").length < 12) {
-      setPayError("Enter a card number to continue. This is a preview, nothing is charged.");
+      setPayError("Enter a card number to continue.");
       return;
     }
     setPaying(true);
@@ -693,18 +693,8 @@ export function OrderFlow({ site }: { site: Site }) {
                 <>
                   {!payLive && (
                     <div className="mt-5 rounded-lg border border-esrog-300 bg-esrog-100 px-4 py-3 text-[14px] text-ink-900">
-                      Preview checkout. No card is charged and nothing leaves this page.{" "}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setCard("4242 4242 4242 4242");
-                          setExp("09 / 28");
-                          setCvc("123");
-                        }}
-                        className="inline-block py-1 font-semibold underline underline-offset-2"
-                      >
-                        Fill a demo card
-                      </button>
+                      Card processing is not switched on yet. Your order is recorded and held under
+                      your code, and no card is charged. Your community rep settles payment with you.
                     </div>
                   )}
 
@@ -714,7 +704,7 @@ export function OrderFlow({ site }: { site: Site }) {
                         label="Card number"
                         value={card}
                         onChange={(v) => setCard(formatCard(v))}
-                        placeholder="4242 4242 4242 4242"
+                        placeholder="•••• •••• •••• ••••"
                         inputMode="numeric"
                         autoComplete="cc-number"
                       />

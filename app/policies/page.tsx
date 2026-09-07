@@ -100,9 +100,8 @@ export default function PoliciesPage() {
               <p className="font-display text-lg font-bold text-ink-950">Card processing is not live yet</p>
               <p className="mt-1 text-[15px] leading-relaxed">
                 Orders are recorded on the server, but no card is charged until the operator connects
-                a payment account in their own name. Until then the payment step is a preview and the
-                site says so on every page. Exact charge timing and refund handling will be stated
-                here once that account is connected.
+                a payment account in their own name. Exact charge timing and refund handling will be
+                stated here once that account is connected.
               </p>
             </div>
           </Section>
