@@ -566,15 +566,18 @@ export default function HomePage() {
           not only on /about. */}
       <section className="border-t border-sand-200 bg-sand-100 py-14 sm:py-20">
         <div className="mx-auto max-w-6xl px-4">
-          <div className="max-w-3xl">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">
-              What this actually is
-            </p>
-            <h2 className="mt-2 font-display text-[2rem] font-bold leading-tight text-ink-950 sm:text-[2.6rem]">
-              One shipment, brought in together.
-            </h2>
-            <p className="mt-4 text-[17px] leading-relaxed text-ink-900">{PARTNERSHIP_PARAGRAPH}</p>
-            <p className="mt-3 text-[16px] leading-relaxed text-ink-700">
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">
+            What this actually is
+          </p>
+          <h2 className="mt-2 font-display text-[2rem] font-bold leading-tight text-ink-950 sm:text-[2.6rem]">
+            One shipment, brought in together.
+          </h2>
+          {/* The two paragraphs run as columns rather than one stacked block: that
+              fills the width the section is given without pushing a single line of
+              body text across 1100px. */}
+          <div className="mt-5 grid gap-x-10 gap-y-4 text-[17px] leading-relaxed lg:grid-cols-2 lg:gap-x-14">
+            <p className="text-ink-900">{PARTNERSHIP_PARAGRAPH}</p>
+            <p className="text-ink-700">
               Orders are counted, one shipment is packed against those totals in Eretz Yisrael, and
               it is handed out in your Beis Medrash on one day. It is how Arba Minim have been
               bought in Meah Shearim for years.
