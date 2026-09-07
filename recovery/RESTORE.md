@@ -11,9 +11,10 @@ which came back `target: null` (**preview**, not production) and `state: ERROR`
 
 Two things follow, both verified rather than assumed:
 
-1. **Vercel's production branch is `main`**, which does not exist yet. It is
-   free and reserved — push the real source there and it goes straight to
-   production.
+1. A branch that is not the production branch produces a preview. That is all
+   the test showed. It was read at the time as proving Vercel's production
+   branch is `main`; it does not, and **that inference turned out to be wrong**
+   — see the correction below.
 2. A branch without a root `package.json` cannot displace production, because
    the build fails before anything is promoted.
 
@@ -52,9 +53,27 @@ Vercel still holds the 157 uploaded source files for the live deployment:
 ## Housekeeping
 
 GitHub made `claude/session-recovery-a72409` the repository default branch,
-because it was the first branch pushed to an empty repo. Once `main` exists,
-switch the default to `main` in **Settings → Branches**. This is cosmetic —
-Vercel already targets `main` for production regardless.
+because it was the first branch pushed to an empty repo.
+
+**Correction, 2026-09-07.** An earlier note here said switching that was
+cosmetic because "Vercel already targets `main` for production regardless".
+That was an assumption, and it does not hold. `main` was created and pushed
+at 469e5fd; **Vercel produced no deployment at all** — not a production one,
+not even a preview. Two explanations fit, and they need different fixes:
+
+- Vercel skipped the push because that exact commit SHA had already been built
+  from another branch a minute earlier. Vercel does not rebuild an identical
+  commit. A fresh commit on `main` settles this.
+- Or the project's **Production Branch** is not `main`. It cannot be read or
+  set through the Vercel MCP server, so this has to be checked in the dashboard
+  under **Settings → Git → Production Branch**.
+
+Until one of those is confirmed, do not assume a push to `main` reaches
+4minimset.com. Verify with `data-dpl-id` on the live page:
+
+```bash
+curl -s https://4minimset.com/ | grep -o 'data-dpl-id="[^"]*"'
+```
 
 ## Safety note
 
