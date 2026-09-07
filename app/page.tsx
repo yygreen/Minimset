@@ -189,8 +189,12 @@ export default function HomePage() {
             The type keeps the page's left margin via the padding below.
             Near-black and leaf-green type needs plain ground, not a scrim, so
             only the photo's leading edge is faded into the white. */}
-        <div className="lg:grid lg:grid-cols-[46%_54%]">
-          <div className="relative aspect-[16/11] w-full sm:aspect-[16/9] lg:order-2 lg:aspect-auto lg:min-h-[38rem]">
+        {/* The photo is positioned rather than gridded so it can reach further
+            left than the type does. A grid could not: its columns cannot
+            overlap, so every pixel given to the picture was taken from the
+            headline. Here the panel slides under the type, and the ramp below
+            is opaque across exactly the part it passes behind. */}
+        <div className="relative aspect-[16/11] w-full sm:aspect-[16/9] lg:absolute lg:inset-y-0 lg:right-0 lg:aspect-auto lg:w-[60%]">
             <Image
               src={IMG.hero.src}
               alt={IMG.hero.alt}
@@ -199,15 +203,15 @@ export default function HomePage() {
               fetchPriority="high"
               decoding="sync"
               quality={70}
-              sizes="(min-width: 1024px) 54vw, 100vw"
+              sizes="(min-width: 1024px) 60vw, 100vw"
               className="object-cover object-[58%_45%]"
             />
             <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white to-transparent lg:hidden" />
             <div className="photo-veil absolute inset-0 hidden lg:block" />
           </div>
 
-          <div className="relative px-4 pb-12 pt-4 sm:pb-16 sm:pt-6 lg:order-1 lg:flex lg:flex-col lg:justify-center lg:py-24 lg:pl-[max(1rem,calc((100vw-72rem)/2))] lg:pr-8">
-          <div className="max-w-xl lg:max-w-none">
+        <div className="relative mx-auto max-w-6xl px-4 pb-12 pt-4 sm:pb-16 sm:pt-6 lg:pb-28 lg:pt-24">
+          <div className="max-w-xl lg:max-w-[30rem]">
             <OpenOnly
               closed={
                 <p className="rise inline-flex items-center gap-2 rounded-full border border-sand-300 bg-white/90 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-ink-700">
@@ -263,7 +267,6 @@ export default function HomePage() {
               </p>
               <Countdown />
             </div>
-          </div>
           </div>
         </div>
       </section>
@@ -612,14 +615,6 @@ export default function HomePage() {
             </div>
           </div>
 
-          <p className="mt-8 text-[15px] leading-relaxed text-ink-700">
-            Your community not listed?{" "}
-            <Link href="/about" className="font-semibold text-leaf-800 underline underline-offset-4">
-              Ask your Rav about hosting a site
-            </Link>
-            . The program spreads one neighborhood at a time, and a Beis Medrash with a rep and a
-            table is most of what it takes.
-          </p>
         </div>
       </section>
 

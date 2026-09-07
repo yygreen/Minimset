@@ -109,13 +109,6 @@ export function CompareTable({ current, locale = "en" }: { current?: LevelKey; l
                   <p className="tnum text-[15px] font-semibold text-leaf-900">
                     <span dir="ltr">{money(l.basePriceCents)}</span> {t.perSet}
                   </p>
-                  {on ? (
-                    <p className="mt-1 text-[12px] font-semibold text-leaf-800">{t.thisPage}</p>
-                  ) : (
-                    <Link href={`#${l.slug}`} className="mt-1 inline-block text-[12px] font-semibold text-leaf-800 underline underline-offset-4">
-                      {t.see}
-                    </Link>
-                  )}
                 </th>
               );
             })}
@@ -127,7 +120,7 @@ export function CompareTable({ current, locale = "en" }: { current?: LevelKey; l
               <th
                 scope="row"
                 className={`border border-e-0 border-t-0 border-sand-200 bg-white p-4 text-start align-top font-display text-[15px] font-bold text-ink-950 ${
-                  ri === rows.length - 1 ? (he ? "rounded-br-2xl" : "rounded-bl-2xl") : ""
+                  ""
                 }`}
               >
                 {r.label}
@@ -139,7 +132,7 @@ export function CompareTable({ current, locale = "en" }: { current?: LevelKey; l
                   <td
                     key={l.key}
                     className={`border border-e-0 border-t-0 p-4 align-top text-ink-700 ${last ? "border-e" : ""} ${
-                      ri === rows.length - 1 && last ? (he ? "rounded-bl-2xl" : "rounded-br-2xl") : ""
+                      ""
                     } ${on ? "border-leaf-700 bg-leaf-50 text-ink-900" : "border-sand-200 bg-white"}`}
                   >
                     {r.pick(l)}
@@ -148,6 +141,40 @@ export function CompareTable({ current, locale = "en" }: { current?: LevelKey; l
               })}
             </tr>
           ))}
+          {/* The link out sits at the foot of the table rather than in its head:
+              a reader compares first and acts afterwards, and putting it above
+              the standards asked them to choose before reading them. */}
+          <tr>
+            <th
+              scope="row"
+              className={`border border-e-0 border-t-0 border-sand-200 bg-white p-4 ${he ? "rounded-br-2xl" : "rounded-bl-2xl"}`}
+            >
+              <span className="sr-only">{t.see}</span>
+            </th>
+            {LEVELS.map((l, i) => {
+              const on = current ? l.key === current : false;
+              const last = i === LEVELS.length - 1;
+              return (
+                <td
+                  key={l.key}
+                  className={`border border-e-0 border-t-0 p-4 align-top ${last ? "border-e" : ""} ${
+                    last ? (he ? "rounded-bl-2xl" : "rounded-br-2xl") : ""
+                  } ${on ? "border-leaf-700 bg-leaf-50" : "border-sand-200 bg-white"}`}
+                >
+                  {on ? (
+                    <p className="text-[13px] font-semibold text-leaf-800">{t.thisPage}</p>
+                  ) : (
+                    <Link
+                      href={`#${l.slug}`}
+                      className="inline-block text-[13px] font-semibold text-leaf-800 underline underline-offset-4"
+                    >
+                      {t.see}
+                    </Link>
+                  )}
+                </td>
+              );
+            })}
+          </tr>
         </tbody>
       </table>
     </>
