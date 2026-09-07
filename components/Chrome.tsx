@@ -22,11 +22,6 @@ const T = {
     myOrder: "My Order",
     orderNow: "Order Now",
     orderHref: "/#start",
-    preview: "Preview",
-    // Orders ARE recorded now. Only the card is a preview, and the banner must say so.
-    previewNote: "Preview season. Orders are recorded; no card is charged yet.",
-    reset: "Clear this device",
-    dismiss: "Dismiss preview notice",
     openMenu: "Open menu",
     closeMenu: "Close menu",
     staff: "Staff",
@@ -98,42 +93,6 @@ export function Logo({ className = "", he = false }: { className?: string; he?: 
         </span>
       </span>
     </Link>
-  );
-}
-
-export function DemoBanner() {
-  const { resetDemo, ready } = useStore();
-  const { he, t, dir } = useLocale();
-  const [open, setOpen] = useState(true);
-  if (!open) return null;
-  return (
-    <div dir={dir} data-noprint className="border-b border-esrog-300 bg-esrog-100 text-ink-900">
-      <div className="mx-auto flex max-w-6xl items-center gap-x-2 px-3 py-1 text-[11px] sm:gap-x-3 sm:px-4 sm:text-[12px]">
-        <span className="shrink-0 rounded bg-ink-950 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-esrog-300 sm:text-[10px]">
-          {t.preview}
-        </span>
-        <span className="min-w-0 truncate text-ink-700">{t.previewNote}</span>
-        <div className={`flex shrink-0 items-center gap-2 sm:gap-3 ${he ? "mr-auto" : "ml-auto"}`}>
-          <button
-            type="button"
-            onClick={() => ready && resetDemo()}
-            className="inline-block py-1 text-ink-700 underline underline-offset-2 hover:text-ink-950"
-          >
-            {t.reset}
-          </button>
-          <button
-            type="button"
-            onClick={() => setOpen(false)}
-            aria-label={t.dismiss}
-            className="flex h-6 w-6 items-center justify-center rounded text-ink-500 hover:text-ink-950"
-          >
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-              <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
   );
 }
 

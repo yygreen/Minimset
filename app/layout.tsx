@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Frank_Ruhl_Libre, Inter } from "next/font/google";
 import "./globals.css";
-import { DemoBanner, Footer, Header, StickyCta } from "@/components/Chrome";
+import { Footer, Header, StickyCta } from "@/components/Chrome";
 import { StoreProvider } from "@/lib/store";
 
 const frank = Frank_Ruhl_Libre({
@@ -47,7 +47,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${frank.variable} ${inter.variable} h-full`}>
       <body className="flex min-h-full flex-col">
         <StoreProvider>
-          <DemoBanner />
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
