@@ -124,18 +124,26 @@ body {
 }
 
 @media (min-width: 1024px) {
-  /* Only the photo's leading edge is feathered, so the picture meets the white
-     type column without a hard line. Everything past a third of the panel is
-     the photograph, untouched. */
+  /* A long ramp rather than a feathered edge. The white does not stop at a
+     line and hand over to the photograph; it thins across most of the panel,
+     so there is no point at which the two surfaces visibly meet. Many stops
+     because a four-stop version of this distance bands visibly on a gradient
+     this wide. */
   .photo-veil {
     background: linear-gradient(
       90deg,
       rgba(255, 255, 255, 1) 0%,
-      rgba(255, 255, 255, 0.95) 2%,
-      rgba(255, 255, 255, 0.5) 7%,
-      rgba(255, 255, 255, 0.2) 13%,
-      rgba(255, 255, 255, 0.05) 18%,
-      rgba(255, 255, 255, 0) 23%
+      rgba(255, 255, 255, 0.96) 8%,
+      rgba(255, 255, 255, 0.88) 17%,
+      rgba(255, 255, 255, 0.76) 26%,
+      rgba(255, 255, 255, 0.62) 35%,
+      rgba(255, 255, 255, 0.47) 44%,
+      rgba(255, 255, 255, 0.33) 53%,
+      rgba(255, 255, 255, 0.21) 62%,
+      rgba(255, 255, 255, 0.12) 71%,
+      rgba(255, 255, 255, 0.05) 80%,
+      rgba(255, 255, 255, 0.01) 90%,
+      rgba(255, 255, 255, 0) 100%
     );
   }
 }
