@@ -64,9 +64,10 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* distribution day, photo leading this time */}
+        {/* distribution day: the photo takes the left, so the two blocks
+            alternate text-image, image-text rather than repeating one shape */}
         <div className="mt-14 lg:mt-20 lg:grid lg:grid-cols-2 lg:items-center lg:gap-14">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-card lg:order-2">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-card">
             <Image
               src={IMG.community.src}
               alt={IMG.community.alt}
@@ -76,7 +77,7 @@ export default function AboutPage() {
             />
           </div>
 
-          <div className="mt-8 lg:order-1 lg:mt-0">
+          <div className="mt-8 lg:mt-0">
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Distribution day</p>
             <h2 className="mt-2 font-display text-[2rem] font-bold leading-tight text-ink-950 sm:text-[2.6rem]">
               A card system, not a scramble.
