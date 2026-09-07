@@ -91,7 +91,7 @@ export default function FaqPage() {
       </p>
 
       <div className="mt-10">
-        <Faq items={FAQ} variant="accordion" />
+        <Faq items={FAQ} />
       </div>
 
       <div className="mt-10 rounded-2xl bg-esrog-100 p-6 sm:p-8">
