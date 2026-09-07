@@ -5,15 +5,17 @@ import { Faq } from "@/components/Faq";
 import { LevelCard } from "@/components/LevelCard";
 import { OpenOnly } from "@/components/OpenOnly";
 import { Share } from "@/components/Share";
+import { CompareTable } from "@/components/CompareTable";
 import { EXCHANGE_GUARANTEE, LEVELS, SEASON, SITES } from "@/lib/data";
-import { IMG } from "@/lib/images";
+import { IMG, type Photo } from "@/lib/images";
+import { money } from "@/lib/orders";
 import { MEDIA } from "@/lib/trust";
 import { InspectedBy } from "@/components/InspectedBy";
 import { InspectionClip } from "@/components/InspectionClip";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  alternates: { canonical: "/", languages: { en: "/", he: "/he" } },
+  alternates: { canonical: "/" },
 };
 
 const MINIM = [
@@ -22,6 +24,36 @@ const MINIM = [
   { key: "hadassim", name: "Hadassim", hebrew: "הדסים", line: "Meshulash, the length of the branch.", photo: IMG.hadassim },
   { key: "aravos", name: "Aravos", hebrew: "ערבות", line: "Fresh, in a sealed bag with the hadassim.", photo: IMG.aravos },
 ];
+
+/* Carried over from the retired /sets/[slug] pages, unchanged. The promises are
+   the operator's own selling points per level; the standards themselves stay in
+   lib/data.ts and are never paraphrased. */
+const LEVEL_DETAIL: Record<string, { photo: Photo; promises: string[] }> = {
+  "mehudar-aa": {
+    photo: IMG.levelAA,
+    promises: [
+      "Sorted to the strictest standard in the program",
+      "Reserve stock at pickup, exchanged on the spot if the Motz says so",
+      "Sealed in Eretz Yisrael, opened only in your sukkah",
+    ],
+  },
+  "mehudar-a": {
+    photo: IMG.levelA,
+    promises: [
+      "A full mehudar set, sorted by the same Morei Hora'ah",
+      "Pairs with Chinuch sets for the boys in one order",
+      "Best value in the program",
+    ],
+  },
+  chinuch: {
+    photo: IMG.esrogCluster,
+    promises: [
+      "Kosher l'bracha, so every boy holds his own minim",
+      "Dignified, not a toy set",
+      "Order several in one order with your own set",
+    ],
+  },
+};
 
 const STEPS = [
   { n: "1", title: "Order and pay", body: "Pick your community and your sets. Pay in full before Motzaei Shabbos, September 5." },
@@ -84,10 +116,50 @@ export default function HomePage() {
       itemListElement: LEVELS.map((l, i) => ({
         "@type": "ListItem",
         position: i + 1,
-        url: `https://4minimset.com/sets/${l.slug}`,
+        url: `https://4minimset.com/#${l.slug}`,
         name: `${l.name} lulav and etrog set`,
       })),
     },
+    /* The three sets used to carry Product markup on their own pages. The pages
+       are gone; the markup has to stay, so it moves here against the anchors. */
+    ...LEVELS.map((l) => ({
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: `${l.name} lulav and etrog set`,
+      description: l.headline,
+      url: `https://4minimset.com/#${l.slug}`,
+      brand: { "@type": "Brand", name: "V'samachta Arba Minim" },
+      offers: {
+        "@type": "Offer",
+        price: (l.basePriceCents / 100).toFixed(2),
+        priceCurrency: "USD",
+        availability: "https://schema.org/PreOrder",
+        priceValidUntil: SEASON.deadlineIso,
+        url: "https://4minimset.com/#start",
+      },
+    })),
+    /* Likewise the per-community Event markup from the four site pages. */
+    ...SITES.map((s) => ({
+      "@context": "https://schema.org",
+      "@type": "Event",
+      name: `Arba Minim pickup - ${s.name}`,
+      startDate: s.distributionDateIso,
+      eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+      eventStatus: "https://schema.org/EventScheduled",
+      url: `https://4minimset.com/#${s.slug}`,
+      location: {
+        "@type": "Place",
+        name: s.hostInstitution,
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: s.addressLines.join(", "),
+          addressLocality: s.city,
+          addressRegion: s.state,
+          postalCode: s.zip,
+          addressCountry: "US",
+        },
+      },
+    })),
   ];
 
   return (
@@ -277,11 +349,115 @@ export default function HomePage() {
               the usual order.
             </p>
             <Link
-              href="/sets/mehudar-a#compare"
+              href="#compare"
               className="inline-block py-1.5 text-[14px] font-semibold text-leaf-800 underline underline-offset-4"
             >
               Compare the three standards side by side
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- EACH SET, IN FULL ---------- */}
+      {/* What the three /sets/[slug] pages carried: the photo, the promises and
+          the sorting standard word for word. One block per level, anchored so
+          the old product URLs still have somewhere to point. */}
+      <section className="border-t border-sand-200 bg-white py-14 sm:py-20">
+        <div className="mx-auto max-w-6xl space-y-14 px-4 sm:space-y-20">
+          {LEVELS.map((level, i) => {
+            const detail = LEVEL_DETAIL[level.slug];
+            return (
+              <article key={level.key} id={level.slug} className="scroll-mt-20">
+                <div className={`lg:grid lg:items-start lg:gap-12 ${i % 2 ? "lg:grid-cols-[1.2fr_1fr]" : "lg:grid-cols-[1fr_1.2fr]"}`}>
+                  <div className={`relative aspect-[4/3] overflow-hidden rounded-2xl bg-sand-100 shadow-lift ${i % 2 ? "lg:order-2" : ""}`}>
+                    <Image
+                      src={detail.photo.src}
+                      alt={detail.photo.alt}
+                      fill
+                      sizes="(min-width: 1024px) 520px, 100vw"
+                      className="object-cover"
+                    />
+                  </div>
+
+                  <div className="mt-6 lg:mt-0">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">{level.tier}</p>
+                    <h3 className="mt-2 font-display text-[1.9rem] font-bold leading-tight text-ink-950 sm:text-[2.4rem]">
+                      {level.name}
+                    </h3>
+                    <p className="mt-3 text-[16px] leading-relaxed text-ink-700 sm:text-[17px]">{level.headline}</p>
+
+                    <p className="mt-5 font-display text-3xl font-bold text-esrog-900">
+                      {money(level.basePriceCents)}
+                      <span className="ml-2 align-middle text-[14px] font-semibold text-ink-500">per set</span>
+                    </p>
+                    {level.pitomSurchargeCents != null && level.pitomSurchargeCents > 0 && (
+                      <p className="mt-1 text-[14px] text-ink-500">
+                        With a pitom, add {money(level.pitomSurchargeCents)}.
+                      </p>
+                    )}
+
+                    <ul className="mt-5 space-y-2">
+                      {detail.promises.map((line) => (
+                        <li key={line} className="flex gap-2.5 text-[15px] leading-snug text-ink-700">
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="mt-0.5 shrink-0 text-leaf-800">
+                            <path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                          {line}
+                        </li>
+                      ))}
+                    </ul>
+
+                    <OpenOnly>
+                      <Link
+                        href="#start"
+                        className="mt-7 inline-flex h-13 items-center justify-center rounded-lg bg-leaf-800 px-7 text-[16px] font-semibold text-white transition hover:bg-leaf-900"
+                      >
+                        Order {level.name}
+                      </Link>
+                    </OpenOnly>
+                  </div>
+                </div>
+
+                {/* the standard, word for word */}
+                <div className="mt-8 rounded-2xl border border-sand-200 bg-sand-50 p-5 sm:p-6">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">
+                    The standard, word for word
+                  </p>
+                  <dl className="mt-4 grid gap-4 sm:grid-cols-2">
+                    {(
+                      [
+                        ["Esrog", level.spec.esrog],
+                        ["Lulav", level.spec.lulav],
+                        ["Hadassim", level.spec.hadassim],
+                        ["Aravos", "Fresh, sealed together with the hadassim in a securely sealed bag."],
+                      ] as const
+                    ).map(([term, text]) => (
+                      <div key={term}>
+                        <dt className="font-display text-lg font-bold text-ink-950">{term}</dt>
+                        <dd className="mt-0.5 text-[15px] leading-relaxed text-ink-700">{text}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ---------- COMPARE ---------- */}
+      <section id="compare" className="scroll-mt-20 py-14 sm:py-20">
+        <div className="mx-auto max-w-6xl px-4">
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Compare</p>
+          <h2 className="mt-2 font-display text-[2rem] font-bold leading-tight text-ink-950 sm:text-[2.6rem]">
+            The three standards, side by side.
+          </h2>
+          <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-ink-700 sm:text-[17px]">
+            Same Morei Hora&#39;ah, same sealed box. Only the sorting differs. Word for word, as the
+            program writes it.
+          </p>
+          <div className="mt-8">
+            <CompareTable />
           </div>
         </div>
       </section>
@@ -420,30 +596,59 @@ export default function HomePage() {
                 day: "numeric",
               });
               return (
-                <Link
+                <article
                   key={site.slug}
-                  href={`/${site.slug}`}
-                  className="group flex min-w-0 items-center gap-4 rounded-2xl border border-sand-200 bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:border-leaf-700 hover:shadow-lift sm:flex-col sm:items-stretch sm:p-6"
+                  id={site.slug}
+                  className="flex scroll-mt-20 flex-col rounded-2xl border border-sand-200 bg-white p-5 shadow-card sm:p-6"
                 >
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-display text-xl font-bold text-ink-950 sm:text-2xl">{site.name}</h3>
-                    <p className="truncate text-[14px] text-ink-700">{site.hostInstitution}</p>
-                    <p className="mt-1 text-[13px] text-ink-500 sm:mt-4 sm:text-[14px] sm:leading-snug sm:text-ink-700">
-                      {date}
-                      <span className="hidden sm:inline">
+                  <h3 className="font-display text-xl font-bold text-ink-950 sm:text-2xl">{site.name}</h3>
+                  <p className="text-[14px] text-ink-700">{site.hostInstitution}</p>
+
+                  {/* the detail the community pages used to carry */}
+                  <dl className="mt-4 space-y-2 text-[14px] leading-snug">
+                    <div>
+                      <dt className="text-ink-500">Where</dt>
+                      <dd className="text-ink-950">
+                        {site.addressLines.join(", ")}
                         <br />
-                      </span>
-                      <span className="sm:font-semibold sm:text-ink-950">
-                        {" "}
+                        {site.city}, {site.state} {site.zip}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="text-ink-500">When</dt>
+                      <dd className="font-semibold text-ink-950">
+                        {date}
+                        <br />
                         {site.windowStart} to {site.windowEnd}
-                      </span>
-                    </p>
-                  </div>
-                  <span className="flex h-10 shrink-0 items-center justify-center rounded-lg border-2 border-leaf-800 px-4 text-[14px] font-semibold text-leaf-900 transition group-hover:bg-leaf-800 group-hover:text-white sm:mt-5 sm:h-11 sm:px-0 sm:text-[15px]">
-                    <span className="sm:hidden">Order</span>
-                    <span className="hidden sm:inline">Order for {site.name}</span>
-                  </span>
-                </Link>
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="text-ink-500">Your rep</dt>
+                      <dd className="text-ink-950">
+                        {site.repName}
+                        <br />
+                        <a href={`tel:${site.repPhone.replace(/[^\d+]/g, "")}`} className="font-semibold text-leaf-800 underline underline-offset-4">
+                          {site.repPhone}
+                        </a>
+                      </dd>
+                    </div>
+                  </dl>
+
+                  <OpenOnly
+                    closed={
+                      <p className="mt-5 text-[14px] font-semibold text-ink-700">
+                        Ordering closed. Already ordered? Speak to {site.repName}.
+                      </p>
+                    }
+                  >
+                    <Link
+                      href={`/${site.slug}/order`}
+                      className="mt-5 flex h-11 items-center justify-center rounded-lg border-2 border-leaf-800 px-4 text-[15px] font-semibold text-leaf-900 transition hover:bg-leaf-800 hover:text-white"
+                    >
+                      Order for {site.name}
+                    </Link>
+                  </OpenOnly>
+                </article>
               );
             })}
           </div>

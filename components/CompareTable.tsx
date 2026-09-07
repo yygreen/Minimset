@@ -71,7 +71,7 @@ export function CompareTable({ current, locale = "en" }: { current?: LevelKey; l
               </dl>
               {!(current && on) && (
                 <div className="px-4 pb-4">
-                  <Link href={`/sets/${l.slug}`} className="inline-block py-1.5 text-[14px] font-semibold text-leaf-800 underline underline-offset-4">
+                  <Link href={`#${l.slug}`} className="inline-block py-1.5 text-[14px] font-semibold text-leaf-800 underline underline-offset-4">
                     {t.see}
                   </Link>
                 </div>
@@ -112,7 +112,7 @@ export function CompareTable({ current, locale = "en" }: { current?: LevelKey; l
                   {on ? (
                     <p className="mt-1 text-[12px] font-semibold text-leaf-800">{t.thisPage}</p>
                   ) : (
-                    <Link href={`/sets/${l.slug}`} className="mt-1 inline-block text-[12px] font-semibold text-leaf-800 underline underline-offset-4">
+                    <Link href={`#${l.slug}`} className="mt-1 inline-block text-[12px] font-semibold text-leaf-800 underline underline-offset-4">
                       {t.see}
                     </Link>
                   )}

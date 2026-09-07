@@ -33,7 +33,7 @@ export function LevelCard({
   priority?: boolean;
 }) {
   const photo = PHOTO[level.key];
-  const href = hrefProp ?? `/sets/${level.slug}`;
+  const href = hrefProp ?? `#${level.slug}`;
   return (
     <article
       className={`flex flex-col overflow-hidden rounded-2xl border bg-white shadow-card transition hover:shadow-lift ${

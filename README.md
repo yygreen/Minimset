@@ -125,6 +125,49 @@ order flow — the deadline being respected at build time, not a regression.
 Setting a future deadline returns all four to the open flow, and the comparison
 should go back to 23/23.
 
+## Site structure
+
+Consolidated 2026-09-07 at Joseph's request: the product and community pages
+were folded into the homepage, leaving one selling page plus three standing
+documents.
+
+| URL | What it is |
+|---|---|
+| `/` | Everything that sells: hero, trust strip, the three sets in full (photo, promises, the standard word for word), the compare table, four minim, how it works, guarantee, and all four pickup communities with host, address, window and rep |
+| `/about` · `/faq` · `/policies` | The three standing documents. `/policies` is new |
+| `/[site]/order` ×4 | The checkout flows — kept, they are a flow rather than content |
+| `/order`, `/order/[code]` | Order lookup and confirmation, `noindex` |
+| `/brief` | The operator's page, `noindex`, no PIN |
+| `/staff/*` ×6 | Behind `STAFF_PIN`, `noindex` |
+
+Anchors carry the folded content: `/#mehudar-aa`, `/#mehudar-a`, `/#chinuch`,
+`/#baltimore`, `/#lakewood`, `/#monsey`, `/#five-towns`, plus `/#compare`.
+
+### What was removed, and where it went
+
+`/sets/[slug]` (×3), the four community landing pages and the Hebrew home `/he`
+now return 404. **Their source is not deleted — it is in `archive/`**, out of the
+`app/` routing tree and excluded from `tsconfig.json` so it cannot break a build:
+
+```
+archive/sets/[slug]/        page, Gallery, ProductBar
+archive/site-landing-page.tsx
+archive/he/                 page + HeLang
+```
+
+Restoring any of them is a `git mv` back into `app/`. `lib/he.ts` and the Hebrew
+rows in `CompareTable` were left in place, so the Hebrew copy itself is intact.
+
+Removing `/he` makes the site English-only: the עברית switch is gone from the
+header, the mobile menu and the footer, and `Chrome.tsx` no longer carries a
+Hebrew copy table. `useLocale()` survives as the single place a locale test
+would go back.
+
+**SEO cost, stated plainly.** The indexable set went from 11 URLs to 4. The
+build's own Semrush study concluded city pages were "wide open" and that
+`"lulav and etrog set"` runs 210/mo; seven keyword-targeted URLs are now one
+page competing for all of it. That was a deliberate choice, not an oversight.
+
 ## What is in this repo today
 
 - `tools/compare-to-snapshot.py` — proves a build renders the same site that is
@@ -155,4 +198,12 @@ against production as captured on 2026-09-07, ignoring build-to-build noise
 exits non-zero if any page differs or cannot be fetched, so it can gate a
 promotion.
 
-Baseline, run against live production on 2026-09-07: **23 unchanged, 0 changed.**
+Baseline when captured, against live production on 2026-09-07: **23 unchanged,
+0 changed.**
+
+That baseline is now **historical**. After the 2026-09-07 consolidation the same
+run reports 15 changed and 8 unreachable — every page differs because the footer
+changed on all of them, and the eight removed routes 404 by design. The snapshot
+remains useful as a record of what the site said before, and as the reference for
+the copy that was folded into the homepage; it is no longer a pass/fail gate.
+Re-capture it if a fresh "no unintended change" gate is wanted.

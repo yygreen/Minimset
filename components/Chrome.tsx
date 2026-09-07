@@ -22,7 +22,6 @@ const T = {
     myOrder: "My Order",
     orderNow: "Order Now",
     orderHref: "/#start",
-    langSwitch: { href: "/he", label: "עברית" },
     preview: "Preview",
     // Orders ARE recorded now. Only the card is a preview, and the banner must say so.
     previewNote: "Preview season. Orders are recorded; no card is charged yet.",
@@ -54,86 +53,29 @@ const T = {
           { href: "/#how", label: "How it works" },
           { href: "/about", label: "About the program" },
           { href: "/faq", label: "Questions" },
+          { href: "/policies", label: "Policies" },
         ],
       },
-      {
-        title: "Language",
-        links: [
-          { href: "/", label: "English" },
-          { href: "/he", label: "עברית" },
-        ],
-      },
+
     ],
     staffLine: "Staff",
     legal:
       'B"SD. Preview build for review. Orders are recorded on the server; no card is charged until the operator connects a payment account. Prices and dates shown are sample season data.',
   },
-  he: {
-    nav: [
-      { href: "/he#levels", label: "הסטים" },
-      { href: "/he#how", label: "איך זה עובד" },
-      { href: "/he#sites", label: "איסוף" },
-      { href: "/he#faq", label: "שאלות" },
-    ],
-    myOrder: "ההזמנה שלי",
-    orderNow: "להזמנה",
-    orderHref: "/he#levels",
-    langSwitch: { href: "/", label: "English" },
-    preview: "תצוגה",
-    previewNote: "עונת תצוגה. ההזמנות נרשמות; הכרטיס עדיין אינו מחויב.",
-    reset: "ניקוי המכשיר",
-    dismiss: "סגירת ההודעה",
-    openMenu: "פתיחת תפריט",
-    closeMenu: "סגירת תפריט",
-    staff: "צוות",
-    distribution: "יום החלוקה",
-    totals: "סיכומים",
-    allOrders: "כל ההזמנות",
-    stickyFrom: "סטים החל מ-40 דולר",
-    stickyCloses: "נסגר בעוד",
-    footerBlurb: "ארבעת המינים מהודרים לכתחילה במחיר הוגן. שבע עשרה שנה בארץ ישראל, עכשיו גם בקהילות בארה\"ב.",
-    cols: [
-      {
-        title: "הזמנה",
-        links: [
-          { href: "/he#levels", label: "שלוש הדרגות" },
-          { href: "/he#sites", label: "בחירת קהילה" },
-          { href: "/order", label: "איתור הזמנה" },
-        ],
-      },
-      {
-        title: "מידע",
-        links: [
-          { href: "/he#minim", label: "ארבעת המינים" },
-          { href: "/he#how", label: "איך זה עובד" },
-          { href: "/he#faq", label: "שאלות" },
-          { href: "/", label: "English" },
-        ],
-      },
-      {
-        title: "שפה",
-        links: [
-          { href: "/he", label: "עברית" },
-          { href: "/", label: "English" },
-        ],
-      },
-    ],
-    staffLine: "צוות",
-    legal:
-      'בס"ד. גרסת תצוגה לבדיקה. ההזמנות נרשמות בשרת; הכרטיס אינו מחויב עד שהמפעיל יחבר חשבון סליקה. המחירים והתאריכים הם נתוני עונה לדוגמה.',
-  },
 } as const;
 
 function useLocale() {
   const pathname = usePathname() || "/";
-  const he = pathname === "/he" || pathname.startsWith("/he/") || pathname.startsWith("/he#");
-  return { pathname, he, t: he ? T.he : T.en, dir: he ? "rtl" : "ltr" } as const;
+  /* The Hebrew home was retired (it is kept in archive/he). The chrome stays a
+     hook so restoring it means putting the locale test back here and nowhere
+     else. */
+  return { pathname, he: false, t: T.en, dir: "ltr" } as const;
 }
 
 /** Wordmark: a small esrog mark and the name. */
 export function Logo({ className = "", he = false }: { className?: string; he?: boolean }) {
   return (
-    <Link href={he ? "/he" : "/"} className={`group inline-flex items-center gap-2.5 ${className}`}>
+    <Link href="/" className={`group inline-flex items-center gap-2.5 ${className}`}>
       <span
         aria-hidden="true"
         className="flex h-9 w-9 items-center justify-center rounded-full bg-leaf-800 text-esrog-300"
@@ -235,13 +177,6 @@ export function Header() {
           <Link href="/order" className="text-[15px] font-medium text-ink-700 transition hover:text-leaf-800">
             {t.myOrder}
           </Link>
-          <Link
-            href={t.langSwitch.href}
-            className="text-[14px] font-semibold text-esrog-800 transition hover:text-leaf-800"
-            lang={he ? "en" : "he"}
-          >
-            {t.langSwitch.label}
-          </Link>
           {!ordering && (
             <Link
               href={t.orderHref}
@@ -283,7 +218,7 @@ export function Header() {
       {menu && (
         <div className="border-t border-sand-200 bg-sand-50 lg:hidden">
           <div className="mx-auto flex max-w-6xl flex-col px-4 py-2">
-            {[...t.nav, { href: "/order", label: t.myOrder }, t.langSwitch].map((item) => (
+            {[...t.nav, { href: "/order", label: t.myOrder }].map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -342,7 +277,6 @@ export function StickyCta() {
 
   const suppressed =
     pathname.startsWith("/staff") ||
-    pathname.startsWith("/sets/") ||
     pathname.endsWith("/order") ||
     pathname.startsWith("/order");
   if (suppressed) return null;
@@ -390,7 +324,7 @@ export function Footer() {
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-5 text-[12px] text-ink-500">
           <p>{t.legal}</p>
           <p className="flex flex-wrap items-center gap-x-4">
-            <Link href={he ? "/he" : "/"} className="inline-block py-1 hover:text-leaf-800">{he ? "דף הבית" : "Home"}</Link>
+            <Link href="/" className="inline-block py-1 hover:text-leaf-800">Home</Link>
             <Link href="/faq" className="inline-block py-1 hover:text-leaf-800">{he ? "שאלות" : "Questions"}</Link>
             <Link href="/order" className="inline-block py-1 hover:text-leaf-800">{t.myOrder}</Link>
           </p>
