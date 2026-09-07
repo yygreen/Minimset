@@ -1,0 +1,8 @@
+User-Agent: *
+Allow: /
+Disallow: /staff
+Disallow: /staff/
+Disallow: /order/
+
+Host: https://4minimset.com
+Sitemap: https://4minimset.com/sitemap.xml
