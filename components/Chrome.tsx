@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useStore } from "@/lib/store";
 import { SEASON, SITES } from "@/lib/data";
+import { OrderLink } from "./OrderLink";
+import { SHOPIFY_LIVE } from "@/lib/shopify";
 import { Countdown } from "./Countdown";
 import { msUntilDeadline } from "@/lib/orders";
 
@@ -21,7 +23,6 @@ const T = {
     ],
     myOrder: "My Order",
     orderNow: "Order Now",
-    orderHref: "/order/new",
     openMenu: "Open menu",
     closeMenu: "Close menu",
     staff: "Staff",
@@ -137,24 +138,18 @@ export function Header() {
             {t.myOrder}
           </Link>
           {!ordering && (
-            <Link
-              href={t.orderHref}
-              className="flex h-11 items-center rounded-lg bg-leaf-800 px-5 text-[15px] font-semibold text-white shadow-sm transition hover:bg-leaf-900"
-            >
+            <OrderLink className="flex h-11 items-center rounded-lg bg-leaf-800 px-5 text-[15px] font-semibold text-white shadow-sm transition hover:bg-leaf-900">
               {t.orderNow}
-            </Link>
+            </OrderLink>
           )}
         </nav>
 
         <div className={`flex items-center gap-2 lg:hidden ${he ? "mr-auto" : "ml-auto"}`}>
           {!ordering && (
-            <Link
-              href={t.orderHref}
-              className="flex h-11 items-center whitespace-nowrap rounded-lg bg-leaf-800 px-4 text-[14px] font-semibold text-white"
-            >
+            <OrderLink className="flex h-11 items-center whitespace-nowrap rounded-lg bg-leaf-800 px-4 text-[14px] font-semibold text-white">
               <span className="min-[400px]:hidden">{he ? "להזמנה" : "Order"}</span>
               <span className="hidden min-[400px]:inline">{t.orderNow}</span>
-            </Link>
+            </OrderLink>
           )}
           <button
             type="button"
@@ -187,13 +182,12 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
-            <Link
-              href={t.orderHref}
+            <OrderLink
               onClick={() => setMenu(false)}
               className="my-3 flex h-13 items-center justify-center rounded-lg bg-leaf-800 text-[16px] font-semibold text-white"
             >
               {t.orderNow}
-            </Link>
+            </OrderLink>
           </div>
         </div>
       )}
@@ -240,10 +234,11 @@ export function StickyCta() {
     pathname.startsWith("/order");
   if (suppressed) return null;
 
-  // On a community page the fastest path is that community's own order flow.
+  /* On a community page the fastest path is that community's own order flow --
+     unless Shopify is taking the orders, in which case there is only one path
+     and OrderLink knows it. */
   const siteSlug = pathname.split("/")[1];
-  const onSitePage = SITES.some((s) => s.slug === siteSlug);
-  const href = onSitePage ? `/${siteSlug}/order` : t.orderHref;
+  const onSitePage = !SHOPIFY_LIVE && SITES.some((s) => s.slug === siteSlug);
 
   return (
     <div
@@ -260,13 +255,22 @@ export function StickyCta() {
             {t.stickyCloses} <Countdown variant="inline" he={he} />
           </p>
         </div>
-        <Link
-          href={href}
-          tabIndex={shown ? 0 : -1}
-          className="flex h-12 items-center rounded-lg bg-leaf-800 px-6 text-[15px] font-semibold text-white"
-        >
-          {t.orderNow}
-        </Link>
+        {onSitePage ? (
+          <Link
+            href={`/${siteSlug}/order`}
+            tabIndex={shown ? 0 : -1}
+            className="flex h-12 items-center rounded-lg bg-leaf-800 px-6 text-[15px] font-semibold text-white"
+          >
+            {t.orderNow}
+          </Link>
+        ) : (
+          <OrderLink
+            tabIndex={shown ? 0 : -1}
+            className="flex h-12 items-center rounded-lg bg-leaf-800 px-6 text-[15px] font-semibold text-white"
+          >
+            {t.orderNow}
+          </OrderLink>
+        )}
       </div>
     </div>
   );

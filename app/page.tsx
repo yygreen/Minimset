@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Countdown } from "@/components/Countdown";
 import { Faq } from "@/components/Faq";
+import { OrderLink } from "@/components/OrderLink";
 import { LevelCard } from "@/components/LevelCard";
 import { OpenOnly } from "@/components/OpenOnly";
 import { Share } from "@/components/Share";
@@ -246,12 +247,9 @@ export default function HomePage() {
               </div>
             }>
             <div className="rise rise-4 mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Link
-                href="/order/new"
-                className="flex h-14 items-center justify-center rounded-lg bg-leaf-800 px-8 text-[17px] font-semibold text-white shadow-lift transition hover:bg-leaf-900"
-              >
+              <OrderLink className="flex h-14 items-center justify-center rounded-lg bg-leaf-800 px-8 text-[17px] font-semibold text-white shadow-lift transition hover:bg-leaf-900">
                 Order your set - from ${from}
-              </Link>
+              </OrderLink>
               <Link
                 href="#how"
                 className="flex h-12 items-center justify-center rounded-lg px-4 text-[15px] font-semibold text-leaf-900 underline underline-offset-4 sm:h-14 sm:border sm:border-ink-900/15 sm:bg-white/80 sm:px-7 sm:text-[16px] sm:text-ink-900 sm:no-underline sm:transition sm:hover:border-leaf-800 sm:hover:text-leaf-800"
@@ -443,12 +441,12 @@ export default function HomePage() {
                     </ul>
 
                     <OpenOnly>
-                      <Link
-                        href={`/order/new?level=${level.key}`}
+                      <OrderLink
+                        level={level.key}
                         className="mt-7 inline-flex h-13 items-center justify-center rounded-lg bg-leaf-800 px-7 text-[16px] font-semibold text-white transition hover:bg-leaf-900"
                       >
                         Order {level.name}
-                      </Link>
+                      </OrderLink>
                     </OpenOnly>
                   </div>
                 </div>
@@ -764,12 +762,9 @@ export default function HomePage() {
           <p className="mx-auto mt-3 max-w-md text-[16px] text-ink-700">
             Sets from ${from}. Sealed, inspected, and waiting at your Beis Medrash.
           </p>
-          <Link
-            href="/order/new"
-            className="mt-7 inline-flex h-14 items-center justify-center rounded-lg bg-leaf-800 px-9 text-[17px] font-semibold text-white shadow-lift transition hover:bg-leaf-900"
-          >
+          <OrderLink className="mt-7 inline-flex h-14 items-center justify-center rounded-lg bg-leaf-800 px-9 text-[17px] font-semibold text-white shadow-lift transition hover:bg-leaf-900">
             Order your set
-          </Link>
+          </OrderLink>
           <div className="mt-8 flex flex-col items-center gap-2">
             <p className="text-[13px] text-ink-500">Pass it on to your shul chat</p>
             <Share
