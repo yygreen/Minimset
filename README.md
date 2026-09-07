@@ -4,8 +4,13 @@ Repository for the live Arba Minim storefront at **4minimset.com**.
 
 > **Status: awaiting source import.** The Vercel project is linked to this repo
 > and needs no further wiring — pushing real source to `main` deploys it to
-> production. The application source has been traced to a specific machine;
-> see [Where the source is](#where-the-source-is) below.
+> production. The source has been traced to `C:\Users\User\vsamachta-arba-minim`;
+> see [Where the source is](#where-the-source-is).
+>
+> ⚠️ **The live site advertises a payment deadline that has passed.** Shipped
+> copy reads *"Pay in full before Motzaei Shabbos, September 5"*, the header
+> still reads *"Sukkos 5787 pre-order is open"*, and orders are real. See
+> [Season dates](#season-dates-need-a-decision).
 
 ## The live site
 
@@ -36,38 +41,72 @@ that is intentional before the site takes real pre-orders.
 
 ## Where the source is
 
-Traced on 2026-09-07. The live deployment records
-`meta.actor: "claude-code_2-1-245_agent"`, so it was uploaded by a Claude Code
-agent running CLI version 2.1.245. Exactly one session matches:
+Established 2026-09-07 from three handover docs the build session left in
+Joseph's Drive on 2026-08-26 — transcribed in full to
+[`recovery/HANDOVER-2026-08-26.md`](HANDOVER-2026-08-26.md).
+
+```
+C:\Users\User\vsamachta-arba-minim        (Windows, NOT a git repo)
+```
+
+That folder also holds `DECISIONS.md`, `BUILD-DOC.md`, the 141-check `qa/` gate
+and the `research/` studies — none of which exist anywhere else.
+
+It was uploaded by a Claude Code Remote Control session
+(`session_01Fay9bpcP3PpeGghocL1suX`, "hey", CLI 2.1.245 — matching the live
+deployment's `meta.actor: "claude-code_2-1-245_agent"`). That session bridges to
+the machine above and currently reports `connection_status: disconnected`.
+A one-shot Routine (`trig_013y4rXdWd9PV6ypobek9ger`) is queued against it and
+runs the moment Claude Code is opened there.
+
+### Getting it without that machine
+
+Vercel still stores the 157 uploaded files. `GET /_src` on the deployment host
+307s to `vercel.com/deployments/…/source`, confirming they are retained:
+
+<https://vercel.com/rmbh/vsamachta-arba-minim/Hrcgcxp4eo7Sf3RCD6nZU34gzwHP> → **Source** tab
+
+That page is dashboard UI behind a browser login. It needs **any** device signed
+in to Vercel — *not* the build machine. An agent session cannot do it: there is
+no Vercel API token in the environment and the Vercel MCP server exposes no
+file-reading tool. A Vercel API token would make it scriptable via
+`GET /v6/deployments/{id}/files`.
+
+## Orders are real
+
+From the handover, and the reason a from-scratch backend rebuild is the wrong
+move:
+
+> ORDERS ARE REAL. They are written to a private server-side store, given a
+> season-unique code, and visible to staff on any device. NO CARD IS CHARGED.
+
+They live in a Vercel Blob store (`vsamachta-orders-private`) under a specific
+path and JSON shape. A reimplementation that guesses either makes existing
+orders invisible to staff.
+
+## Season dates need a decision
+
+The shipped copy commits to two dates:
 
 | | |
 |---|---|
-| Session | `session_01Fay9bpcP3PpeGghocL1suX`, titled "hey" |
-| Created | 2026-08-25, last active 2026-09-07 |
-| Origin | `claude_code_cli`, `environment_kind: bridge`, tagged `remote-control-repl` |
-| Its own summary | *"Sukkos site built: 4 products, checkout, community, Hebrew home, Lighthouse 96-98"* |
+| Pay in full before | **Motzaei Shabbos, September 5, 2026** — *already past* |
+| Collect | Tuesday, September 22, 2026, 10:00 AM–5:00 PM |
 
-`environment_kind: bridge` is the decisive part: that session is **Claude Code
-running on Joseph's own computer**, bridged to the web through Remote Control —
-not an ephemeral cloud container. So the project folder is still on that
-machine's disk. Its bridge currently reports `connection_status: disconnected`
-(`last_init_error: computer_unreachable`), which is why the source cannot be
-pulled from here.
-
-A one-shot Routine (`trig_013y4rXdWd9PV6ypobek9ger`) is queued against that
-session. It asks it to find the project, verify no secrets are staged, and push
-to `claude/4minimset-source-import`. **It runs the moment Claude Code is opened
-on that computer.** Nothing else is required.
-
-Failing that, the source can also be downloaded from Vercel, which still holds
-the 157 uploaded files:
-<https://vercel.com/rmbh/vsamachta-arba-minim/Hrcgcxp4eo7Sf3RCD6nZU34gzwHP>
-→ **Source** tab.
+The deadline is enforced server-side (`lib/server/pricing.ts`), with a
+15-minute grace window for carts that reached the payment step in time. So as of
+2026-09-07 the site is publicly inviting pre-orders for a window that has
+closed, while payments are still in `demo` mode and confirmation emails are
+still logged rather than sent. Whether that date was sample season data or the
+real deadline is the operator's call, and it wants making before more traffic
+arrives.
 
 ## What is in this repo today
 
 - `tools/compare-to-snapshot.py` — proves a build renders the same site that is
   live today; run it before promoting anything to `main`
+- `recovery/HANDOVER-2026-08-26.md` — the build session's own handover: backend
+  map, env vars, house rules, gotchas, open items
 - `recovery/RESTORE.md` — how to get the real source back in
 - `recovery/ARCHITECTURE.md` — the complete route/function map, from the production build log
 - `recovery/snapshot/` — a captured copy of live production (23 pages, 11 photos, CSS, fonts)
