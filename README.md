@@ -84,7 +84,7 @@ They live in a Vercel Blob store (`vsamachta-orders-private`) under a specific
 path and JSON shape. A reimplementation that guesses either makes existing
 orders invisible to staff.
 
-## Season dates need a decision
+## Season dates are sample data
 
 The shipped copy commits to two dates:
 
@@ -93,18 +93,32 @@ The shipped copy commits to two dates:
 | Pay in full before | **Motzaei Shabbos, September 5, 2026** — *already past* |
 | Collect | Tuesday, September 22, 2026, 10:00 AM–5:00 PM |
 
-The deadline is enforced server-side (`lib/server/pricing.ts`), with a
-15-minute grace window for carts that reached the payment step in time. So as of
-2026-09-07 the site is publicly inviting pre-orders for a window that has
-closed, while payments are still in `demo` mode and confirmation emails are
-still logged rather than sent. Whether that date was sample season data or the
-real deadline is the operator's call, and it wants making before more traffic
-arrives.
+`/brief` describes these as sample season data, and Joseph confirmed it on
+2026-09-07: the real dates are still to come from the operator. Until they land,
+the live site is publicly inviting real pre-orders against a window that closed,
+while payments sit in `demo` mode.
+
+They are authored in `lib/data.ts` (English, plus the per-site pickup rows in
+`SITES`) and `lib/he.ts` (Hebrew), but they render in **65 places across 17
+pages**. The Hebrew home is the easy half to miss — `/he` is written as its own
+concept, not a translation, so it carries its own wording of both dates.
+
+```bash
+python3 tools/check-season-dates.py snapshot            # audit what is shipped
+python3 tools/check-season-dates.py https://<preview>.vercel.app \
+    --stale 'September 5' --stale '5 בספטמבר' \
+    --expect '<new date>' --expect '<new date, Hebrew>'
+```
+
+`--stale` text must appear nowhere and `--expect` text somewhere, exit non-zero
+otherwise — so the date change can be proved complete rather than assumed.
 
 ## What is in this repo today
 
 - `tools/compare-to-snapshot.py` — proves a build renders the same site that is
   live today; run it before promoting anything to `main`
+- `tools/check-season-dates.py` — finds every place the season dates surface,
+  English and Hebrew, and verifies a date change landed everywhere
 - `recovery/HANDOVER-2026-08-26.md` — the build session's own handover: backend
   map, env vars, house rules, gotchas, open items
 - `recovery/RESTORE.md` — how to get the real source back in
