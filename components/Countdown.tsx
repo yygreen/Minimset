@@ -27,7 +27,14 @@ export function Countdown({
   tone?: "light" | "dark";
   he?: boolean;
 }) {
-  const [ms, setMs] = useState<number | null>(null);
+  /* Seeded during render rather than left null until an effect runs. The
+     deadline is a fixed instant, so the server can work out the remaining time
+     as well as the browser can; leaving it null meant the hero's first paint
+     was four empty tiles, and a crawler never saw the date at all. Server and
+     client clocks differ by milliseconds, which cannot change days, hours or
+     minutes except exactly on a boundary -- hence suppressHydrationWarning on
+     the digits rather than a mismatch. */
+  const [ms, setMs] = useState<number>(() => msUntilDeadline());
 
   useEffect(() => {
     const tick = () => setMs(msUntilDeadline());
@@ -37,13 +44,12 @@ export function Countdown({
   }, []);
 
   if (variant === "inline") {
-    if (ms === null) return <span className="tnum inline-block min-w-[9ch]">&nbsp;</span>;
     if (ms <= 0) return <span>{he ? "ההרשמה לעונה זו נסגרה." : "Registration for this season has closed."}</span>;
     const t = split(ms);
     // days out: calm "10 days 4 hrs"; last day: the full clock
     if (t.days > 0) {
       return (
-        <span className="tnum">
+        <span className="tnum" suppressHydrationWarning>
           {he
             ? `${t.days} ימים ו-${t.hours} שעות`
             : `${t.days} day${t.days === 1 ? "" : "s"} ${t.hours} hr${t.hours === 1 ? "" : "s"}`}
@@ -58,16 +64,6 @@ export function Countdown({
     );
   }
 
-  if (ms === null) {
-    return (
-      <div className="flex gap-2" aria-hidden="true">
-        {[0, 1, 2, 3].map((i) => (
-          <div key={i} className="h-[72px] w-[60px] rounded-xl border border-sand-200 bg-white min-[360px]:w-[68px]" />
-        ))}
-      </div>
-    );
-  }
-
   if (ms <= 0) {
     return (
       <p className="rounded-xl border border-alert-800/30 bg-alert-100 px-4 py-3 text-sm font-semibold text-alert-800">
@@ -77,19 +73,17 @@ export function Countdown({
   }
 
   const t = split(ms);
+  /* Three tiles, not four. A seconds hand ticking in the hero reads as a sales
+     device, and this deadline is the day the shipment is packed. Seconds come
+     back on the last day, when they are information rather than pressure. */
+  const lastDay = t.days === 0;
   const cells: [number, string][] = he
-    ? [
-        [t.days, "ימים"],
-        [t.hours, "שעות"],
-        [t.minutes, "דקות"],
-        [t.seconds, "שניות"],
-      ]
-    : [
-        [t.days, "days"],
-        [t.hours, "hours"],
-        [t.minutes, "min"],
-        [t.seconds, "sec"],
-      ];
+    ? lastDay
+      ? [[t.hours, "שעות"], [t.minutes, "דקות"], [t.seconds, "שניות"]]
+      : [[t.days, "ימים"], [t.hours, "שעות"], [t.minutes, "דקות"]]
+    : lastDay
+      ? [[t.hours, "hours"], [t.minutes, "min"], [t.seconds, "sec"]]
+      : [[t.days, "days"], [t.hours, "hours"], [t.minutes, "min"]];
 
   return (
     <div>
@@ -99,7 +93,10 @@ export function Countdown({
             key={label}
             className="flex h-[72px] w-[60px] flex-col items-center justify-center rounded-xl border border-sand-200 bg-white shadow-card min-[360px]:w-[68px]"
           >
-            <span className="tnum font-display text-[1.75rem] font-bold leading-none text-ink-950">
+            <span
+              suppressHydrationWarning
+              className="tnum font-display text-[1.75rem] font-bold leading-none text-ink-950"
+            >
               {String(value).padStart(2, "0")}
             </span>
             <span className={`mt-1.5 font-bold text-esrog-800 ${he ? "text-[11px]" : "text-[10px] uppercase tracking-[0.16em]"}`}>

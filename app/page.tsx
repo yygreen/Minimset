@@ -100,8 +100,30 @@ const FAQ = [
   },
 ];
 
+/** Short labels for the hero's price ladder; the figures come from LEVELS. */
+const SHORT_NAME: Record<string, string> = {
+  CHINUCH: "Chinuch",
+  MEHUDAR_A: "Mehudar A",
+  MEHUDAR_AA: "Mehudar A-A",
+};
+
 export default function HomePage() {
   const from = Math.min(...LEVELS.map((l) => l.basePriceCents)) / 100;
+
+  /* The hero used to promise "from $40" and then open on a $110 set. $40 is the
+     child's Chinuch set; a man buying for himself pays $65 or $110. Three real
+     prices, cheapest first, cost one line and never contradict the page. */
+  const ladder = [...LEVELS]
+    .sort((a, b) => a.basePriceCents - b.basePriceCents)
+    .map((l) => `${SHORT_NAME[l.key] ?? l.name} $${l.basePriceCents / 100}`)
+    .join(" \u00b7 ");
+
+  /* Naming the towns answers "can I even get this?" in the hero, and self-
+     qualifies the visitor. "Now in your community" was not true for anyone
+     outside these four. */
+  const towns = SITES.filter((s) => s.status === "OPEN").map((s) => s.name);
+  const townLine =
+    towns.length > 1 ? `${towns.slice(0, -1).join(", ")} and ${towns[towns.length - 1]}` : towns[0];
 
   const jsonLd = [
     {
@@ -232,7 +254,7 @@ export default function HomePage() {
             </h1>
             <p className="rise rise-3 mt-5 max-w-md text-[17px] leading-relaxed text-ink-700 sm:text-lg">
               Mehudar sets from Eretz Yisrael, sealed and handed to you at your own Beis Medrash.
-              The system Meah Shearim and Kiryas Joel already use. Now in your community.
+              The system Meah Shearim and Kiryas Joel already use. This year in {townLine}.
             </p>
 
             <OpenOnly closed={
@@ -248,15 +270,18 @@ export default function HomePage() {
             }>
             <div className="rise rise-4 mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
               <OrderLink className="flex h-14 items-center justify-center rounded-lg bg-leaf-800 px-8 text-[17px] font-semibold text-white shadow-lift transition hover:bg-leaf-900">
-                Order your set - from ${from}
+                Order your set
               </OrderLink>
+              {/* The nearer question is "what do I get for $65 rather than
+                  $110", which is the sets, not the logistics. */}
               <Link
-                href="#how"
+                href="#levels"
                 className="flex h-12 items-center justify-center rounded-lg px-4 text-[15px] font-semibold text-leaf-900 underline underline-offset-4 sm:h-14 sm:border sm:border-ink-900/15 sm:bg-white/80 sm:px-7 sm:text-[16px] sm:text-ink-900 sm:no-underline sm:transition sm:hover:border-leaf-800 sm:hover:text-leaf-800"
               >
-                How it works
+                See the three sets
               </Link>
             </div>
+            <p className="rise rise-4 tnum mt-3 text-[14px] font-semibold text-ink-700">{ladder}</p>
 
             </OpenOnly>
             <div className="mt-8">
