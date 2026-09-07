@@ -56,7 +56,7 @@ const LEVEL_DETAIL: Record<string, { photo: Photo; promises: string[] }> = {
 };
 
 const STEPS = [
-  { n: "1", title: "Order and pay", body: "Pick your community and your sets. Pay in full before Motzaei Shabbos, September 5." },
+  { n: "1", title: "Order and pay", body: `Pick your community and your sets. Pay in full before ${SEASON.deadlineLabelEt}.` },
   { n: "2", title: "The Rabbanim sort", body: "Morei Hora'ah in Eretz Yisrael select and inspect every item. Nothing is packed until it passes." },
   { n: "3", title: "It flies in sealed", body: "Esrog boxed, hadassim and aravos bagged, lulav sealed. One day in the air." },
   { n: "4", title: "You collect after Yom Kippur", body: "Show your code at your Beis Medrash. In and out in minutes, with a Moreh Hora'ah at the table." },

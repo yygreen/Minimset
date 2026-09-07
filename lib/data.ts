@@ -55,10 +55,13 @@ export interface Site {
 export const SEASON = {
   name: "Sukkos 5787",
   year: 2026,
-  /** Motzaei Shabbos, September 5, 2026 — 8:30 PM EDT / 3:30 AM IST */
-  deadlineIso: "2026-09-06T00:30:00.000Z",
-  deadlineLabelEt: "Motzaei Shabbos, September 5, 8:30 PM EDT",
-  deadlineLabelIl: "3:30 AM IST, Sunday September 6",
+  /** Motzaei Shabbos, September 12, 2026 — 8:30 PM EDT / 3:30 AM IST.
+      Every deadline on the site derives from this one value: the countdown, the
+      server-side cutoff in lib/server/pricing.ts, the open/closed state of the
+      order flow, and the labels below. Change it here and nowhere else. */
+  deadlineIso: "2026-09-13T00:30:00.000Z",
+  deadlineLabelEt: "Motzaei Shabbos, September 12, 8:30 PM EDT",
+  deadlineLabelIl: "3:30 AM IST, Sunday September 13",
   distributionNote: "Distribution is the day after Yom Kippur at each host Beis Medrash.",
 } as const;
 
