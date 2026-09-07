@@ -6,7 +6,7 @@ import { LevelCard } from "@/components/LevelCard";
 import { OpenOnly } from "@/components/OpenOnly";
 import { Share } from "@/components/Share";
 import { CompareTable } from "@/components/CompareTable";
-import { EXCHANGE_GUARANTEE, LEVELS, SEASON, SITES } from "@/lib/data";
+import { EXCHANGE_GUARANTEE, LEVELS, PARTNERSHIP_PARAGRAPH, SEASON, SITES } from "@/lib/data";
 import { IMG, type Photo } from "@/lib/images";
 import { money } from "@/lib/orders";
 import { MEDIA } from "@/lib/trust";
@@ -84,6 +84,18 @@ const FAQ = [
   {
     q: "When and where do I pick up?",
     a: ["The day after Yom Kippur, at your community's host Beis Medrash, 10:00 AM to 5:00 PM. Your confirmation has the address. Send anyone with your code if you cannot come."],
+  },
+  {
+    q: "Do I have to order on the website?",
+    a: [
+      "No. In Eretz Yisrael most people order on a sheet left in the Beis Medrash: you write what you want, put the money in an envelope with it, and hand it in. Your community rep can take an order that way and enter it for you. It joins the same totals, and you collect on the same day with the same code.",
+    ],
+  },
+  {
+    q: "Why can't the deadline move?",
+    a: [
+      "Because this is one shipment rather than a shop. When orders close the totals are pulled, that exact quantity is packed in Eretz Yisrael, and it flies in together with reserve stock for exchanges. An order placed afterwards has nothing to travel with.",
+    ],
   },
 ];
 
@@ -536,6 +548,71 @@ export default function HomePage() {
               </li>
             ))}
           </ol>
+        </div>
+      </section>
+
+      {/* ---------- THE PARTNERSHIP ---------- */}
+      {/* The operator's own account of what this is: not a shop, a communal
+          order that people join. Everything that follows -- the two ways in and
+          the immovable deadline -- only makes sense once that is said, so it is
+          said here rather than left on /about. */}
+      <section className="border-t border-sand-200 bg-sand-100 py-14 sm:py-20">
+        <div className="mx-auto max-w-6xl px-4">
+          <div className="max-w-3xl">
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">
+              What this actually is
+            </p>
+            <h2 className="mt-2 font-display text-[2rem] font-bold leading-tight text-ink-950 sm:text-[2.6rem]">
+              One shipment, brought in together.
+            </h2>
+            <p className="mt-4 text-[17px] leading-relaxed text-ink-900">{PARTNERSHIP_PARAGRAPH}</p>
+            <p className="mt-3 text-[16px] leading-relaxed text-ink-700">
+              This is not a shop with stock on a shelf. Orders are counted, one shipment is packed
+              against those totals in Eretz Yisrael, and it is handed out in your Beis Medrash on
+              one day. It is how Arba Minim have been bought in Meah Shearim for years.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-5 md:grid-cols-2 md:gap-6">
+            <div className="rounded-2xl border border-sand-200 bg-white p-6 shadow-card sm:p-7">
+              <h3 className="font-display text-xl font-bold text-ink-950 sm:text-2xl">
+                Two ways to order
+              </h3>
+              <p className="mt-3 text-[15px] leading-relaxed text-ink-700">
+                Order here in about three minutes. Or write it down: in Eretz Yisrael most people
+                order on a sheet left in the Beis Medrash, listing what is available and the prices.
+                You write what you want, put the money in an envelope with it, and hand it in.
+              </p>
+              <p className="mt-3 text-[15px] leading-relaxed text-ink-700">
+                Your community rep can take an order that way and enter it for you. It joins the
+                same totals, and you collect on the same day with the same code.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-sand-200 bg-white p-6 shadow-card sm:p-7">
+              <h3 className="font-display text-xl font-bold text-ink-950 sm:text-2xl">
+                Why the deadline does not move
+              </h3>
+              <p className="mt-3 text-[15px] leading-relaxed text-ink-700">
+                Nothing is bought before orders close. When they do, the totals are pulled - how
+                many lulavim, how many hadassim, how many esrogim at each level - and that is what
+                gets packed and flown, along with reserve stock for exchanges on the day.
+              </p>
+              <p className="mt-3 text-[15px] leading-relaxed text-ink-700">
+                An order placed after that has nothing to travel with. The date is the shipment, not
+                a sales tactic.
+              </p>
+            </div>
+          </div>
+
+          <p className="mt-8 text-[15px] leading-relaxed text-ink-700">
+            Your community not listed?{" "}
+            <Link href="/about" className="font-semibold text-leaf-800 underline underline-offset-4">
+              Ask your Rav about hosting a site
+            </Link>
+            . The program spreads one neighborhood at a time, and a Beis Medrash with a rep and a
+            table is most of what it takes.
+          </p>
         </div>
       </section>
 
