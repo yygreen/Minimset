@@ -1,0 +1,80 @@
+/**
+ * Confirmations. Every notification is WRITTEN to the log always, and SENT only when the
+ * operator has switched sending on:
+ *
+ *   RESEND_API_KEY   the operator's Resend key
+ *   NOTIFY_FROM      e.g. "V'samachta Arba Minim <orders@their-domain.com>"
+ *   NOTIFY_ENABLED   must literally be "1" before a single message leaves the building
+ *
+ * Deliberately off. Nothing here has ever sent mail, and it will not until the operator
+ * says so with their own verified domain. Until then the log is the record, and the staff
+ * screens can show what would have gone out.
+ *
+ * The SMS/WhatsApp seam is the same shape: add a sender here, call it from notifyPaid.
+ */
+import { PARTNERSHIP_PARAGRAPH, EXCHANGE_GUARANTEE, SEASON, getSite } from "@/lib/data";
+import { itemLabel, money, type Order } from "@/lib/orders";
+import { logNotification } from "./repo";
+
+export const NOTIFY_ENABLED = process.env.NOTIFY_ENABLED === "1" && Boolean(process.env.RESEND_API_KEY);
+
+export function confirmationText(order: Order): { subject: string; text: string } {
+  const site = getSite(order.siteSlug);
+  const lines = order.items.map((i) => `  ${i.quantity} x ${itemLabel(i)}  ${money(i.unitPriceCents * i.quantity)}`);
+  const text = [
+    `Your pickup code is ${order.code}.`,
+    "",
+    "Your order",
+    ...lines,
+    `  Total  ${money(order.totalCents)}`,
+    "",
+    PARTNERSHIP_PARAGRAPH,
+    "",
+    "Pickup",
+    site ? `  ${site.hostInstitution}, ${site.city}, ${site.state}` : `  ${order.siteSlug}`,
+    site ? `  ${site.windowStart} to ${site.windowEnd}` : "",
+    `  ${SEASON.distributionNote}`,
+    "",
+    "Show this code at the table. It is your card.",
+    "",
+    EXCHANGE_GUARANTEE,
+    "",
+    `Find your order any time: https://4minimset.com/order/${order.code}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+  return { subject: `Your Arba Minim order ${order.code}`, text };
+}
+
+/** Log always; send only when explicitly switched on. Never throws into the order path. */
+export async function notifyPaid(order: Order): Promise<void> {
+  const { subject, text } = confirmationText(order);
+  try {
+    await logNotification(order.code, "PAID", {
+      channel: "EMAIL",
+      to: order.email || null,
+      subject,
+      sent: NOTIFY_ENABLED && Boolean(order.email),
+    });
+  } catch {
+    /* the log is not worth failing a paid order over */
+  }
+  if (!NOTIFY_ENABLED || !order.email) return;
+  try {
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: process.env.NOTIFY_FROM || "orders@4minimset.com",
+        to: [order.email],
+        subject,
+        text,
+      }),
+    });
+  } catch {
+    /* a confirmation that did not send must never lose the order */
+  }
+}

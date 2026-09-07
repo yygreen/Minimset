@@ -1,0 +1,256 @@
+@import "tailwindcss";
+
+/*
+  V'samachta design tokens. Light-only by design (this audience reads on phones
+  in daylight and the owner rejects dark surfaces): no prefers-color-scheme block.
+
+  Palette is drawn from the subject itself: warm sand (the Beis Medrash notice
+  board, the esrog box), deep lulav green for action, esrog gold for price and
+  emphasis. Legacy token names (forest/gold/cream) are kept and remapped so the
+  staff screens stay coherent without a rewrite.
+*/
+@theme {
+  /* ground + surfaces */
+  --color-sand-50: #FBF8F1;
+  --color-sand-100: #F6F0E4;
+  --color-sand-200: #ECE3D1;
+  --color-sand-300: #DCCFB5;
+  --color-sand-400: #C4B392;
+
+  /* ink */
+  --color-ink-950: #17150F;
+  --color-ink-900: #24211A;
+  --color-ink-700: #4A453A;
+  --color-ink-500: #6B6456;
+
+  /* lulav green - action */
+  --color-leaf-950: #0E2B1C;
+  --color-leaf-900: #153F29;
+  --color-leaf-800: #1D5A3A;
+  --color-leaf-700: #247047;
+  --color-leaf-600: #2F8A59;
+  --color-leaf-200: #CFE6D5;
+  --color-leaf-100: #E3F0E6;
+  --color-leaf-50: #F1F7F2;
+
+  /* esrog gold - price, emphasis */
+  --color-esrog-900: #6B4A08;
+  --color-esrog-800: #8C6210;
+  --color-esrog-700: #B07E1C;
+  --color-esrog-500: #D9A83A;
+  --color-esrog-300: #F0D68C;
+  --color-esrog-200: #F8E7B4;
+  --color-esrog-100: #FCF2D2;
+  --color-esrog-50: #FEF9E8;
+
+  /* deadline red - used sparingly */
+  --color-alert-800: #9B2C1F;
+  --color-alert-100: #FBE4DF;
+
+  /* legacy aliases (staff screens, older components) */
+  --color-forest-950: #17150F;
+  --color-forest-900: #153F29;
+  --color-forest-800: #1D5A3A;
+  --color-forest-700: #247047;
+  --color-forest-600: #2F8A59;
+  --color-forest-100: #E3F0E6;
+
+  --color-gold-700: #8C6210;
+  --color-gold-600: #B07E1C;
+  --color-gold-500: #D9A83A;
+  --color-gold-300: #F0D68C;
+  --color-gold-100: #FCF2D2;
+
+  --color-cream-50: #FBF8F1;
+  --color-cream-100: #F6F0E4;
+  --color-cream-200: #ECE3D1;
+  --color-cream-300: #DCCFB5;
+
+  --color-clay-700: #9B2C1F;
+
+  --font-display: var(--font-frank), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --shadow-card: 0 1px 2px rgba(23, 21, 15, 0.05), 0 8px 24px -12px rgba(23, 21, 15, 0.18);
+  --shadow-lift: 0 2px 4px rgba(23, 21, 15, 0.06), 0 18px 40px -16px rgba(23, 21, 15, 0.28);
+}
+
+html {
+  color-scheme: light;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  background-color: var(--color-sand-50);
+  color: var(--color-ink-900);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.012em;
+}
+
+/* Hairline rule with a warm fade, used between sections */
+.rule-gold {
+  background: linear-gradient(90deg, transparent, var(--color-esrog-500), transparent);
+}
+
+/* Soft warm vignette for photo panels so dark text stays readable on top */
+.photo-veil {
+  background: linear-gradient(
+    180deg,
+    rgba(251, 248, 241, 0.92) 0%,
+    rgba(251, 248, 241, 0.78) 38%,
+    rgba(251, 248, 241, 0.2) 100%
+  );
+}
+
+@media (min-width: 1024px) {
+  .photo-veil {
+    background: linear-gradient(
+      90deg,
+      rgba(251, 248, 241, 0.97) 0%,
+      rgba(251, 248, 241, 0.94) 42%,
+      rgba(251, 248, 241, 0.35) 68%,
+      rgba(251, 248, 241, 0) 100%
+    );
+  }
+}
+
+/* Native details/summary FAQ without the default marker */
+details > summary {
+  list-style: none;
+  cursor: pointer;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Mobile bottom bar safe-area */
+.safe-bottom {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Tabular figures anywhere money or counts are shown */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Mirrored veil for the Hebrew (RTL) hero: text sits on the right, photo on the left */
+.photo-veil-rtl {
+  background: linear-gradient(
+    180deg,
+    rgba(251, 248, 241, 0.92) 0%,
+    rgba(251, 248, 241, 0.78) 38%,
+    rgba(251, 248, 241, 0.2) 100%
+  );
+}
+
+@media (min-width: 1024px) {
+  .photo-veil-rtl {
+    background: linear-gradient(
+      270deg,
+      rgba(251, 248, 241, 0.97) 0%,
+      rgba(251, 248, 241, 0.94) 42%,
+      rgba(251, 248, 241, 0.35) 68%,
+      rgba(251, 248, 241, 0) 100%
+    );
+  }
+}
+
+/* Touch feel: no grey tap flash, a slight press on solid buttons */
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+a.bg-leaf-800,
+button.bg-leaf-800,
+a.bg-alert-800,
+button.bg-alert-800 {
+  transition-property: background-color, transform, box-shadow;
+  transition-duration: 150ms;
+}
+a.bg-leaf-800:active,
+button.bg-leaf-800:active {
+  transform: scale(0.985);
+}
+
+/* Entrance: a short rise on the hero copy. Compositor-only; off under reduced motion. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.rise {
+  animation: rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.rise-2 {
+  animation-delay: 90ms;
+}
+.rise-3 {
+  animation-delay: 180ms;
+}
+.rise-4 {
+  animation-delay: 270ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rise {
+    animation: none;
+  }
+}
+
+/* Print: the order page becomes a clean pickup card */
+@media print {
+  header,
+  footer,
+  .safe-bottom,
+  [data-noprint] {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+  main {
+    padding: 0;
+  }
+  .shadow-card,
+  .shadow-lift {
+    box-shadow: none !important;
+  }
+}
+
+/* Keyboard focus: one branded ring everywhere instead of the browser default */
+:focus-visible {
+  outline: 2px solid #247047;
+  outline-offset: 3px;
+  border-radius: 6px;
+}

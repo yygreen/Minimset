@@ -1,0 +1,25 @@
+# dependencies
+node_modules/
+
+# next.js build output
+.next/
+out/
+next-env.d.ts
+tsconfig.tsbuildinfo
+
+# vercel
+.vercel/
+
+# secrets -- every one of these lives in Vercel project settings, never here.
+# This repo is public.
+.env
+.env.*
+!.env.example
+
+# qa artifacts
+qa/baseline/
+qa/shots/
+
+# os
+.DS_Store
+Thumbs.db
