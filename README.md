@@ -86,32 +86,44 @@ orders invisible to staff.
 
 ## Season dates are sample data
 
-The shipped copy commits to two dates:
-
 | | |
 |---|---|
-| Pay in full before | **Motzaei Shabbos, September 5, 2026** — *already past* |
-| Collect | Tuesday, September 22, 2026, 10:00 AM–5:00 PM |
+| Pay in full before | `SEASON.deadlineIso` = **2026-09-06T00:30:00Z** — Motzaei Shabbos, September 5, 8:30 PM EDT |
+| Collect | `distributionDateIso` = **2026-09-22**, 10:00 AM-5:00 PM, per site |
 
-`/brief` describes these as sample season data, and Joseph confirmed it on
-2026-09-07: the real dates are still to come from the operator. Until they land,
-the live site is publicly inviting real pre-orders against a window that closed,
-while payments sit in `demo` mode.
+Both live in `SEASON` and `SITES` in `lib/data.ts`. `/brief` calls them sample
+season data and Joseph confirmed real dates are still to come.
 
-They are authored in `lib/data.ts` (English, plus the per-site pickup rows in
-`SITES`) and `lib/he.ts` (Hebrew), but they render in **65 places across 17
-pages**. The Hebrew home is the easy half to miss — `/he` is written as its own
-concept, not a translation, so it carries its own wording of both dates.
+### The site is already closed, correctly
 
-```bash
-python3 tools/check-season-dates.py snapshot            # audit what is shipped
-python3 tools/check-season-dates.py https://<preview>.vercel.app \
-    --stale 'September 5' --stale '5 בספטמבר' \
-    --expect '<new date>' --expect '<new date, Hebrew>'
+Verified 2026-09-07, after the deadline passed:
+
+```
+POST https://4minimset.com/api/checkout/start  ->  409 {"error":"orders are closed"}
 ```
 
-`--stale` text must appear nowhere and `--expect` text somewhere, exit non-zero
-otherwise — so the date change can be proved complete rather than assumed.
+`lib/server/pricing.ts` derives `DEADLINE_MS` from `SEASON.deadlineIso`, and
+every ordering route refuses past it — `checkout/start`, `orders`,
+`orders/[code]`, `orders/[code]/pay`. On the client, `components/OpenOnly.tsx`
+swaps in a "registration closed" panel and `OrderFlow.tsx` computes
+`isPastDeadline()` on every render. Visitors see a closed site.
+
+What *is* stale is production's prerendered HTML. Those pages were built on
+2026-08-26, when the deadline was still ahead, so the open-state markup is baked
+into the static output — which is what crawlers, link previews and any
+JavaScript-less fetch see. `recovery/snapshot/` captured exactly that.
+
+So a rebuild today legitimately differs from the snapshot on four pages:
+
+```
+DIFF  /baltimore/order   /five-towns/order   /lakewood/order   /monsey/order
+same  the other 19
+```
+
+That is the order pages rendering the closed panel server-side instead of the
+order flow — the deadline being respected at build time, not a regression.
+Setting a future deadline returns all four to the open flow, and the comparison
+should go back to 23/23.
 
 ## What is in this repo today
 
