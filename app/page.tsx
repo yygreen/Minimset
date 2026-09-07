@@ -166,9 +166,13 @@ export default function HomePage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* ---------- HERO ---------- */}
-      <section className="relative overflow-hidden bg-sand-100">
-        {/* one image: a photo block on phones, a veiled split hero on desktop */}
-        <div className="relative aspect-[16/11] w-full sm:aspect-[16/9] lg:absolute lg:inset-0 lg:aspect-auto lg:w-full">
+      <section className="relative overflow-hidden bg-white">
+        {/* A photo block above the text on phones. On desktop it holds the right
+            half and the type sits on clean white, rather than over the picture:
+            a near-black headline and a leaf-green subhead need a plain ground,
+            not a scrim. Only the photo's left edge is faded, so the two meet
+            without a visible join. */}
+        <div className="relative aspect-[16/11] w-full sm:aspect-[16/9] lg:absolute lg:inset-y-0 lg:right-0 lg:aspect-auto lg:w-[45%]">
           <Image
             src={IMG.hero.src}
             alt={IMG.hero.alt}
@@ -177,15 +181,15 @@ export default function HomePage() {
             fetchPriority="high"
             decoding="sync"
             quality={70}
-            sizes="100vw"
-            className="object-cover object-[50%_45%]"
+            sizes="(min-width: 1024px) 45vw, 100vw"
+            className="object-cover object-[58%_45%]"
           />
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-sand-100 to-transparent lg:hidden" />
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white to-transparent lg:hidden" />
           <div className="photo-veil absolute inset-0 hidden lg:block" />
         </div>
 
         <div className="relative mx-auto max-w-6xl px-4 pb-12 pt-4 sm:pb-16 sm:pt-6 lg:pb-28 lg:pt-24">
-          <div className="max-w-xl">
+          <div className="max-w-xl lg:max-w-[34rem]">
             <OpenOnly
               closed={
                 <p className="rise inline-flex items-center gap-2 rounded-full border border-sand-300 bg-white/90 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-ink-700">

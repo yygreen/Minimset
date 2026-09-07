@@ -85,7 +85,7 @@ export function LevelCard({
 
         <p className="mt-3 text-[13px] text-ink-500">No shipping. Collect at your Beis Medrash. Change or cancel free until the deadline.</p>
 
-        <details className="group mt-4 shrink-0 rounded-xl border border-sand-200 bg-sand-50">
+        <details className="group mt-4 shrink-0 rounded-xl border border-sand-200 bg-sand-50 md:mb-6">
           <summary className="flex items-center justify-between px-4 py-3 text-sm font-semibold text-leaf-800">
             The standard, word for word
             <svg
@@ -117,7 +117,7 @@ export function LevelCard({
 
         <Link
           href={href}
-          className={`mt-6 flex min-h-13 items-center justify-center rounded-lg px-5 py-3 md:mt-auto md:pt-3 text-center text-[15px] font-semibold leading-snug transition ${
+          className={`mt-6 flex min-h-13 items-center justify-center rounded-lg px-5 py-3 md:mt-auto text-center text-[15px] font-semibold leading-snug transition ${
             featured
               ? "bg-leaf-800 text-white hover:bg-leaf-900"
               : "border-2 border-leaf-800 text-leaf-900 hover:bg-leaf-800 hover:text-white"
