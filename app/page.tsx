@@ -343,17 +343,26 @@ export default function HomePage() {
             ))}
           </div>
 
-          <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-[14px] text-ink-500">
-              One order can hold several sets. A Mehudar A-A for you and Chinuch sets for the boys is
-              the usual order.
+          <p className="mt-6 text-[14px] text-ink-500">
+            One order can hold several sets. A Mehudar A-A for you and Chinuch sets for the boys is
+            the usual order.
+          </p>
+
+          {/* The compare table sits with the cards rather than in a section of
+              its own: the question it answers -- which level -- is the one the
+              cards have just raised. */}
+          <div id="compare" className="mt-12 scroll-mt-20 border-t border-sand-200 pt-10">
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Compare</p>
+            <h3 className="mt-2 font-display text-[1.9rem] font-bold leading-tight text-ink-950 sm:text-[2.3rem]">
+              The three standards, side by side.
+            </h3>
+            <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-ink-700">
+              Same Morei Hora&#39;ah, same sealed box. Only the sorting differs. Word for word, as the
+              program writes it.
             </p>
-            <Link
-              href="#compare"
-              className="inline-block py-1.5 text-[14px] font-semibold text-leaf-800 underline underline-offset-4"
-            >
-              Compare the three standards side by side
-            </Link>
+            <div className="mt-8">
+              <CompareTable />
+            </div>
           </div>
         </div>
       </section>
@@ -442,23 +451,6 @@ export default function HomePage() {
               </article>
             );
           })}
-        </div>
-      </section>
-
-      {/* ---------- COMPARE ---------- */}
-      <section id="compare" className="scroll-mt-20 py-14 sm:py-20">
-        <div className="mx-auto max-w-6xl px-4">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Compare</p>
-          <h2 className="mt-2 font-display text-[2rem] font-bold leading-tight text-ink-950 sm:text-[2.6rem]">
-            The three standards, side by side.
-          </h2>
-          <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-ink-700 sm:text-[17px]">
-            Same Morei Hora&#39;ah, same sealed box. Only the sorting differs. Word for word, as the
-            program writes it.
-          </p>
-          <div className="mt-8">
-            <CompareTable />
-          </div>
         </div>
       </section>
 
