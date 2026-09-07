@@ -21,7 +21,7 @@ const T = {
     ],
     myOrder: "My Order",
     orderNow: "Order Now",
-    orderHref: "/#start",
+    orderHref: "/order/new",
     openMenu: "Open menu",
     closeMenu: "Close menu",
     staff: "Staff",

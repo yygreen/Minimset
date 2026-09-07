@@ -92,7 +92,7 @@ export default async function SetSignpost({ params }: { params: Promise<{ slug: 
               </Link>
               <OpenOnly>
                 <Link
-                  href="/#start"
+                  href={`/order/new?level=${level.key}`}
                   className="flex h-13 items-center justify-center rounded-lg bg-leaf-800 px-7 text-[16px] font-semibold text-white transition hover:bg-leaf-900"
                 >
                   Order {level.name}

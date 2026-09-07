@@ -34,6 +34,9 @@ export function LevelCard({
 }) {
   const photo = PHOTO[level.key];
   const href = hrefProp ?? `#${level.slug}`;
+  /* The photo goes to the detail block on the page; the button starts the
+     order, carrying this level into step one so the choice is not lost. */
+  const orderHref = `/order/new?level=${level.key}`;
   return (
     <article
       className={`flex flex-col overflow-hidden rounded-2xl border bg-white shadow-card transition hover:shadow-lift ${
@@ -116,7 +119,7 @@ export function LevelCard({
         </details>
 
         <Link
-          href={href}
+          href={orderHref}
           className={`mt-6 flex min-h-13 items-center justify-center rounded-lg px-5 py-3 md:mt-auto text-center text-[15px] font-semibold leading-snug transition ${
             featured
               ? "bg-leaf-800 text-white hover:bg-leaf-900"

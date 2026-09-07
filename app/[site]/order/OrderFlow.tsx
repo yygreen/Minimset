@@ -20,7 +20,12 @@ import { StripePay } from "@/components/StripePay";
 
 type Step = 0 | 1 | 2 | 3;
 
-const STEP_LABELS = ["Your sets", "Your details", "Review", "Payment"];
+/* Five steps, not four: choosing the community is step one and happens on
+   /order/new before this component mounts. Showing it here as a completed step
+   keeps the journey honest -- the visitor has already made a decision, and can
+   go back and change it. Internally `step` still counts the four steps this
+   component owns; the display index is one higher. */
+const STEP_LABELS = ["Your community", "Your sets", "Your details", "Review", "Payment"];
 
 const EMPTY_QTY: Record<LevelKey, number> = {
   MEHUDAR_AA: 0,
@@ -264,6 +269,9 @@ export function OrderFlow({ site }: { site: Site }) {
     }
   };
 
+  /* Carried back to the community step so changing town does not lose the set. */
+  const firstChosenLevel = (Object.keys(qty) as LevelKey[]).find((k) => qty[k] > 0) ?? null;
+
   const goDetails = () => setStep(1);
   const goReview = () => {
     setTouched(true);
@@ -288,15 +296,29 @@ export function OrderFlow({ site }: { site: Site }) {
       </div>
 
       {/* progress */}
-      <ol className="mt-6 grid grid-cols-4 gap-1.5" aria-label="Progress">
+      <ol className="mt-6 grid grid-cols-5 gap-1.5" aria-label="Progress">
         {STEP_LABELS.map((label, i) => {
-          const state = i === step ? "current" : i < step ? "done" : "todo";
+          const shown = step + 1;
+          const state = i === shown ? "current" : i < shown ? "done" : "todo";
+          if (i === 0) {
+            return (
+              <li key={label}>
+                <Link href={`/order/new?level=${firstChosenLevel ?? ""}`} className="block w-full text-left">
+                  <span className="block h-1.5 rounded-full bg-leaf-700" />
+                  <span className="mt-2 block truncate text-[12px] font-semibold text-leaf-800 sm:text-[13px]">
+                    <span className="hidden sm:inline">1. </span>
+                    {label}
+                  </span>
+                </Link>
+              </li>
+            );
+          }
           return (
             <li key={label}>
               <button
                 type="button"
-                disabled={i > step}
-                onClick={() => setStep(i as Step)}
+                disabled={i > shown}
+                onClick={() => setStep((i - 1) as Step)}
                 aria-current={state === "current" ? "step" : undefined}
                 className="w-full text-left disabled:cursor-default"
               >

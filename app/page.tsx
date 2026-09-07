@@ -225,7 +225,7 @@ export default function HomePage() {
             }>
             <div className="rise rise-4 mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link
-                href="#start"
+                href="/order/new"
                 className="flex h-14 items-center justify-center rounded-lg bg-leaf-800 px-8 text-[17px] font-semibold text-white shadow-lift transition hover:bg-leaf-900"
               >
                 Order your set - from ${from}
@@ -250,7 +250,7 @@ export default function HomePage() {
       </section>
 
       {/* ---------- TRUST STRIP ---------- */}
-      <section className="border-b border-sand-200 bg-white">
+      <section className="border-y border-sand-200 bg-white">
         <ul className="mx-auto grid max-w-6xl grid-cols-1 divide-y divide-sand-200 px-4 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
           {[
             {
@@ -422,7 +422,7 @@ export default function HomePage() {
 
                     <OpenOnly>
                       <Link
-                        href="#start"
+                        href={`/order/new?level=${level.key}`}
                         className="mt-7 inline-flex h-13 items-center justify-center rounded-lg bg-leaf-800 px-7 text-[16px] font-semibold text-white transition hover:bg-leaf-900"
                       >
                         Order {level.name}
@@ -686,7 +686,7 @@ export default function HomePage() {
             Sets from ${from}. Sealed, inspected, and waiting at your Beis Medrash.
           </p>
           <Link
-            href="#levels"
+            href="/order/new"
             className="mt-7 inline-flex h-14 items-center justify-center rounded-lg bg-leaf-800 px-9 text-[17px] font-semibold text-white shadow-lift transition hover:bg-leaf-900"
           >
             Order your set
