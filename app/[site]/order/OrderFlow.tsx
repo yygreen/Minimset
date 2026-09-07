@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Stepper } from "@/components/Ui";
 import {
   ADDONS,
@@ -54,6 +54,10 @@ export function OrderFlow({ site }: { site: Site }) {
   const [pitom, setPitom] = useState(true);
   const [addonQty, setAddonQty] = useState<Record<string, number>>({});
   const [openSpec, setOpenSpec] = useState<LevelKey | null>("MEHUDAR_AA");
+  /* The level the visitor picked before they got here. It leads the list and is
+     marked as theirs; the other two follow as alternatives and as the upsell
+     that matters most -- a Chinuch set for each boy. */
+  const [preselected, setPreselected] = useState<LevelKey | null>(null);
 
   // ?level=KEY from a product page or a community card pre-selects one set of that level.
   // Read after mount so the page itself stays static (edge-cached) and fully server-rendered.
@@ -62,6 +66,7 @@ export function OrderFlow({ site }: { site: Site }) {
     if (key && LEVELS.some((l) => l.key === key)) {
       setQty((q) => (Object.values(q).some((n) => n > 0) ? q : { ...EMPTY_QTY, [key]: 1 }));
       setOpenSpec(key);
+      setPreselected(key);
     }
   }, []);
 
@@ -272,6 +277,11 @@ export function OrderFlow({ site }: { site: Site }) {
   /* Carried back to the community step so changing town does not lose the set. */
   const firstChosenLevel = (Object.keys(qty) as LevelKey[]).find((k) => qty[k] > 0) ?? null;
 
+  /* Chosen level first, the rest in their normal order behind it. */
+  const orderedLevels = preselected
+    ? [...LEVELS].sort((a, b) => Number(b.key === preselected) - Number(a.key === preselected))
+    : LEVELS;
+
   const goDetails = () => setStep(1);
   const goReview = () => {
     setTouched(true);
@@ -346,20 +356,44 @@ export function OrderFlow({ site }: { site: Site }) {
           {/* ---------------- STEP 0: SETS ---------------- */}
           {step === 0 && (
             <div className="space-y-4">
-              {LEVELS.map((level) => {
+              {orderedLevels.map((level, idx) => {
                 const isAA = level.key === "MEHUDAR_AA";
+                const isChoice = preselected === level.key;
                 const unit =
                   level.basePriceCents +
                   (isAA && pitom && level.pitomSurchargeCents ? level.pitomSurchargeCents : 0);
                 const selected = qty[level.key] > 0;
                 const thumb = THUMB[level.key];
                 return (
-                  <article
-                    key={level.key}
-                    className={`rounded-2xl border bg-white p-4 shadow-card transition sm:p-5 ${
-                      selected ? "border-leaf-700 ring-1 ring-leaf-700" : "border-sand-200"
-                    }`}
-                  >
+                  <Fragment key={level.key}>
+                    {preselected && idx === 1 && (
+                      <div className="pt-4">
+                        <h2 className="font-display text-xl font-bold text-ink-950">
+                          Add to your order
+                        </h2>
+                        <p className="mt-1 text-[14px] leading-relaxed text-ink-700">
+                          One order can hold several sets. A Chinuch set for each boy is the usual
+                          addition - or change your mind here, nothing is fixed until you pay.
+                        </p>
+                      </div>
+                    )}
+                    <article
+                      className={`rounded-2xl border bg-white p-4 shadow-card transition sm:p-5 ${
+                        isChoice
+                          ? "border-leaf-700 ring-2 ring-leaf-700"
+                          : selected
+                            ? "border-leaf-700 ring-1 ring-leaf-700"
+                            : "border-sand-200"
+                      }`}
+                    >
+                    {isChoice && (
+                      <p className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-leaf-800 px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-white">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                        Your choice
+                      </p>
+                    )}
                     <div className="flex gap-4">
                       <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-sand-100 sm:h-24 sm:w-24">
                         <Image src={thumb.src} alt={thumb.alt} fill sizes="96px" className="object-cover" />
@@ -417,7 +451,8 @@ export function OrderFlow({ site }: { site: Site }) {
                       </div>
                     </div>
                     <SpecDetails level={level} />
-                  </article>
+                    </article>
+                  </Fragment>
                 );
               })}
 
