@@ -136,6 +136,37 @@ accountant's answer, not mine, but it has to exist before money moves.
 **4.4 Payments.** Yours to connect, in your own name. Everything else here can
 be done first.
 
+**4.5 If Shopify Payments says it cannot verify your information.** That
+message is a KYC mismatch against IRS and bank records, and it is the same
+sentence for every cause -- resubmitting the same details fails again. The four
+usual causes:
+
+- *Entity type against tax ID.* Sole proprietor expects an SSN; LLC,
+  corporation and non-profit expect an EIN. Either one under the wrong
+  selection fails.
+- *Legal business name.* Must match the IRS confirmation letter (CP 575)
+  exactly, not the trade name. Apostrophes, `Inc`, and a leading `The` all
+  count.
+- *Business address.* The registered address, not a pickup location and not a
+  PO box.
+- *The individual section.* Legal name, date of birth and SSN of the listed
+  owner, as that person's own records read. A nickname fails.
+
+A newly issued EIN is the other common cause: it takes roughly two weeks to
+appear in the database Shopify queries, so correct details can still bounce.
+
+Rather than a third attempt, open Settings -> Payments -> Shopify Payments ->
+**View account details**; the banner there is usually more specific than the
+tile. If it is not, contact Shopify support from inside the admin -- they can
+read the actual rejection reason, which the UI does not show. Repeated failed
+submissions can push the account into manual review, which is slower.
+
+**Fallback if it stays blocked.** The site can take card payments through the
+operator's own Stripe account instead: set `STRIPE_SECRET_KEY`,
+`STRIPE_PUBLISHABLE_KEY` and `STRIPE_WEBHOOK_SECRET` in Vercel project settings
+-- never in the repo, which is public. Shopify accepts third-party gateways
+too, at an extra transaction fee on every order.
+
 ---
 
 ## Phase 5 — the emails people actually read
