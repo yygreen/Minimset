@@ -7,7 +7,7 @@ import { LevelCard } from "@/components/LevelCard";
 import { OpenOnly } from "@/components/OpenOnly";
 import { Share } from "@/components/Share";
 import { CompareTable } from "@/components/CompareTable";
-import { EXCHANGE_GUARANTEE, LEVELS, PARTNERSHIP_PARAGRAPH, SEASON, SITES } from "@/lib/data";
+import { EXCHANGE_GUARANTEE, LEVELS, PARTNERSHIP_PARAGRAPH, SEASON, SITES, headlinePriceCents, altPriceCents } from "@/lib/data";
 import { IMG, type Photo } from "@/lib/images";
 import { money } from "@/lib/orders";
 import { MEDIA } from "@/lib/trust";
@@ -114,8 +114,8 @@ export default function HomePage() {
      child's Chinuch set; a man buying for himself pays $65 or $110. Three real
      prices, cheapest first, cost one line and never contradict the page. */
   const ladder = [...LEVELS]
-    .sort((a, b) => a.basePriceCents - b.basePriceCents)
-    .map((l) => `${SHORT_NAME[l.key] ?? l.name} $${l.basePriceCents / 100}`)
+    .sort((a, b) => headlinePriceCents(a) - headlinePriceCents(b))
+    .map((l) => `${SHORT_NAME[l.key] ?? l.name} $${headlinePriceCents(l) / 100}`)
     .join(" \u00b7 ");
 
   /* Naming the towns answers "can I even get this?" in the hero, and self-
@@ -166,7 +166,7 @@ export default function HomePage() {
       brand: { "@type": "Brand", name: "V'samachta Arba Minim" },
       offers: {
         "@type": "Offer",
-        price: (l.basePriceCents / 100).toFixed(2),
+        price: (headlinePriceCents(l) / 100).toFixed(2),
         priceCurrency: "USD",
         availability: "https://schema.org/PreOrder",
         priceValidUntil: SEASON.deadlineIso,
@@ -445,12 +445,12 @@ export default function HomePage() {
                     <p className="mt-3 text-[16px] leading-relaxed text-ink-700 sm:text-[17px]">{level.headline}</p>
 
                     <p className="mt-5 font-display text-3xl font-bold text-esrog-900">
-                      {money(level.basePriceCents)}
+                      {money(headlinePriceCents(level))}
                       <span className="ml-2 align-middle text-[14px] font-semibold text-ink-500">per set</span>
                     </p>
-                    {level.pitomSurchargeCents != null && level.pitomSurchargeCents > 0 && (
+                    {altPriceCents(level) != null && (
                       <p className="mt-1 text-[14px] text-ink-500">
-                        With a pitom, add {money(level.pitomSurchargeCents)}.
+                        {money(altPriceCents(level)!)} without a pitom.
                       </p>
                     )}
 

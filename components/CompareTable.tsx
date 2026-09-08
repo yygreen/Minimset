@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LEVELS, type LevelKey } from "@/lib/data";
+import { LEVELS, type LevelKey, headlinePriceCents } from "@/lib/data";
 import { HE_LEVEL } from "@/lib/he";
 import { money } from "@/lib/orders";
 
@@ -54,7 +54,7 @@ export function CompareTable({ current, locale = "en" }: { current?: LevelKey; l
                   <span className={`block text-[11px] font-bold text-esrog-800 ${he ? "text-[12px]" : "uppercase tracking-[0.14em]"}`}>{tier(l)}</span>
                   <span className="block font-display text-lg font-bold text-ink-950">{name(l)}</span>
                   <span className="tnum block text-[14px] font-semibold text-leaf-900">
-                    <span dir="ltr">{money(l.basePriceCents)}</span> {t.perSet}
+                    <span dir="ltr">{money(headlinePriceCents(l))}</span> {t.perSet}
                   </span>
                 </span>
                 <svg width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true" className="shrink-0 text-ink-700 transition group-open:rotate-180">
@@ -107,7 +107,7 @@ export function CompareTable({ current, locale = "en" }: { current?: LevelKey; l
                   <p className={`text-[11px] font-bold text-esrog-800 ${he ? "text-[12px]" : "uppercase tracking-[0.16em]"}`}>{tier(l)}</p>
                   <p className="mt-1 font-display text-lg font-bold leading-tight text-ink-950">{name(l)}</p>
                   <p className="tnum text-[15px] font-semibold text-leaf-900">
-                    <span dir="ltr">{money(l.basePriceCents)}</span> {t.perSet}
+                    <span dir="ltr">{money(headlinePriceCents(l))}</span> {t.perSet}
                   </p>
                 </th>
               );

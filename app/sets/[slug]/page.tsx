@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { OpenOnly } from "@/components/OpenOnly";
 import { OrderLink } from "@/components/OrderLink";
-import { LEVELS, getLevelBySlug } from "@/lib/data";
+import { LEVELS, getLevelBySlug, headlinePriceCents } from "@/lib/data";
 import { IMG, type Photo } from "@/lib/images";
 import { money } from "@/lib/orders";
 
@@ -45,7 +45,7 @@ export async function generateMetadata({
   if (!level) return {};
   return {
     alternates: { canonical: "/" },
-    title: `${level.name} Lulav and Etrog Set, ${money(level.basePriceCents)}`,
+    title: `${level.name} Lulav and Etrog Set, ${money(headlinePriceCents(level))}`,
     description: level.headline,
   };
 }
@@ -80,7 +80,7 @@ export default async function SetSignpost({ params }: { params: Promise<{ slug: 
             </h1>
             <p className="mt-3 text-[17px] leading-relaxed text-ink-700">{level.headline}</p>
             <p className="mt-5 font-display text-3xl font-bold text-esrog-900">
-              {money(level.basePriceCents)}
+              {money(headlinePriceCents(level))}
               <span className="ml-2 align-middle text-[14px] font-semibold text-ink-500">per set</span>
             </p>
 

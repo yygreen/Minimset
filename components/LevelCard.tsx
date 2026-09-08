@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { OrderLink } from "@/components/OrderLink";
-import type { Level } from "@/lib/data";
+import { headlinePriceCents, type Level } from "@/lib/data";
 import { IMG, type Photo } from "@/lib/images";
 import { money } from "@/lib/orders";
 
@@ -71,14 +71,13 @@ export function LevelCard({
 
         <div className="mt-5 flex items-baseline gap-2">
           <span className="tnum font-display text-[2.6rem] font-bold leading-none text-leaf-900">
-            {money(level.basePriceCents)}
+            {money(headlinePriceCents(level))}
           </span>
           <span className="text-sm text-ink-500">per set</span>
         </div>
         {level.pitomSurchargeCents ? (
           <p className="mt-1.5 text-sm text-ink-700 md:min-h-[2.6rem]">
-            {money(level.basePriceCents + level.pitomSurchargeCents)} with a pitom - your choice at
-            checkout
+            {money(level.basePriceCents)} without a pitom - your choice at checkout
           </p>
         ) : (
           <p className="mt-1.5 text-sm text-ink-500 md:min-h-[2.6rem]">

@@ -115,6 +115,25 @@ export const LEVELS: Level[] = [
   },
 ];
 
+/**
+ * The price a customer meets first.
+ *
+ * Mehudar A-A is two variants, and the one WITH a pitom is the default in the
+ * store -- so $110 is the headline and $100 is the alternative. The site and the
+ * store have to agree here, or the first click contradicts the page.
+ *
+ * basePriceCents stays the untouched catalog value that pricing and the order
+ * flow calculate from; only the display convention lives in these two.
+ */
+export function headlinePriceCents(level: Level): number {
+  return level.basePriceCents + (level.pitomSurchargeCents ?? 0);
+}
+
+/** The other side of a pitom choice, or null for a level that has none. */
+export function altPriceCents(level: Level): number | null {
+  return level.pitomSurchargeCents ? level.basePriceCents : null;
+}
+
 export const ADDONS: AddOn[] = [
   {
     id: "extra-hadassim",
