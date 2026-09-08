@@ -70,6 +70,15 @@ ADDON_IMG = {
 
 def money(c): return f"{c/100:.2f}"
 
+def seo_desc(v):
+    """Shopify allows 160 characters and the headline alone was using 70. The
+    rest names what actually separates this from a shop counter: a Rav sorted
+    it, it arrives sealed, and it is collected locally."""
+    tail = " Sorted by Morei Hora'ah in Eretz Yisrael, sealed, collected at your Beis Medrash."
+    head = v["headline"]
+    return (head + tail)[:158] if len(head) + len(tail) <= 158 else head[:158]
+
+
 def body(v):
     return (
         f"<p>{v['headline']}</p>"
@@ -128,9 +137,12 @@ with open('shopify/products-sets.csv','w',newline='') as f:
                    "Variant Requires Shipping": "TRUE",
                    "Variant Taxable": "TRUE",
                    "Variant Weight Unit": "g"},
+                # The SEO title has to carry the price a shopper actually meets,
+                # which for A-A is the with-pitom default. Built from base alone
+                # it advertised $100 against a $110 product page.
                 **({"Image Src": img, "Image Position": "1", "Image Alt Text": alt,
-                    "SEO Title": f"{v['name']} Lulav and Esrog Set, ${v['base']//100}",
-                    "SEO Description": v["headline"][:155]} if first else {}),
+                    "SEO Title": f"{v['name']} Lulav and Esrog Set, ${(v['base'] + (v['pitom'] or 0))//100}",
+                    "SEO Description": seo_desc(v)} if first else {}),
                 Status="draft" if first else "",
             ))
 
