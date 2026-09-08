@@ -1,0 +1,31 @@
+Privacy policy
+
+What an order record holds
+
+Only what is needed to fill and hand over that order:
+
+- your name, phone number and email address
+- your community, and your shul if you gave one
+- what you ordered, the total, and how you paid
+- your order number and the time it was placed
+
+Who sees it
+
+Records are held in a private store that only the program can read. Staff
+running distribution for the season see the orders for their own community.
+That is how a set gets handed to the right person on the day.
+
+Your email address
+
+Used for your order confirmation and your collection notice. There is no
+mailing list, and nothing is sold or passed to anyone outside the program.
+
+Payment details
+
+Card details are handled by Shopify's payment processor and are never stored by
+the program.
+
+How long records are kept
+
+For the season and the reconciliation that follows it. To have your record
+removed, ask your community rep.
