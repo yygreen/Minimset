@@ -1,0 +1,34 @@
+ORDER CONFIRMATION
+Settings -> Notifications -> Order confirmation
+
+Subject
+  Your Arba Minim are ordered - collect after Yom Kippur
+
+Opening paragraph (replace Shopify's "Thank you for your purchase")
+
+  Thank you. Your order is in, and you are now a partner in the Arba Minim
+  being brought in for your community.
+
+After the order summary, before the footer
+
+  Nothing is posted.
+
+  Your set is collected in person at your community's host Beis Medrash on
+  distribution day, the day after Yom Kippur, 10:00 AM to 5:00 PM. The address
+  is above.
+
+  Your order number is your pickup code. Bring it. Distributors already know
+  what you ordered and what you paid, and a whole community is served in two to
+  three hours.
+
+  If you cannot come, send anyone with your order number and they can collect
+  for you.
+
+  Need to change or cancel? You can do it yourself, free, any time before
+  Motzaei Shabbos, September 12, 8:30 PM EDT. After that the totals are final
+  and the shipment is packed against them, so speak to your community rep.
+
+  Every item was selected and inspected in Eretz Yisrael by Morei Hora'ah who
+  are experts in hilchos Daled Minim, then sealed: the esrog in its box, the
+  hadassim and aravos in a sealed bag, the lulav sealed. You open it in your
+  sukkah.
