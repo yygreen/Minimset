@@ -61,7 +61,11 @@ IMG = {
 ADDON_IMG = {
     "extra-hadassim": ("https://4minimset.com/img/hadassim-01.jpg", "Three hadassim branches laid on cloth"),
     "extra-aravos":   ("https://4minimset.com/img/aravos-crop.jpg", "Fresh aravos on a reddish stem"),
-    "koishiklach":    ("https://4minimset.com/img/hero-real.jpg", "Esrogim and hadassim on the table of a Daled Minim market"),
+    # No photograph of lulav rings exists yet, and the site's rule is that the
+    # minim are never a render -- a wrong weave is obvious to the buyer. An
+    # empty Image Src leaves Shopify's own neutral placeholder, which is honest;
+    # a borrowed esrog photo on a product called "lulav rings" is not.
+    "koishiklach":    ("", ""),
 }
 
 def money(c): return f"{c/100:.2f}"
@@ -145,7 +149,7 @@ with open('shopify/products-extras.csv','w',newline='') as f:
                "Variant Fulfillment Service": "manual", "Variant Price": money(a["price"]),
                "Variant Requires Shipping": "TRUE", "Variant Taxable": "TRUE",
                "Variant Weight Unit": "g",
-               "Image Src": img, "Image Position": "1", "Image Alt Text": alt,
+               **({"Image Src": img, "Image Position": "1", "Image Alt Text": alt} if img else {}),
                "SEO Title": f"{a['name']} - V'samachta Arba Minim",
                "SEO Description": a["note"][:155]},
             Status="draft",
