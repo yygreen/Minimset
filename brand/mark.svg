@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="V'samachta Arba Minim">
+  <title>V'samachta Arba Minim</title>
+  <rect width="512" height="512" rx="112" fill="#1D5A3A"/>
+  <path d="M256 96c-76.8 0-128 75.2-128 180s51.2 172 128 172 128-92.8 128-172S332.8 96 256 96Z" fill="#F0D68C"/>
+  <path d="M256 96V52" stroke="#F0D68C" stroke-width="32" stroke-linecap="round"/>
+  <path d="M200 176c12.8-25.6 30.4-41.6 51.2-49.6" stroke="#D9A83A" stroke-width="20" stroke-linecap="round" opacity=".7"/>
+</svg>

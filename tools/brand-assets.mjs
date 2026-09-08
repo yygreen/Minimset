@@ -1,0 +1,11 @@
+import { chromium } from "playwright";
+const OUT = "/home/user/Minimset/brand/";
+const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
+const p = await b.newPage({ viewport: { width: 1300, height: 900 }, deviceScaleFactor: 1 });
+await p.goto("file:///tmp/brandgen2.html", { waitUntil: "networkidle" });
+await p.waitForTimeout(600);
+await p.locator("#cover").screenshot({ path: OUT + "cover.jpg", type: "jpeg", quality: 90 });
+await p.locator("#i512").screenshot({ path: OUT + "favicon-512.png", omitBackground: true });
+await p.locator("#i180").screenshot({ path: OUT + "favicon-180.png", omitBackground: true });
+await p.locator("#i32").screenshot({ path: OUT + "favicon-32.png", omitBackground: true });
+await b.close();
