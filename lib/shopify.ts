@@ -21,8 +21,17 @@
  */
 import type { LevelKey } from "./data";
 
-/** e.g. "vsamachta.myshopify.com", or a custom domain like "shop.4minimset.com" */
-export const SHOPIFY_DOMAIN = (process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN ?? "")
+/**
+ * The store's primary domain, confirmed in Shopify's Domains settings. The
+ * custom domain 4minimset.com stays pointed at this site; only the checkout
+ * lives on Shopify. An env var still overrides it, for a staging store.
+ *
+ * Setting this alone changes nothing: SHOPIFY_LIVE also needs a variant id, so
+ * the CTAs keep using the on-site flow until the products exist.
+ */
+const DEFAULT_DOMAIN = "4minimset.myshopify.com";
+
+export const SHOPIFY_DOMAIN = (process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN || DEFAULT_DOMAIN)
   .trim()
   .replace(/^https?:\/\//, "")
   .replace(/\/+$/, "");
