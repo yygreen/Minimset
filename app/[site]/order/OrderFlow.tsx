@@ -76,9 +76,6 @@ export function OrderFlow({ site }: { site: Site }) {
   const [shul, setShul] = useState("");
   const [touched, setTouched] = useState(false);
 
-  const [card, setCard] = useState("");
-  const [exp, setExp] = useState("");
-  const [cvc, setCvc] = useState("");
   const [paying, setPaying] = useState(false);
   const [payError, setPayError] = useState("");
   /**
@@ -192,10 +189,6 @@ export function OrderFlow({ site }: { site: Site }) {
    */
   const submitPayment = async () => {
     setPayError("");
-    if (!payLive && card.replace(/\D/g, "").length < 12) {
-      setPayError("Enter a card number to continue.");
-      return;
-    }
     setPaying(true);
 
     const lines = items.map((i) =>
@@ -698,37 +691,6 @@ export function OrderFlow({ site }: { site: Site }) {
                     </div>
                   )}
 
-                  {!payLive && (
-                    <div className="mt-6 space-y-5">
-                      <Field
-                        label="Card number"
-                        value={card}
-                        onChange={(v) => setCard(formatCard(v))}
-                        placeholder="•••• •••• •••• ••••"
-                        inputMode="numeric"
-                        autoComplete="cc-number"
-                      />
-                      <div className="grid grid-cols-2 gap-4">
-                        <Field
-                          label="Expiry"
-                          value={exp}
-                          onChange={setExp}
-                          placeholder="MM / YY"
-                          inputMode="numeric"
-                          autoComplete="cc-exp"
-                        />
-                        <Field
-                          label="CVC"
-                          value={cvc}
-                          onChange={setCvc}
-                          placeholder="123"
-                          inputMode="numeric"
-                          autoComplete="cc-csc"
-                        />
-                      </div>
-                    </div>
-                  )}
-
                   {payError && (
                     <p className="mt-4 rounded-lg bg-alert-100 px-4 py-3 text-[14px] text-alert-800">{payError}</p>
                   )}
@@ -742,10 +704,10 @@ export function OrderFlow({ site }: { site: Site }) {
                     {paying
                       ? payLive
                         ? "Saving your order..."
-                        : "Confirming your payment..."
+                        : "Placing your order..."
                       : payLive
                         ? `Continue to secure payment - ${money(total)}`
-                        : `Pay ${money(total)}`}
+                        : `Place my order - ${money(total)}`}
                   </button>
                   <button
                     type="button"
@@ -759,7 +721,8 @@ export function OrderFlow({ site }: { site: Site }) {
               )}
 
               <p className="mt-6 border-t border-sand-200 pt-5 text-[13px] leading-relaxed text-ink-500">
-                Statement descriptor: VSAMACHTA ARBA MINIM. {EXCHANGE_GUARANTEE}
+                {payLive && "Statement descriptor: VSAMACHTA ARBA MINIM. "}
+                {EXCHANGE_GUARANTEE}
               </p>
             </div>
           )}
@@ -855,10 +818,6 @@ function SpecDetails({ level }: { level: (typeof LEVELS)[number] }) {
   );
 }
 
-function formatCard(v: string): string {
-  const digits = v.replace(/\D/g, "").slice(0, 16);
-  return digits.replace(/(.{4})/g, "$1 ").trim();
-}
 
 function Field({
   label,
