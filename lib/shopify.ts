@@ -64,8 +64,24 @@ function variantFor(level: LevelKey | undefined): string | null {
   return null;
 }
 
-/** True once the store can actually take an order for at least one set. */
+/**
+ * The go-live switch, deliberately separate from the ids.
+ *
+ * Knowing a variant id is not the same as the store being ready to take money:
+ * the products have to be published, a payment provider connected, local pickup
+ * configured and the shipping rates stripped. Without those, a live CTA hands a
+ * customer a checkout that asks for a delivery address for something that is
+ * never delivered.
+ *
+ * So the ids can be committed and verified while the buttons stay on the
+ * on-site flow, and going live is one environment variable and a redeploy --
+ * reversible in the same minute if the test order finds something wrong.
+ */
+const ENABLED = process.env.NEXT_PUBLIC_SHOPIFY_LIVE === "1";
+
+/** True once the store is switched on AND can take an order for at least one set. */
 export const SHOPIFY_LIVE =
+  ENABLED &&
   SHOPIFY_DOMAIN.length > 0 &&
   Boolean(
     clean(VARIANT.MEHUDAR_AA_PITOM) ??

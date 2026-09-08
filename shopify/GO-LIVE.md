@@ -169,9 +169,13 @@ Mehudar A-A with pitom, Mehudar A-A no pitom, Mehudar A, Chinuch. They are
 public values, not secrets — they appear in the source of every Shopify
 storefront.
 
-**6.2 I commit them and verify.** Every "Order this set" on 4minimset.com then
-opens a Shopify cart holding that exact set. Until then all eleven CTAs keep
-using the on-site flow, which is why nothing has broken so far.
+**6.2 I commit them and verify.** The ids go in, and the buttons stay on the
+on-site flow — committing an id does not switch anything over.
+
+**6.3 Flip the switch, after phase 7.** Set `NEXT_PUBLIC_SHOPIFY_LIVE=1` in
+Vercel and redeploy. Every "Order this set" then opens a Shopify cart holding
+that exact set. Set it back to `0` and the site returns to the on-site flow in
+one redeploy, so a bad surprise costs a minute rather than a season.
 
 ---
 

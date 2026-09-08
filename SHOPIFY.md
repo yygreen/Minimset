@@ -99,6 +99,14 @@ end up in the site's JavaScript.
 | `NEXT_PUBLIC_SHOPIFY_VARIANT_MEHUDAR_A` | variant ID for Mehudar A |
 | `NEXT_PUBLIC_SHOPIFY_VARIANT_CHINUCH` | variant ID for Chinuch |
 | `NEXT_PUBLIC_SHOPIFY_CATALOG_PATH` | optional, default `/collections/all` — where a plain "Order Now" lands |
+| `NEXT_PUBLIC_SHOPIFY_LIVE` | **`1` to switch the CTAs over.** Anything else, or unset, and they keep using the on-site flow |
+
+The switch is separate from the ids on purpose. Knowing a variant id is not the
+same as the store being ready to take money: the products have to be published,
+a payment provider connected, local pickup configured and the shipping rates
+stripped. So the ids can be committed and verified while the buttons stay put,
+and going live is one variable and a redeploy — reversible in the same minute
+if the test order finds something wrong.
 
 Redeploy. These are read at **build time**, so a change to any of them needs a
 new deployment to take effect.
