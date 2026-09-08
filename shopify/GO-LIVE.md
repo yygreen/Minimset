@@ -140,18 +140,28 @@ be done first.
 
 ## Phase 5 — the emails people actually read
 
-**5.1 Order confirmation.** Settings → Notifications. The default is generic
-e-commerce. This one should say what happens next: nothing ships, collection is
-the day after Yom Kippur, your order number is your pickup code.
+**Decided: leave Shopify's templates alone.** The defaults are accurate for a
+pickup order rather than merely tolerable -- they say collection is coming and
+print the location, address and hours automatically. Editing them means working
+inside a thousand lines of Liquid for copy that can go somewhere safer.
 
-**5.2 Ready for pickup.** The most important email of the season. It should
-carry the address, the hours, the rep's phone, bring your order number, and
-send someone else if you cannot come.
+**5.1 Put the program's lines in the pickup instructions instead**, on each
+location in phase 2.4. A plain text box, per community, that flows into the
+pickup emails:
 
-**5.3 Who gets notified of new orders.** Same section — make sure a person
-actually receives them, not just the dashboard.
+> Bring your order number -- it is your pickup code.
+> If you cannot come, send anyone with it and they can collect for you.
+> A Moreh Hora'ah is present. If he rules an item is not worth what you paid,
+> it is exchanged on the spot.
+> [rep name] - [rep phone]
 
-**check** — send yourself a test of each and read them on a phone.
+**5.2 Who gets notified of new orders.** Settings → Notifications — make sure a
+person actually receives them, not just the dashboard.
+
+**check** — read the real confirmation on a phone during the phase 7 test
+order. If it feels thin, the three template edits are in `shopify/emails/` and
+take five minutes. Deciding that after seeing a real one beats deciding it
+against a wall of Liquid.
 
 ---
 
