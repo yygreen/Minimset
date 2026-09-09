@@ -86,14 +86,14 @@ export function LevelCard({
           </p>
         )}
 
-        <p className="mt-3 text-[13px] text-ink-500">Shipped to your door. Change or cancel free until the deadline.</p>
+        <p className="mt-4 text-[13px] leading-relaxed text-ink-500">Shipped to your door. Change or cancel free until the deadline.</p>
 
 
         {/* The wrapper owns the spacing, not the button. md:mt-auto pushes the
             action to the foot of the card so the three line up, but on the
             tallest card it resolves to zero and the button ends up against the
             line above it -- so pt-7 guarantees a gap whatever mt-auto does. */}
-        <div className="mt-7 md:mt-auto md:pt-7">
+        <div className="mt-9 md:mt-auto md:pt-9">
           {/* Past the deadline this must not stay clickable. It is a Shopify cart
               permalink, so it would reach a working checkout and take money for a
               set that is not in the shipment. */}
