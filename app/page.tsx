@@ -122,23 +122,8 @@ const FAQ = [
   },
 ];
 
-/** Short labels for the hero's price ladder; the figures come from LEVELS. */
-const SHORT_NAME: Record<string, string> = {
-  CHINUCH: "Chinuch",
-  MEHUDAR_A: "Mehudar A",
-  MEHUDAR_AA: "Mehudar A-A",
-};
-
 export default function HomePage() {
   const from = Math.min(...LEVELS.map((l) => l.basePriceCents)) / 100;
-
-  /* The hero used to promise "from $40" and then open on a $110 set. $40 is the
-     child's Chinuch set; a man buying for himself pays $65 or $110. Three real
-     prices, cheapest first, cost one line and never contradict the page. */
-  const ladder = [...LEVELS]
-    .sort((a, b) => headlinePriceCents(a) - headlinePriceCents(b))
-    .map((l) => `${SHORT_NAME[l.key] ?? l.name} $${headlinePriceCents(l) / 100}`)
-    .join(" \u00b7 ");
 
   const jsonLd = [
     {
@@ -273,7 +258,6 @@ export default function HomePage() {
                 See the three sets
               </Link>
             </div>
-            <p className="rise rise-4 tnum mt-3 text-[14px] font-semibold text-ink-700">{ladder}</p>
 
             </OpenOnly>
           </div>
