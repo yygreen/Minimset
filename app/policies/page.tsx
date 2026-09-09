@@ -28,6 +28,7 @@ function Section({ id, title, children }: { id: string; title: string; children:
 }
 
 const CONTENTS = [
+  ["who", "Who you are buying from"],
   ["ordering", "Ordering"],
   ["payment", "Payment"],
   ["changes", "Changes and cancellation"],
@@ -67,6 +68,15 @@ export default function PoliciesPage() {
         </nav>
 
         <div className="space-y-8">
+          <Section id="who" title="Who you are buying from">
+            <p>
+              V&#39;samachta Arba Minim is a trading name of Stam Mehudar Co., a Delaware
+              corporation, of 123 Highgrove Crescent, Lakewood, NJ 08701, USA. Your order is a
+              contract with that company, and that is the name that appears on your card
+              statement.
+            </p>
+          </Section>
+
           <Section id="ordering" title="Ordering">
             <p>
               Orders are placed on this site for the {SEASON.name} season and are shipped to the
@@ -85,8 +95,10 @@ export default function PoliciesPage() {
 
           <Section id="payment" title="Payment">
             <p>
-              Sets are paid for in full at the time of ordering. The price you see is the price
-              charged; there is no shipping charge, because nothing is shipped.
+              Sets are paid for in full at the time of ordering, together with one flat shipping
+              charge per order{shippingAmount() ? ` of ${shippingAmount()}` : ""}, however many
+              sets are on it. The total is shown before you pay, and prices are calculated on the
+              server, never in your browser.
             </p>
             <div className="rounded-2xl border border-esrog-300 bg-esrog-100 p-5 text-ink-900">
               <p className="font-display text-lg font-bold text-ink-950">Card processing is not live yet</p>
@@ -138,10 +150,7 @@ export default function PoliciesPage() {
 
           <Section id="guarantee" title="The replacement guarantee">
             <p>{EXCHANGE_GUARANTEE}</p>
-            <p>
-              Reserve stock is flown in for exactly this. Tell us and a replacement goes out at
-              our cost; you are not left arguing the point.
-            </p>
+            <p>Reserve stock is flown in for exactly this.</p>
           </Section>
 
           <Section id="privacy" title="What we store about you">

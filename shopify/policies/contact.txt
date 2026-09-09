@@ -1,11 +1,12 @@
 Contact information
 
-V'samachta Arba Minim
+V'samachta Arba Minim is a trading name of Stam Mehudar Co., a Delaware
+corporation, of 123 Highgrove Crescent, Lakewood, NJ 08701, USA.
 4minimset.com
 
-Email: [ the address you set as the store contact ]
+Email: editor@kmezuzah.com
 Phone: [ a number somebody answers ]
-Address: [ a real postal address for the program ]
+Address: 123 Highgrove Crescent, Lakewood, NJ 08701, USA
 
 For anything about your own order, email us and quote your order number.
 
@@ -17,16 +18,16 @@ within the United States, so it is not legally required here. It is still the
 page a hesitant buyer looks for, and an empty one is worse than none -- more so
 now that the buyer is handing over a delivery address and waiting for a box.
 
-The three bracketed values do not exist yet:
-
-  Email    currently whatever the Shopify account was opened with. Setting up
-           orders@4minimset.com and forwarding it costs ten minutes.
-  Phone    a number somebody answers during the season. It is the only voice
-           route a customer has now that there is no community rep.
-  Address  DONE. 123 Highgrove Crescent, Lakewood, NJ 08701 is the real
-           address and is already published here. It is also the Shopify
-           location address, so it is the return address on any label bought
-           through Shopify Shipping.
-
-If you need to save something today, the name and the website above are true.
-Add the three real values before the store is published.
+  Email    editor@kmezuzah.com is live and is the store contact. It is the
+           mezuzah business's address rather than this program's, which reads
+           oddly on an Arba Minim receipt. orders@4minimset.com forwarding to
+           the same inbox costs ten minutes and looks like the program.
+  Phone    STILL MISSING, and it is the only bracket left. With no community
+           rep to call, this is the sole voice route a customer has.
+  Address  Done, and it is real -- also the Shopify location address, so it is
+           the return address on any label bought through Shopify Shipping.
+  Entity   Stam Mehudar Co., Delaware, incorporated 24 June 2015, in good
+           standing. The customer contracts with the company, not the trading
+           name, so it is named here and in the terms. Check with the
+           accountant whether "V'samachta Arba Minim" needs an Alternate Name
+           filing in NJ if it does not have one.
