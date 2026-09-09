@@ -23,10 +23,10 @@ The three bracketed values do not exist yet:
            orders@4minimset.com and forwarding it costs ten minutes.
   Phone    a number somebody answers during the season. It is the only voice
            route a customer has now that there is no community rep.
-  Address  the "123 Highgrove Cres, Lakewood" on the default Shop location is
-           a placeholder. Do not put it here. This address is public, so it
-           should be one the program is willing to publish: an office, a shul,
-           or the operator's business address.
+  Address  DONE. 123 Highgrove Crescent, Lakewood, NJ 08701 is the real
+           address and is already published here. It is also the Shopify
+           location address, so it is the return address on any label bought
+           through Shopify Shipping.
 
 If you need to save something today, the name and the website above are true.
 Add the three real values before the store is published.

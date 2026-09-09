@@ -66,10 +66,11 @@ have. `SHIPPING.flatRateCents` in `lib/data.ts` is `null`, so the site says
 rate set in Shopify. Work it from a real carrier quote: a sealed lulav is long
 and light, which is the awkward shape for parcel pricing.
 
-**5b. The origin address.** Settings → Locations still holds the placeholder
-"123 Highgrove Cres, Lakewood". It is where Shopify thinks parcels ship from
-and it feeds tax calculation, so it has to be the real place the boxes go out
-from.
+**5b. RESOLVED 2026-09-09.** The origin address is real: 123 Highgrove
+Crescent, Lakewood NJ 08701, one active Shopify location. I had assumed the
+"123" meant a Shopify demo placeholder and wrote that into the docs as fact,
+which was wrong. It is where parcels ship from, it feeds tax, and it is the
+return address on Shopify-bought labels.
 
 **10. A contact for the program itself.** There is none anywhere on the site —
 no phone, no email, no address. This mattered before; it is now the *only*

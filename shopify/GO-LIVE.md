@@ -62,13 +62,30 @@ minutes once you have the figure. Work it out from what a boxed set actually
 costs to post — an esrog box plus a sealed lulav is long and light, which is the
 awkward shape for carrier pricing, so check a real quote rather than guessing.
 
-**2.1 Fix the origin address.** Settings → Locations. The default "Shop
-location" at 123 Highgrove Cres is a placeholder. It is where Shopify thinks
-parcels ship from, and it feeds tax calculation, so it has to be the real
-address the boxes go out from.
+**2.1 The origin address is done.** Settings → Locations holds one active
+location, "Shop location" at 123 Highgrove Crescent, Lakewood NJ 08701, and
+Joseph has confirmed that is the real address. It is where Shopify thinks
+parcels ship from, it feeds tax calculation, and it is the return address on
+any label bought through Shopify Shipping. Nothing to change.
 
-**2.2 Delete every other location.** There should be exactly one. Any leftover
-location can receive an order and quietly split the shipment.
+**2.2 There is exactly one location**, which is what you want. A second one
+could receive an order and quietly split the shipment.
+
+**2.2a URGENT — three live policies still describe pickup.** Published and
+public right now on the store, linked from the checkout footer:
+
+- `/policies/shipping-policy` opens *"Nothing is posted or couriered."*
+- `/policies/terms-of-service` says orders *"are collected in person"* and that
+  the order number is *"how it is handed to you at pickup"*.
+- `/policies/refund-policy` promises *"A Moreh Hora'ah will be present at
+  distribution... exchanged on the spot"* and *"contact your community rep
+  before the collection window closes."*
+
+Every one contradicts the products they sit next to, and the shipping policy
+contradicts the checkout itself. Replace all three from `shopify/policies/`
+(`shipping.txt`, `terms.txt`, `refund.txt`) before any traffic. Settings →
+Policies. `contact-information` and the Shopify-generated `privacy-policy` are
+fine as they are.
 
 **2.3 Set the flat rate.** Settings → Shipping and delivery → the shipping
 profile these products use → the zone covering the continental United States.
