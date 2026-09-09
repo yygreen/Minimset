@@ -4,8 +4,8 @@ The site is the shop window. Shopify is the shop.
 
 Every "Order this set" button on 4minimset.com becomes a **Shopify cart
 permalink** — one link that opens your store with the right set already in the
-cart. Shopify then owns the cart, the payment, tax, the receipt, refunds,
-local pickup and the order admin. No card details ever touch this site, and
+cart. Shopify then owns the cart, the payment, tax, shipping rates, the
+receipt, refunds and the order admin. No card details ever touch this site, and
 there is no payment code here to maintain.
 
 Nothing switches over until the environment variables below are set. Until
@@ -30,8 +30,8 @@ For each product:
 - **Inventory** → uncheck *Track quantity*, or set the quantity to what is
   actually being flown in. Anything tracked and left at zero will refuse
   orders.
-- **Shipping** → leave *This is a physical product* checked. It is a physical
-  item; delivery is handled by local pickup in step 2, not by unchecking this.
+- **Shipping** → leave *This is a physical product* checked. It is posted, so
+  the flat rate set in step 2 has to apply to it.
 - Add the photograph and the sorting standard to the description, so a
   customer who lands in Shopify from a shared link still sees what they are
   buying.
@@ -39,32 +39,42 @@ For each product:
 Optionally add the three extras (extra hadassim $12, extra aravos $6,
 koishiklach $5) as their own products so they can be added at checkout.
 
-## 2. In Shopify: turn on local pickup for every community
+## 2. In Shopify: set the flat shipping rate
 
-**Settings → Locations** — add one location per host Beis Medrash:
+**Settings → Locations** — there should be exactly one, and its address is the
+real place the boxes go out from. It is where Shopify thinks parcels ship from
+and it feeds tax calculation, so the default "Shop location" placeholder has to
+be corrected and any other location deleted.
 
-| Location name | Address |
-| --- | --- |
-| Baltimore — Adas Yisrael | Park Heights, Baltimore, MD 21215 |
-| Lakewood — Forest Park Beis Medrash | Forest Avenue, Lakewood, NJ 08701 |
-| Monsey — Wesley Hills Beis Medrash | Route 306, Monsey, NY 10952 |
-| Five Towns — Central Avenue Beis Medrash | Central Avenue, Cedarhurst, NY 11516 |
+Then **Settings → Shipping and delivery** → the shipping profile these products
+use → the zone covering the continental United States. Delete whatever rate
+came with the store and add one:
 
-Then **Settings → Shipping and delivery → Local pickup**, and for each
-location: turn pickup **on**, set the expected pickup time to a custom message
-such as *"The day after Yom Kippur, 10:00 AM to 5:00 PM"*, and put the address
-and the rep's phone number in the pickup instructions.
+```
+Name   Flat rate shipping
+Price  $[the agreed figure]
+```
 
-Then remove every shipping rate from the shipping profile these products use.
-With pickup on and no rates to offer, checkout presents pickup only: the
-customer chooses their town there, and Shopify emails a *ready for collection*
-notice with the address. Their **order number is the pickup code**. Place one
-test order and confirm no shipping option appears before you announce the
-store — this is the one step worth checking by hand.
+Shopify's flat rate is **per order**, not per item, and it should stay that
+way: a man buying a Mehudar A-A for himself and three Chinuch sets for the boys
+pays one shipping charge, and the site says so.
 
-On distribution day the distributors work the **Shopify mobile app**: search a
-name or an order number, see what was ordered and what was paid, and mark it
-fulfilled. That replaces the `/staff` screens.
+Put the same figure in `SHIPPING.flatRateCents` in `lib/data.ts`, in cents.
+Until it is set the site says "flat-rate shipping added at checkout" and names
+no number — honest, but weaker than a figure.
+
+Decide what happens outside that zone. If a customer's address is not covered,
+checkout tells them so and stops, so Alaska, Hawaii and PO boxes are a decision
+to make now rather than discover.
+
+Place one test order and confirm exactly one shipping option appears, at
+exactly that price, and that it does not change when a second set goes in the
+cart.
+
+Fulfilment runs through the **Shopify admin**: buy the label against the order
+so the tracking number is written back to it, which fires the shipping
+confirmation automatically. That replaces the `/staff` screens for Shopify
+orders.
 
 ## 3. In Shopify: close ordering at the deadline
 
@@ -103,8 +113,8 @@ end up in the site's JavaScript.
 
 The switch is separate from the ids on purpose. Knowing a variant id is not the
 same as the store being ready to take money: the products have to be published,
-a payment provider connected, local pickup configured and the shipping rates
-stripped. So the ids can be committed and verified while the buttons stay put,
+a payment provider connected and the flat shipping rate configured. So the ids
+can be committed and verified while the buttons stay put,
 and going live is one variable and a redeploy — reversible in the same minute
 if the test order finds something wrong.
 
@@ -116,17 +126,18 @@ new deployment to take effect.
 - A set card's "Order this set" goes to
   `https://<store>/cart/<variant>:1` and shows that set in the cart.
 - "Order Now" in the header goes to the collection.
-- Checkout offers pickup at four locations and no shipping.
-- A test order arrives in Shopify with the right location on it.
+- Checkout offers exactly one shipping option at the agreed flat rate.
+- The figure on the site matches the figure Shopify charges.
+- A test order arrives in Shopify with the delivery address on it.
 
 ---
 
 ## What happens to the order flow already on this site
 
-`/order/new`, `/[site]/order`, `/order/<code>` and the `/staff` screens all
-stay in the repository and keep working. They stop being linked from the
-buttons the moment the variables above are set, and they are the fallback if
-the variables are ever removed.
+`/order/new`, `/order/<code>` and the `/staff` screens all stay in the
+repository and keep working. They stop being linked from the buttons the moment
+the variables above are set, and they are the fallback if the variables are
+ever removed.
 
 Two things they still own that Shopify does not, worth deciding on before the
 season:
@@ -134,6 +145,6 @@ season:
 - **"Look up my order"** in the header still points at this site's order
   lookup, which will not know about a Shopify order. Point it at your Shopify
   order-status page, or remove it.
-- **Paper and envelope orders** taken by a community rep are entered through
-  the staff screens here. In Shopify the equivalent is a **draft order** the
-  rep creates and marks paid.
+- **Phone orders.** There is no longer a screen here for keying one in — that
+  went with the community reps. In Shopify the equivalent is a **draft order**
+  created in the admin and marked paid, which is the better tool anyway.

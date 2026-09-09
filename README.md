@@ -89,10 +89,14 @@ orders invisible to staff.
 | | |
 |---|---|
 | Pay in full before | `SEASON.deadlineIso` = **2026-09-06T00:30:00Z** — Motzaei Shabbos, September 5, 8:30 PM EDT |
-| Collect | `distributionDateIso` = **2026-09-22**, 10:00 AM-5:00 PM, per site |
+| Arrives | Before Yom Tov — `SEASON.deliveryNote`, no fixed date, the carrier's to keep |
 
-Both live in `SEASON` and `SITES` in `lib/data.ts`. `/brief` calls them sample
-season data and Joseph confirmed real dates are still to come.
+The deadline lives in `SEASON` in `lib/data.ts`. `/brief` calls it sample season
+data and Joseph confirmed the real date is still to come.
+
+Collection dates used to live here too, in a `SITES` table of four communities.
+The program ships to the door now; `SITES` is gone and `SHIPPING` took its
+place.
 
 ### The site is already closed, correctly
 
@@ -133,15 +137,16 @@ documents.
 
 | URL | What it is |
 |---|---|
-| `/` | Everything that sells: hero, trust strip, the three sets in full (photo, promises, the standard word for word), the compare table, four minim, how it works, guarantee, and all four pickup communities with host, address, window and rep |
+| `/` | Everything that sells: hero, trust strip, the three sets in full (photo, promises, the standard word for word), the compare table, four minim, how it works, guarantee, and how delivery works |
 | `/about` · `/faq` · `/policies` | The three standing documents. `/policies` is new |
-| `/[site]/order` ×4 | The checkout flows — kept, they are a flow rather than content |
+| `/order/new` | The checkout flow — kept, it is a flow rather than content |
 | `/order`, `/order/[code]` | Order lookup and confirmation, `noindex` |
 | `/brief` | The operator's page, `noindex`, no PIN |
-| `/staff/*` ×6 | Behind `STAFF_PIN`, `noindex` |
+| `/staff/*` ×3 | Behind `STAFF_PIN`, `noindex` |
 
 Anchors carry the folded content: `/#mehudar-aa`, `/#mehudar-a`, `/#chinuch`,
-`/#baltimore`, `/#lakewood`, `/#monsey`, `/#five-towns`, plus `/#compare`.
+`/#delivery` and `/#compare`. The four `/#<town>` anchors went with the pickup
+model.
 
 ### What was removed, and where it went
 

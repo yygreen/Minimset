@@ -9,9 +9,13 @@ sorting standard matches the site exactly. Regenerate with
 | `products-sets.csv` | Mehudar A-A, Mehudar A, Kosher L'Bracha (Chinuch) | 4 |
 | `products-extras.csv` | Extra hadassim, extra aravos, koishiklach | 3 |
 
-Everything imports as **draft**. Nothing appears in the store, and nothing can be
-bought, until you publish it by hand. That is deliberate: the season deadline and
-the A-A headline price are both still unconfirmed.
+The CSVs carry `Published=TRUE` and `Status=active`, which **preserves** the
+state of the products already in the store. A re-import matches on `Handle` and
+updates in place, so importing these does not knock the live products off the
+Online Store channel or take them off sale.
+
+Importing into a *fresh* store is the opposite case: set `Status` to `"draft"`
+in `tools/shopify-csv.py`, import, then publish deliberately.
 
 ## Import
 
@@ -30,12 +34,12 @@ each one once and keeps its own copy.
   customer sees first.
 - **Inventory tracking is off** on every variant. A tracked product sitting at
   zero silently refuses orders, and that failure looks like a broken site.
-- **Requires shipping is TRUE.** These are physical items; delivery is removed
-  by turning on local pickup and stripping the shipping rates, not by
-  misdescribing the product.
+- **Requires shipping is TRUE.** These are physical items and they are posted,
+  so the flat rate in Settings → Shipping and delivery applies to all of them.
 - **SKUs** are `VS-5787-<LEVEL>-<VARIANT>`, so a packing list sorts sensibly.
 - Body copy carries the headline, the sorting standard word for word, the
-  sealing description, the exchange guarantee and the deadline.
+  sealing description, the delivery promise, the replacement guarantee and the
+  deadline.
 
 ## After importing
 
@@ -47,5 +51,5 @@ each one once and keeps its own copy.
    the URL: `…/products/1234567890/variants/`**`44444444444444`**. With those,
    every CTA on 4minimset.com opens a Shopify cart holding the right set. They
    are public values, not secrets.
-5. Local pickup per Beis Medrash — blocked on the four real addresses.
+5. Set the flat shipping rate — blocked on the figure.
 6. Publish the products once the prices and the deadline are confirmed.

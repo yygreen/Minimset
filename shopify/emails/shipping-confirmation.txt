@@ -1,0 +1,31 @@
+SHIPPING CONFIRMATION
+Settings -> Notifications -> Shipping confirmation
+
+The most-read email of the season, now that nobody is walking to a table for
+it. Shopify's default already prints the tracking number and a Track button;
+these lines go around it.
+
+Subject
+  Your Arba Minim are on the way
+
+Opening
+
+  Your set has left us.
+
+  [ the tracking block the template already prints ]
+
+Body
+
+  Delivery dates are the carrier's, not ours. Watch the tracking as Yom Tov
+  gets closer, and if the date looks wrong, tell us straight away rather than
+  waiting for it to arrive.
+
+  If nobody can take a box at that address, the carrier's own tracking page
+  will let you redirect it or hold it for collection.
+
+  Everything is sealed: the esrog in its box, the hadassim and aravos in a
+  sealed bag, the lulav sealed. Open it in your sukkah.
+
+  If what you received would not be worth what you paid, tell us. It is
+  replaced from reserve stock at our cost -- reserve is flown in for exactly
+  this.

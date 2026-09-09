@@ -37,27 +37,32 @@ writing.
 
 All of this is invented and visible to the public right now.
 
-**5. The four rep phone numbers are 555 numbers** — the North American fiction
-reserve. `(410) 555-0142`, `(732) 555-0118`, `(845) 555-0167`,
-`(516) 555-0193`. Anyone who taps one gets nothing.
+**5–9. RESOLVED by removal, 2026-09-09.** The four communities, their host
+institutions, rep names, rep phone numbers and addresses were all invented, and
+all of it is gone: the program ships to the door, so there are no pickup sites
+to describe. Nothing invented remains on the public site in their place.
 
-**6. The four rep names** — R' Shimon Friedman, R' Yaakov Weiss, R' Menachem
-Roth, R' Eliezer Katz. Real or invented?
+**5a. The flat shipping rate.** The one number the new model needs and does not
+have. `SHIPPING.flatRateCents` in `lib/data.ts` is `null`, so the site says
+"flat-rate shipping added at checkout" and names no figure. It has to match the
+rate set in Shopify. Work it from a real carrier quote: a sealed lulav is long
+and light, which is the awkward shape for parcel pricing.
 
-**7. The four host institutions** — Adas Yisrael (Baltimore), Forest Park Beis
-Medrash (Lakewood), Wesley Hills Beis Medrash (Monsey), Central Avenue Beis
-Medrash (Five Towns). Are these the actual shuls that agreed to host?
+**5b. The origin address.** Settings → Locations still holds the placeholder
+"123 Highgrove Cres, Lakewood". It is where Shopify thinks parcels ship from
+and it feeds tax calculation, so it has to be the real place the boxes go out
+from.
 
-**8. The addresses are not addresses.** "Beis Medrash Hall, Park Heights" and
-"Main Beis Medrash, Forest Avenue" name a neighbourhood, not a street number.
-Every ZIP is currently a guess too.
-
-**9. Are these four the right communities**, and are all four really OPEN for
-this season? Kiryas Joel is named twice in the copy as already running the
-system but is not one of the four pickup sites.
+**5c. The replacement guarantee wording.** `EXCHANGE_GUARANTEE` in
+`lib/data.ts` used to promise a Moreh Hora'ah present at distribution. There is
+no distribution, so it now reads: *"If a Moreh Hora'ah would rule that what you
+received is not worth what you paid, tell us and it is replaced from reserve
+stock at our cost."* That is a promise to customers and needs the operator's
+agreement.
 
 **10. A contact for the program itself.** There is none anywhere on the site —
-no phone, no email, no address. Only the four (fictional) rep numbers.
+no phone, no email, no address. This mattered before; it is now the *only*
+route a customer has, because there is no community rep to call.
 
 **11. Prices.** $110 Mehudar A-A with pitom / $100 without, $65 Mehudar A, $40
 Chinuch. Extras: hadassim $12, aravos $6, koishiklach $5. Confirm each.
@@ -80,8 +85,10 @@ the most conspicuous gap on the page.
 **15. Who V'samachta is.** "V'samachta was established in Eretz Yisrael" — by
 whom, in what year, at what address, under what organisation?
 
-**16. The Moreh Hora'ah at each pickup.** Named per community, not "a Moreh
-Hora'ah".
+**16. The Morei Hora'ah who do the sorting.** Named, not "a Moreh Hora'ah".
+This is the whole basis of the offer and it is currently anonymous. It matters
+more now than it did: nobody meets a Rav at a table any more, so the names are
+the only place that trust can live.
 
 **17. Kiryas Joel.** Claimed twice as the proof that this works in America,
 with nothing attached. Who runs it there, how many sets last year, and is there
@@ -96,8 +103,8 @@ exist that may be published?
 
 **20. Your own photographs.** Every photo on the site is a generic Daled Minim
 market shot, not V'samachta's operation. The `/brief` page lists exactly what
-to shoot — a Rav checking an esrog, the seal going on, the packing, the
-distribution table. Also wanted: a 20–40 second clip of a Rav checking and
+to shoot — a Rav checking an esrog, the seal going on, the packing, a boxed
+set ready to go out. Also wanted: a 20–40 second clip of a Rav checking and
 sealing a set; the player is already built and hidden until a file exists.
 
 **21. The hero photograph is too small.** 780×860 pixels, blown up more than
@@ -116,8 +123,10 @@ Mehudar A, Chinuch. The wiring is deployed and inert until these are set;
 **24. Do the extras get sold in Shopify** (extra hadassim, extra aravos,
 koishiklach), or do they come off the site?
 
-**25. Local pickup per community.** One Shopify location per host Beis Medrash
-with pickup on, shipping rates stripped. Needs the real addresses from item 8.
+**25. The flat shipping rate in Shopify.** One zone covering the continental
+United States, one flat rate per order. Needs the figure from item 5a. Also
+decide what happens outside that zone — Alaska, Hawaii and PO boxes — because
+an uncovered address stops checkout dead.
 
 **26. "Look up my order"** in the header points at this site's order lookup,
 which will not know about a Shopify order. Point it at the Shopify
@@ -148,13 +157,14 @@ the operator's spec. Confirm they are still current for this season.
 
 ## F. Policy gaps
 
-**34. Refunds in money terms.** The exchange guarantee covers quality. Nothing
-says what happens if a buyer cancels after the deadline, cannot collect, or the
-set is damaged. `/policies` currently says this will be stated once a payment
-account is connected.
+**34. Refunds in money terms.** The replacement guarantee covers quality.
+Nothing says what happens if a buyer cancels after the deadline. The damaged-on-
+arrival case now has an answer in the Shopify refund policy — tell us within two
+days, with a photograph — and that window needs confirming.
 
-**35. Uncollected sets.** `/policies` says sets are "not held indefinitely".
-For how long, and then what?
+**35. Undeliverable packages.** The shipping policy now says a returned package
+can be sent again but the second shipping charge is the customer's. Confirm
+that, and decide what happens when it is too late to resend before Yom Tov.
 
 **36. Data retention.** "Kept for the season and the reconciliation that
 follows it" — how long is that in practice, and who may ask for a record to be

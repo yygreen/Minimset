@@ -33,7 +33,7 @@ for key in ("MEHUDAR_AA", "MEHUDAR_A", "CHINUCH"):
     }
 
 ADDONS = []
-addon_src = src[src.index('export const ADDONS'): src.index('export const SITES')]
+addon_src = src[src.index('export const ADDONS'): src.index('export const CODE_ALPHABET')]
 for blk in addon_src.split('  {')[1:]:
     ADDONS.append({
         "id": field(blk, 'id'),
@@ -73,8 +73,8 @@ def money(c): return f"{c/100:.2f}"
 def seo_desc(v):
     """Shopify allows 160 characters and the headline alone was using 70. The
     rest names what actually separates this from a shop counter: a Rav sorted
-    it, it arrives sealed, and it is collected locally."""
-    tail = " Sorted by Morei Hora'ah in Eretz Yisrael, sealed, collected at your Beis Medrash."
+    it, it arrives sealed, and it comes to the door."""
+    tail = " Sorted by Morei Hora'ah in Eretz Yisrael, sealed, shipped to your door."
     head = v["headline"]
     return (head + tail)[:158] if len(head) + len(tail) <= 158 else head[:158]
 
@@ -89,10 +89,11 @@ def body(v):
         f"<p><strong>Lulav.</strong> {v['lulav']}</p>"
         f"<p><strong>Hadassim.</strong> {v['hadassim']}</p>"
         "<p><strong>Aravos.</strong> Fresh aravos, included in every set.</p>"
-        "<h3>Collection</h3>"
-        "<p>Nothing is posted. Every set is collected in person at your community's host Beis "
-        "Medrash the day after Yom Kippur. A Moreh Hora'ah is present: if he rules an item is not "
-        f"worth what you paid, it is exchanged on the spot.</p><p>Ordering closes {deadline}.</p>"
+        "<h3>Delivery</h3>"
+        "<p>Every set ships to the address on your order, tracked, in time to arrive before Yom "
+        "Tov. One flat shipping charge per order however many sets are on it. If what arrives "
+        "would not be worth what you paid, it is replaced from reserve stock at our cost.</p>"
+        f"<p>Ordering closes {deadline}.</p>"
     )
 
 HEAD = ["Handle","Title","Body (HTML)","Vendor","Type","Tags","Published",
@@ -106,7 +107,13 @@ def row(**k):
     r.update(k)
     return [r[h] for h in HEAD]
 
-TAGS = f"Arba Minim, Lulav and Esrog, {season}, Pre-order, Beis Medrash pickup"
+# Published and Status are two different switches and both bite on RE-import.
+# A CSV re-import matches on Handle and updates the product in place, so
+# Published=FALSE would pull a live product off the Online Store channel and
+# Status=draft would take it off sale. These products are already active in the
+# store; the CSV now preserves that. For a first import into a fresh store,
+# set Status to "draft" here and publish deliberately.
+TAGS = f"Arba Minim, Lulav and Esrog, {season}, Pre-order, Shipped"
 VENDOR = "V'samachta Arba Minim"
 
 # ---------------- the three sets ----------------
@@ -126,7 +133,7 @@ with open('shopify/products-sets.csv','w',newline='') as f:
                 Vendor=VENDOR if first else "",
                 Type="Arba Minim Set" if first else "",
                 Tags=TAGS if first else "",
-                Published="FALSE" if first else "",
+                Published="TRUE" if first else "",
                 **{"Option1 Name": opt_name, "Option1 Value": val},
                 **{"Variant SKU": f"VS-5787-{v['slug'].upper().replace('-','')}-{sfx}",
                    "Variant Grams": "0",
@@ -143,7 +150,7 @@ with open('shopify/products-sets.csv','w',newline='') as f:
                 **({"Image Src": img, "Image Position": "1", "Image Alt Text": alt,
                     "SEO Title": f"{v['name']} Lulav and Esrog Set, ${(v['base'] + (v['pitom'] or 0))//100}",
                     "SEO Description": seo_desc(v)} if first else {}),
-                Status="draft" if first else "",
+                Status="active" if first else "",
             ))
 
 # ---------------- the extras ----------------
@@ -153,8 +160,8 @@ with open('shopify/products-extras.csv','w',newline='') as f:
         img, alt = ADDON_IMG[a["id"]]
         w.writerow(row(
             Handle=a["id"], Title=a["name"],
-            **{"Body (HTML)": f"<p>{a['note']}</p><p>Collected with your set at your host Beis Medrash.</p>"},
-            Vendor=VENDOR, Type="Arba Minim Extra", Tags=TAGS, Published="FALSE",
+            **{"Body (HTML)": f"<p>{a['note']}</p><p>Ships in the same box as your set, at no extra shipping charge.</p>"},
+            Vendor=VENDOR, Type="Arba Minim Extra", Tags=TAGS, Published="TRUE",
             **{"Option1 Name": "Title", "Option1 Value": "Default Title",
                "Variant SKU": f"VS-5787-{a['id'].upper().replace('-','')}",
                "Variant Grams": "0", "Variant Inventory Policy": "deny",
@@ -164,6 +171,6 @@ with open('shopify/products-extras.csv','w',newline='') as f:
                **({"Image Src": img, "Image Position": "1", "Image Alt Text": alt} if img else {}),
                "SEO Title": f"{a['name']} - V'samachta Arba Minim",
                "SEO Description": a["note"][:155]},
-            Status="draft",
+            Status="active",
         ))
 print("written")

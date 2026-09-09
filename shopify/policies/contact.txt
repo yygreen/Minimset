@@ -7,26 +7,26 @@ Email: [ the address you set as the store contact ]
 Phone: [ a number somebody answers ]
 Address: [ a real postal address for the program ]
 
-For anything about your own order, your community rep is the fastest route.
-Every rep is listed with a phone number on 4minimset.com.
+For anything about your own order, email us and quote your order number.
 
 --------------------------------------------------------------------------
 NOT FOR PASTING -- notes
 
-Shopify says this policy is required for selling into the EU. This store sells
-to four American communities, so it is not legally required here. It is still
-the page a hesitant buyer looks for, and an empty one is worse than none.
+Shopify says this policy is required for selling into the EU. This store ships
+within the United States, so it is not legally required here. It is still the
+page a hesitant buyer looks for, and an empty one is worse than none -- more so
+now that the buyer is handing over a delivery address and waiting for a box.
 
 The three bracketed values do not exist yet:
 
   Email    currently whatever the Shopify account was opened with. Setting up
            orders@4minimset.com and forwarding it costs ten minutes.
-  Phone    a program number, not a rep's mobile -- reps handle their own
-           community, this is the number for everyone else.
+  Phone    a number somebody answers during the season. It is the only voice
+           route a customer has now that there is no community rep.
   Address  the "123 Highgrove Cres, Lakewood" on the default Shop location is
            a placeholder. Do not put it here. This address is public, so it
            should be one the program is willing to publish: an office, a shul,
            or the operator's business address.
 
-If you need to save something today, the name, the website and the rep line
-above are all true. Add the three real values before the store is published.
+If you need to save something today, the name and the website above are true.
+Add the three real values before the store is published.

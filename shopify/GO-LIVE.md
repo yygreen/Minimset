@@ -52,48 +52,49 @@ resolve rather than 404.
 
 ---
 
-## Phase 2 — the four pickup locations
+## Phase 2 — shipping
 
-**Blocked on the four real Beis Medrash addresses.** Everything else in this
-phase is quick once you have them. "Beis Medrash Hall, Park Heights" is a
-neighbourhood; the address you enter prints on the customer's collection notice
-and feeds tax calculation.
+The pickup model is gone: no locations to add, no rep instructions, no
+collection window. One origin, one flat rate.
 
-**2.1 Add four locations.** Settings → Locations → Add location. One per host
-Beis Medrash. **The location name is what the customer picks at checkout**, so
-name it as a place:
+**Blocked on the flat rate itself.** Everything else in this phase takes ten
+minutes once you have the figure. Work it out from what a boxed set actually
+costs to post — an esrog box plus a sealed lulav is long and light, which is the
+awkward shape for carrier pricing, so check a real quote rather than guessing.
+
+**2.1 Fix the origin address.** Settings → Locations. The default "Shop
+location" at 123 Highgrove Cres is a placeholder. It is where Shopify thinks
+parcels ship from, and it feeds tax calculation, so it has to be the real
+address the boxes go out from.
+
+**2.2 Delete every other location.** There should be exactly one. Any leftover
+location can receive an order and quietly split the shipment.
+
+**2.3 Set the flat rate.** Settings → Shipping and delivery → the shipping
+profile these products use → the zone covering the continental United States.
+Delete any rate that came with the store and add one:
 
 ```
-Baltimore — Adas Yisrael
-Lakewood — Forest Park Beis Medrash
-Monsey — Wesley Hills Beis Medrash
-Five Towns — Central Avenue Beis Medrash
+Name   Flat rate shipping
+Price  $[the figure]
 ```
 
-not "Shop location", and not "Warehouse 2".
+Per **order**, not per item — Shopify's flat rate is per order by default;
+leave it that way. A man buying a Mehudar A-A for himself and three Chinuch
+sets for the boys pays one charge, and the site says so.
 
-**2.2 Make one of the four the default.** Until you do, the existing default
-location holds the fulfilment setting hostage — that is what the greyed toggle
-and the *"select another default location first"* notice mean.
+**2.4 Check what a customer with no rate sees.** If the zone does not cover
+their address, checkout tells them so and stops. Decide now whether Alaska,
+Hawaii and PO boxes are in or out, and either add a zone or say so on the
+shipping policy.
 
-**2.3 Delete the placeholder.** The original "Shop location" at 123 Highgrove
-Cres is not a real place and should not be able to receive an order.
+**2.5 Put the same figure in the site.** `SHIPPING.flatRateCents` in
+`lib/data.ts`, in cents. Until it is set, the site says "flat-rate shipping
+added at checkout" and names no number, which is honest but weaker. With it
+set, every "+ $X shipping" on the site fills itself in and matches Shopify.
 
-**2.4 Turn on local pickup.** Settings → Shipping and delivery → Local pickup.
-For each of the four: pickup **on**, and in the pickup instructions put the
-street address, the rep's name and phone, and what to bring. Set the expected
-pickup time to a custom message:
-
-> The day after Yom Kippur, 10:00 AM to 5:00 PM. Bring your order number. If
-> you cannot come, send anyone with it.
-
-**2.5 Remove the shipping rates.** Same section, the shipping profile these
-products use. With rates present, checkout offers delivery; with none and
-pickup on, it offers pickup only. **This is the step that decides whether the
-whole model works at checkout.**
-
-**check** — fulfilment is now toggleable on the four real locations, and the
-placeholder is gone.
+**check** — a test order quotes exactly one shipping option at exactly the
+figure above, and the site prints the same number.
 
 ---
 
@@ -126,11 +127,12 @@ links to yet. The site's buttons still use the on-site flow until phase 6.
 **4.1 Guest checkout on.** Settings → Checkout. Nobody wants an account to buy
 an esrog, and forcing one costs orders.
 
-**4.2 Phone number required.** Same page. The reps need it on distribution day,
-and it is the only way to reach somebody whose set is uncollected at 4:30.
+**4.2 Phone number required.** Same page. Carriers ask for it, and it is the
+only way to reach somebody whose address turns out to be wrong.
 
 **4.3 Taxes.** Settings → Taxes and duties. Whether Arba Minim are taxable in
-NJ, NY and MD, and whether the program has nexus in each. That is an
+each state you ship to, and where the program has nexus. Shipping to the whole
+country makes this bigger than it was with four towns, not smaller. That is an
 accountant's answer, not mine, but it has to exist before money moves.
 
 **4.4 Payments.** Yours to connect, in your own name. Everything else here can
@@ -172,27 +174,23 @@ too, at an extra transaction fee on every order.
 ## Phase 5 — the emails people actually read
 
 **Decided: leave Shopify's templates alone.** The defaults are accurate for a
-pickup order rather than merely tolerable -- they say collection is coming and
-print the location, address and hours automatically. Editing them means working
-inside a thousand lines of Liquid for copy that can go somewhere safer.
+shipped order rather than merely tolerable -- the confirmation prints the
+delivery address, and the shipping confirmation prints the carrier, the
+tracking number and a Track button, all automatically. Editing them means
+working inside a thousand lines of Liquid.
 
-**5.1 Put the program's lines in the pickup instructions instead**, on each
-location in phase 2.4. A plain text box, per community, that flows into the
-pickup emails:
-
-> Bring your order number -- it is your pickup code.
-> If you cannot come, send anyone with it and they can collect for you.
-> A Moreh Hora'ah is present. If he rules an item is not worth what you paid,
-> it is exchanged on the spot.
-> [rep name] - [rep phone]
+**5.1 Turn the shipping confirmation on and read it.** Settings →
+Notifications → Shipping confirmation. This is now the most-read email of the
+season: it is what replaces a person standing at a table telling somebody their
+set is ready.
 
 **5.2 Who gets notified of new orders.** Settings → Notifications — make sure a
 person actually receives them, not just the dashboard.
 
-**check** — read the real confirmation on a phone during the phase 7 test
-order. If it feels thin, the three template edits are in `shopify/emails/` and
-take five minutes. Deciding that after seeing a real one beats deciding it
-against a wall of Liquid.
+**check** — read the real confirmation and the real shipping confirmation on a
+phone during the phase 7 test order. If either feels thin, the copy is drafted
+in `shopify/emails/` and takes five minutes to paste in. Deciding that after
+seeing a real one beats deciding it against a wall of Liquid.
 
 ---
 
@@ -224,27 +222,38 @@ one redeploy, so a bad surprise costs a minute rather than a season.
 
 Place one real order, with a real card, start to finish.
 
-- No shipping option appears at any point
-- All four towns appear as pickup choices
+- Exactly one shipping option appears, at exactly the flat rate
+- The rate does not change when you add a second set to the cart
+- The site's stated shipping figure matches what checkout charges
 - The money lands in the right account
 - The confirmation email reads correctly on a phone
+- The shipping confirmation, once you mark it fulfilled, carries the tracking
+  number and reads correctly
 - Refund it, and check the refund lands too
 
 Anything wrong here is worth finding now rather than on erev Yom Tov.
 
 ---
 
-## Phase 8 — distribution day
+## Phase 8 — packing and shipping
 
-**8.1 Staff accounts.** Settings → Users. One per rep, scoped so each sees
-their own community's orders and can mark them collected.
+**8.1 Staff accounts.** Settings → Users. One per person who will be packing,
+so fulfilment is attributable.
 
-**8.2 The Shopify app on their phones.** That is the card system: search a name
-or an order number, see what was ordered and what was paid, mark it fulfilled.
-It replaces the `/staff` screens on this site.
+**8.2 Buy labels in Shopify.** Shopify Shipping prints a label against the
+order and writes the tracking number back to it, which fires the shipping
+confirmation automatically. Doing it in a separate carrier tool means keying
+every tracking number back in by hand.
 
-**8.3 Who closes the store at the deadline**, and how. Shopify will not do it on
+**8.3 Fulfil in batches.** Orders → select → Fulfil. One label per order; the
+customer gets their email as each is marked.
+
+**8.4 Who closes the store at the deadline**, and how. Shopify will not do it on
 a date by itself — someone sets the products to Draft, or an app does.
+
+The `/staff/fulfillment` screen on this site does the same job for orders that
+came through the on-site flow rather than Shopify: address as one pasteable
+block, carrier and tracking recorded per order.
 
 ---
 
@@ -261,7 +270,11 @@ domain.
 ## Still open, outside Shopify
 
 - The **real deadline** (0.2) — my September 12 is an assumption.
-- The **four rep phone numbers**, still `555` placeholders on the live site.
-- The **four real addresses** — phase 2 cannot start without them.
-
-All three are in `OPEN-QUESTIONS.md` as items 1, 5 and 8.
+- The **flat shipping rate** — phase 2 cannot finish without the figure.
+- The **origin address** the boxes actually ship from, for Settings → Locations.
+- A **program phone number and a store contact email**, now the only routes a
+  customer has; there is no community rep to call any more.
+- The **replacement guarantee wording** in `lib/data.ts`. It used to promise a
+  Moreh Hora'ah present at distribution, which is no longer true. The new
+  wording promises replacement from reserve stock at the program's cost — that
+  is a promise to customers and the operator has to agree it.

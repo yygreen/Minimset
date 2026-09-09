@@ -563,8 +563,8 @@ export default function HomePage() {
           <div className="mt-5 grid gap-x-10 gap-y-4 text-[17px] leading-relaxed lg:grid-cols-2 lg:gap-x-14">
             <p className="text-ink-900">{PARTNERSHIP_PARAGRAPH}</p>
             <p className="text-ink-700">
-              Orders are counted, one shipment is packed against those totals in Eretz Yisrael, and
-              it is handed out in your Beis Medrash on one day. It is how Arba Minim have been
+              Orders are counted, one shipment is packed against those totals in Eretz Yisrael,
+              and every set goes out to the address on its order. It is how Arba Minim have been
               bought in Meah Shearim for years.
             </p>
           </div>
@@ -710,10 +710,10 @@ export default function HomePage() {
         </div>
         <div className="relative mx-auto max-w-6xl px-4 py-16 text-center sm:py-24">
           <h2 className="mx-auto max-w-2xl font-display text-[2.1rem] font-bold leading-tight text-ink-950 sm:text-[2.8rem]">
-            Order before Motzaei Shabbos. Open your box after Yom Kippur.
+            Order before Motzaei Shabbos. Open your box in your sukkah.
           </h2>
           <p className="mx-auto mt-3 max-w-md text-[16px] text-ink-700">
-            Sets from ${from}. Sealed, inspected, and waiting at your Beis Medrash.
+            Sets from ${from}. Sealed, inspected, and shipped to your door.
           </p>
           <OrderLink className="mt-7 inline-flex h-14 items-center justify-center rounded-lg bg-leaf-800 px-9 text-[17px] font-semibold text-white shadow-lift transition hover:bg-leaf-900">
             Order your set
