@@ -6,6 +6,7 @@ import { money } from "@/lib/orders";
 import { cartUrl } from "@/lib/shopify";
 import { useCart } from "@/lib/cart";
 import { Stepper } from "./Ui";
+import { OpenOnly } from "./OpenOnly";
 
 /**
  * The cart, as a slide-over.
@@ -139,19 +140,29 @@ export function CartDrawer() {
                 </span>
               </div>
 
-              {checkoutHref ? (
-                <a
-                  href={checkoutHref}
-                  rel="noopener"
-                  className="mt-4 flex h-14 items-center justify-center rounded-lg bg-leaf-800 px-6 text-[17px] font-semibold text-white transition hover:bg-leaf-900"
-                >
-                  Checkout
-                </a>
-              ) : (
-                <p className="mt-4 rounded-lg bg-alert-100 px-4 py-3 text-[14px] text-alert-800">
-                  Checkout is not available just now. Please try again shortly.
-                </p>
-              )}
+              {/* A cart left in a browser must not outlive the deadline: the
+                  permalink would still reach a live Shopify checkout. */}
+              <OpenOnly
+                closed={
+                  <p className="mt-4 flex h-14 items-center justify-center rounded-lg border-2 border-sand-300 px-6 text-center text-[15px] font-semibold text-ink-500">
+                    Ordering closed for this season
+                  </p>
+                }
+              >
+                {checkoutHref ? (
+                  <a
+                    href={checkoutHref}
+                    rel="noopener"
+                    className="mt-4 flex h-14 items-center justify-center rounded-lg bg-leaf-800 px-6 text-[17px] font-semibold text-white transition hover:bg-leaf-900"
+                  >
+                    Checkout
+                  </a>
+                ) : (
+                  <p className="mt-4 rounded-lg bg-alert-100 px-4 py-3 text-[14px] text-alert-800">
+                    Checkout is not available just now. Please try again shortly.
+                  </p>
+                )}
+              </OpenOnly>
 
               <p className="mt-3 text-center text-[12px] leading-relaxed text-ink-500">
                 Payment, address and receipt are handled by Shopify. {SEASON.deliveryNote}
