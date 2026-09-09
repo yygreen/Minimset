@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect } from "react";
 import { SEASON, SHIPPING, shippingAmount } from "@/lib/data";
 import { money } from "@/lib/orders";
@@ -71,13 +72,16 @@ export function CartDrawer() {
         {lines.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 px-8 text-center">
             <p className="text-[15px] text-ink-700">Nothing in your order yet.</p>
-            <button
-              type="button"
+            {/* Closing the drawer left the visitor wherever they were, which
+                on /about or /policies is nowhere near a set. Take them to the
+                sets and close on the way. */}
+            <Link
+              href="/#levels"
               onClick={() => setOpen(false)}
-              className="flex h-12 items-center rounded-lg border-2 border-leaf-800 px-6 text-[15px] font-semibold text-leaf-900"
+              className="flex h-12 items-center rounded-lg border-2 border-leaf-800 px-6 text-[15px] font-semibold text-leaf-900 transition hover:bg-leaf-800 hover:text-white"
             >
               Choose a set
-            </button>
+            </Link>
           </div>
         ) : (
           <>
