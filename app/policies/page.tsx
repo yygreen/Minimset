@@ -148,7 +148,7 @@ export default function PoliciesPage() {
             <p>An order record holds only what is needed to fill and hand over that order:</p>
             <ul className="ml-5 list-disc space-y-1">
               <li>your name, phone number and email address</li>
-              <li>your community, and your shul if you gave one</li>
+              <li>the delivery address for the order</li>
               <li>what you ordered, the total, and how you chose to pay</li>
               <li>your order code and the time it was placed</li>
             </ul>

@@ -108,7 +108,7 @@ export default function AboutPage() {
         <div className="mt-12 lg:flex lg:items-end lg:justify-between lg:gap-12">
           <p className="max-w-2xl text-[16px] leading-relaxed text-ink-700">{PARTNERSHIP_PARAGRAPH}</p>
           <OrderLink className="mt-8 inline-flex h-14 shrink-0 items-center justify-center rounded-lg bg-leaf-800 px-8 text-[17px] font-semibold text-white shadow-lift transition hover:bg-leaf-900 lg:mt-0">
-            Order for your community
+            Order your set
           </OrderLink>
         </div>
       </article>
