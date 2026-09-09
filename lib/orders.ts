@@ -1,11 +1,10 @@
 import {
   ADDONS,
   CODE_ALPHABET,
-  Channel,
   LevelKey,
   OrderStatus,
   SEASON,
-  SITES,
+  SHIPPING,
   getAddOn,
   getLevel,
 } from "./data";
@@ -18,7 +17,16 @@ export interface OrderItem {
   withPitom: boolean;
   quantity: number;
   unitPriceCents: number;
-  qtyPickedUp: number;
+}
+
+/** A US shipping address. line2 is optional but always present as a string. */
+export interface Address {
+  line1: string;
+  line2: string;
+  city: string;
+  /** Two-letter USPS code, uppercased before it is stored. */
+  state: string;
+  zip: string;
 }
 
 export interface ExchangeRecord {
@@ -29,16 +37,18 @@ export interface ExchangeRecord {
 
 export interface Order {
   code: string;
-  siteSlug: string;
   status: OrderStatus;
-  channel: Channel;
   customerName: string;
   phone: string;
   email: string;
-  shul: string;
+  address: Address;
   items: OrderItem[];
+  /** Charged on top of the items. Frozen at order time, so a later rate change
+      never rewrites what somebody already paid. */
+  shippingCents: number;
+  /** Items plus shipping: what the card was charged. */
   totalCents: number;
-  paymentMethod: "CARD" | "CASH" | "CHECK";
+  paymentMethod: "CARD";
   createdAt: string;
   notes: string;
   exchanges: ExchangeRecord[];
@@ -50,10 +60,12 @@ export interface Order {
   paidAt?: string;
   /** Seeded sample data, so it can be cleared without touching a real order. */
   isDemo?: boolean;
-  /** Which staff member keyed a paper order. */
-  enteredBy?: string;
   /** Set when an order was completed inside the post-deadline grace window. */
   grace?: boolean;
+  /** Carrier tracking, written when the box goes out. */
+  carrier?: string;
+  trackingNumber?: string;
+  shippedAt?: string;
 }
 
 /* ---------- money & formatting ---------- */
@@ -65,8 +77,18 @@ export function money(cents: number): string {
   })}`;
 }
 
+/** Items only. Shipping is added by grandTotal, never folded in here. */
 export function orderTotal(items: OrderItem[]): number {
   return items.reduce((sum, i) => sum + i.unitPriceCents * i.quantity, 0);
+}
+
+/** The shipping charge to apply to a new order, in cents. Null rate means none yet. */
+export function currentShippingCents(): number {
+  return SHIPPING.flatRateCents ?? 0;
+}
+
+export function grandTotal(items: OrderItem[], shippingCents: number): number {
+  return orderTotal(items) + shippingCents;
 }
 
 export function itemLabel(item: OrderItem): string {
@@ -84,10 +106,6 @@ export function totalSets(order: Order): number {
   return order.items
     .filter((i) => i.kind === "LEVEL")
     .reduce((sum, i) => sum + i.quantity, 0);
-}
-
-export function pickedUpUnits(order: Order): number {
-  return order.items.reduce((sum, i) => sum + i.qtyPickedUp, 0);
 }
 
 export function totalUnits(order: Order): number {
@@ -145,17 +163,20 @@ const LAST_NAMES = [
   "Ackerman", "Guttman", "Berger", "Hirsch", "Weinstock", "Salomon",
 ];
 
-const SHULS = [
-  "Adas Yisrael", "Khal Chassidim", "Bais Medrash Hagadol",
-  "Ohel Moshe", "Zichron Yaakov", "Khal Bnei Torah", "",
+/** Demo delivery towns, with the area code that goes with each. Fiction, and
+    obviously so: the 555-01XX block is reserved for exactly this. */
+const TOWNS: { city: string; state: string; zip: string; area: string }[] = [
+  { city: "Baltimore", state: "MD", zip: "21215", area: "410" },
+  { city: "Lakewood", state: "NJ", zip: "08701", area: "732" },
+  { city: "Monsey", state: "NY", zip: "10952", area: "845" },
+  { city: "Cedarhurst", state: "NY", zip: "11516", area: "516" },
+  { city: "Brooklyn", state: "NY", zip: "11219", area: "718" },
 ];
 
-const AREA_CODES: Record<string, string> = {
-  baltimore: "410",
-  lakewood: "732",
-  monsey: "845",
-  "five-towns": "516",
-};
+const STREETS = [
+  "Forest Avenue", "Park Heights Avenue", "Maple Terrace", "Route 306",
+  "Central Avenue", "Eighteenth Avenue", "Cross Street", "Willow Lane",
+];
 
 function levelItem(
   rand: () => number,
@@ -174,15 +195,13 @@ function levelItem(
     withPitom,
     quantity,
     unitPriceCents: unit,
-    qtyPickedUp: 0,
   };
 }
 
 /**
- * 26 demo orders across all four sites: mixed levels, multi-set families,
- * paper/cash orders, one order already partially picked up, one with an
- * exchange on the record. Deterministic so the demo looks identical on
- * every machine.
+ * 26 demo orders: mixed levels, multi-set families, a spread of delivery
+ * addresses, one already shipped with a tracking number and one delivered.
+ * Deterministic so the demo looks identical on every machine.
  */
 export function seedOrders(): Order[] {
   const rand = mulberry32(20260922);
@@ -197,7 +216,7 @@ export function seedOrders(): Order[] {
   };
 
   for (let i = 0; i < 26; i += 1) {
-    const site = SITES[i % SITES.length];
+    const town = TOWNS[i % TOWNS.length];
     const first = FIRST_NAMES[Math.floor(rand() * FIRST_NAMES.length)];
     const last = LAST_NAMES[Math.floor(rand() * LAST_NAMES.length)];
     const roll = rand();
@@ -226,54 +245,53 @@ export function seedOrders(): Order[] {
         withPitom: false,
         quantity: 1,
         unitPriceCents: addon.priceCents,
-        qtyPickedUp: 0,
       });
     }
 
-    const paper = rand() > 0.72;
-    const shul = SHULS[Math.floor(rand() * SHULS.length)];
     const phoneTail = 100 + Math.floor(rand() * 899);
+    const shipping = currentShippingCents();
 
     orders.push({
       code: nextCode(),
-      siteSlug: site.slug,
       status: "PAID",
-      channel: paper ? "PAPER" : "ONLINE",
       customerName: `${first} ${last}`,
-      phone: `(${AREA_CODES[site.slug]}) 555-0${phoneTail}`,
-      email: paper ? "" : `${first.toLowerCase()}.${last.toLowerCase()}@example.com`,
-      shul,
+      phone: `(${town.area}) 555-0${phoneTail}`,
+      email: `${first.toLowerCase()}.${last.toLowerCase()}@example.com`,
+      address: {
+        line1: `${10 + Math.floor(rand() * 480)} ${STREETS[Math.floor(rand() * STREETS.length)]}`,
+        line2: rand() > 0.82 ? `Apt ${1 + Math.floor(rand() * 20)}` : "",
+        city: town.city,
+        state: town.state,
+        zip: town.zip,
+      },
       items,
-      totalCents: orderTotal(items),
-      paymentMethod: paper ? (rand() > 0.5 ? "CASH" : "CHECK") : "CARD",
+      shippingCents: shipping,
+      totalCents: orderTotal(items) + shipping,
+      paymentMethod: "CARD",
       createdAt: new Date(Date.UTC(2026, 7, 18 + Math.floor(rand() * 7), 12)).toISOString(),
       notes: "",
       exchanges: [],
     });
   }
 
-  const partial = orders.find((o) => totalSets(o) >= 3);
-  if (partial) {
-    partial.status = "PARTIALLY_PICKED_UP";
-    let remaining = 2;
-    for (const item of partial.items) {
-      if (item.kind !== "LEVEL" || remaining <= 0) continue;
-      const take = Math.min(item.quantity, remaining);
-      item.qtyPickedUp = take;
-      remaining -= take;
-    }
+  const shipped = orders.find((o) => totalSets(o) >= 3);
+  if (shipped) {
+    shipped.status = "SHIPPED";
+    shipped.carrier = "UPS";
+    shipped.trackingNumber = "1Z999AA10123456784";
+    shipped.shippedAt = new Date(Date.UTC(2026, 8, 17, 15, 12)).toISOString();
   }
 
-  const done = orders.find((o) => o.status === "PAID" && totalSets(o) === 1);
-  if (done) {
-    done.status = "FULFILLED";
-    done.items.forEach((i) => {
-      i.qtyPickedUp = i.quantity;
-    });
-    done.exchanges.push({
-      itemId: done.items[0].id,
-      at: new Date(Date.UTC(2026, 8, 22, 15, 12)).toISOString(),
-      note: "Motz ruled the esrog was not worth the price paid. Exchanged from reserve stock.",
+  const delivered = orders.find((o) => o.status === "PAID" && totalSets(o) === 1);
+  if (delivered) {
+    delivered.status = "DELIVERED";
+    delivered.carrier = "UPS";
+    delivered.trackingNumber = "1Z999AA10123456791";
+    delivered.shippedAt = new Date(Date.UTC(2026, 8, 16, 14, 2)).toISOString();
+    delivered.exchanges.push({
+      itemId: delivered.items[0].id,
+      at: new Date(Date.UTC(2026, 8, 21, 15, 12)).toISOString(),
+      note: "Customer reported a damaged lulav on arrival. Replacement sent from reserve stock.",
     });
   }
 
@@ -290,12 +308,7 @@ export interface LevelTotals {
   revenueCents: number;
 }
 
-const LIVE_STATUSES: OrderStatus[] = [
-  "PAID",
-  "PARTIALLY_PICKED_UP",
-  "FULFILLED",
-  "UNCLAIMED",
-];
+const LIVE_STATUSES: OrderStatus[] = ["PAID", "SHIPPED", "DELIVERED"];
 
 export function isLive(order: Order): boolean {
   return LIVE_STATUSES.includes(order.status);
@@ -343,4 +356,4 @@ export function addOnTotals(orders: Order[]): { id: string; name: string; qty: n
 }
 
 export const SEASON_DEADLINE_ISO = SEASON.deadlineIso;
-export type { Channel, LevelKey, OrderStatus };
+export type { LevelKey, OrderStatus };

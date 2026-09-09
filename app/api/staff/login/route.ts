@@ -27,15 +27,15 @@ export async function POST(req: Request) {
   }
 
   const jar = await cookies();
-  jar.set(STAFF_COOKIE, mint({ role: scope.role, site: scope.site }, STAFF_TTL_MS), {
+  jar.set(STAFF_COOKIE, mint({ role: scope.role }, STAFF_TTL_MS), {
     httpOnly: true,
     secure: true,
     sameSite: "lax",
     path: "/",
     maxAge: STAFF_TTL_MS / 1000,
   });
-  await logAudit({ action: "STAFF_LOGIN", role: scope.role, site: scope.site ?? "all" }).catch(() => {});
-  return ok({ signedIn: true, locked: STAFF_LOCKED, role: scope.role, site: scope.site ?? null });
+  await logAudit({ action: "STAFF_LOGIN", role: scope.role }).catch(() => {});
+  return ok({ signedIn: true, locked: STAFF_LOCKED, role: scope.role });
 }
 
 export async function DELETE() {

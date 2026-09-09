@@ -103,7 +103,7 @@ export default async function SetSignpost({ params }: { params: Promise<{ slug: 
 
             <p className="mt-6 text-[14px] leading-relaxed text-ink-500">
               Everything about this set — the sorting standard word for word, the compare table and
-              the pickup communities — now lives on{" "}
+              how delivery works — now lives on{" "}
               <Link href="/" className="font-semibold text-leaf-800 underline underline-offset-4">
                 the main page
               </Link>

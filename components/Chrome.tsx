@@ -3,10 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useStore } from "@/lib/store";
-import { SEASON, SITES } from "@/lib/data";
+import { SEASON } from "@/lib/data";
 import { OrderLink } from "./OrderLink";
-import { SHOPIFY_LIVE } from "@/lib/shopify";
 import { Countdown } from "./Countdown";
 import { msUntilDeadline } from "@/lib/orders";
 
@@ -17,7 +15,7 @@ const T = {
     nav: [
       { href: "/#levels", label: "The Sets" },
       { href: "/#how", label: "How It Works" },
-      { href: "/#sites", label: "Pickup" },
+      { href: "/#delivery", label: "Delivery" },
       { href: "/faq", label: "FAQ" },
       { href: "/about", label: "About" },
     ],
@@ -26,7 +24,7 @@ const T = {
     openMenu: "Open menu",
     closeMenu: "Close menu",
     staff: "Staff",
-    distribution: "Distribution Day",
+    fulfillment: "Fulfilment",
     totals: "HQ Totals",
     allOrders: "All Orders",
     stickyFrom: "Sets from $40",
@@ -38,7 +36,7 @@ const T = {
         title: "Order",
         links: [
           { href: "/#levels", label: "The three levels" },
-          { href: "/#sites", label: "Pick your community" },
+          { href: "/#delivery", label: "How delivery works" },
           { href: "/order", label: "Look up my order" },
         ],
       },
@@ -56,7 +54,7 @@ const T = {
     ],
     staffLine: "Staff",
     legal:
-      'B"SD. V\'samachta Arba Minim. Every set is sorted and sealed in Eretz Yisrael and collected in person at your host Beis Medrash.',
+      'B"SD. V\'samachta Arba Minim. Every set is sorted and sealed in Eretz Yisrael and shipped to your door.',
   },
 } as const;
 
@@ -196,8 +194,8 @@ export function Header() {
         <div className="border-t border-leaf-200 bg-leaf-100 text-ink-900">
           <div className="mx-auto flex max-w-6xl flex-wrap gap-x-5 gap-y-1 px-4 py-2 text-sm">
             <span className="font-bold uppercase tracking-wider text-leaf-800">{t.staff}</span>
-            <Link href="/staff/distribution" className="inline-block py-1 hover:text-leaf-800">
-              {t.distribution}
+            <Link href="/staff/fulfillment" className="inline-block py-1 hover:text-leaf-800">
+              {t.fulfillment}
             </Link>
             <Link href="/staff/totals" className="inline-block py-1 hover:text-leaf-800">
               {t.totals}
@@ -234,12 +232,6 @@ export function StickyCta() {
     pathname.startsWith("/order");
   if (suppressed) return null;
 
-  /* On a community page the fastest path is that community's own order flow --
-     unless Shopify is taking the orders, in which case there is only one path
-     and OrderLink knows it. */
-  const siteSlug = pathname.split("/")[1];
-  const onSitePage = !SHOPIFY_LIVE && SITES.some((s) => s.slug === siteSlug);
-
   return (
     <div
       dir={dir}
@@ -255,22 +247,12 @@ export function StickyCta() {
             {t.stickyCloses} <Countdown variant="inline" he={he} />
           </p>
         </div>
-        {onSitePage ? (
-          <Link
-            href={`/${siteSlug}/order`}
-            tabIndex={shown ? 0 : -1}
-            className="flex h-12 items-center rounded-lg bg-leaf-800 px-6 text-[15px] font-semibold text-white"
-          >
-            {t.orderNow}
-          </Link>
-        ) : (
-          <OrderLink
-            tabIndex={shown ? 0 : -1}
-            className="flex h-12 items-center rounded-lg bg-leaf-800 px-6 text-[15px] font-semibold text-white"
-          >
-            {t.orderNow}
-          </OrderLink>
-        )}
+        <OrderLink
+          tabIndex={shown ? 0 : -1}
+          className="flex h-12 items-center rounded-lg bg-leaf-800 px-6 text-[15px] font-semibold text-white"
+        >
+          {t.orderNow}
+        </OrderLink>
       </div>
     </div>
   );
@@ -323,7 +305,7 @@ export function Footer() {
           <p>{t.legal}</p>
           <p className="flex flex-wrap items-center gap-x-3">
             <span className="font-semibold uppercase tracking-wider">{t.staffLine}</span>
-            <Link href="/staff/distribution" className="inline-block py-1 hover:text-leaf-800">{t.distribution}</Link>
+            <Link href="/staff/fulfillment" className="inline-block py-1 hover:text-leaf-800">{t.fulfillment}</Link>
             <Link href="/staff/totals" className="inline-block py-1 hover:text-leaf-800">{t.totals}</Link>
             <Link href="/staff/orders" className="inline-block py-1 hover:text-leaf-800">{t.allOrders}</Link>
           </p>

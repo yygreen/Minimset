@@ -3,7 +3,7 @@
  *
  * The site stays the shop window: every "Order this set" button hands the
  * visitor to Shopify with the right variant already in the cart, and Shopify
- * owns cart, payment, tax, receipts, refunds, local pickup and the order admin.
+ * owns cart, payment, tax, shipping rates, receipts, refunds and the order admin.
  * Nothing on this side touches a card.
  *
  * Everything here is inert until the store is configured. With no domain set,
@@ -68,10 +68,9 @@ function variantFor(level: LevelKey | undefined): string | null {
  * The go-live switch, deliberately separate from the ids.
  *
  * Knowing a variant id is not the same as the store being ready to take money:
- * the products have to be published, a payment provider connected, local pickup
- * configured and the shipping rates stripped. Without those, a live CTA hands a
- * customer a checkout that asks for a delivery address for something that is
- * never delivered.
+ * the products have to be published, a payment provider connected and the flat
+ * shipping rate configured. Without those, a live CTA hands a customer a
+ * checkout that cannot quote a price for getting the box to them.
  *
  * So the ids can be committed and verified while the buttons stay on the
  * on-site flow, and going live is one environment variable and a redeploy --
@@ -98,8 +97,8 @@ export interface CartLine {
 /**
  * A Shopify cart permalink: /cart/<variant>:<qty>,<variant>:<qty>
  * Anything in `attributes` rides along as a cart attribute and shows on the
- * order in the Shopify admin -- useful for noting which community a buyer came
- * in from, even though the pickup location itself is chosen at checkout.
+ * order in the Shopify admin -- useful for noting which page or campaign a
+ * buyer came in from.
  */
 export function cartUrl(lines: CartLine[], attributes?: Record<string, string>): string | null {
   if (!SHOPIFY_DOMAIN) return null;

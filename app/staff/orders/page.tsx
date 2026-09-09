@@ -3,43 +3,37 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { StatusBadge } from "@/components/Ui";
-import { SITES } from "@/lib/data";
 import { itemLabel, money } from "@/lib/orders";
 import { useStore } from "@/lib/staff-store";
 
-const FILTERS = ["All", "Online", "Paper", "Outstanding", "Cancelled"] as const;
+const FILTERS = ["All", "To pack", "Shipped", "Cancelled"] as const;
 
 export default function OrdersPage() {
   const { orders, ready } = useStore();
   const [query, setQuery] = useState("");
-  const [site, setSite] = useState("all");
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("All");
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
     const digits = q.replace(/\D/g, "");
     return orders.filter((o) => {
-      if (site !== "all" && o.siteSlug !== site) return false;
-      if (filter === "Online" && o.channel !== "ONLINE") return false;
-      if (filter === "Paper" && o.channel !== "PAPER") return false;
       if (filter === "Cancelled" && o.status !== "CANCELLED_REFUNDED") return false;
-      if (
-        filter === "Outstanding" &&
-        !(o.status === "PAID" || o.status === "PARTIALLY_PICKED_UP")
-      ) {
-        return false;
-      }
-      if (filter !== "Cancelled" && o.status === "CANCELLED_REFUNDED" && filter !== "All") {
+      if (filter === "To pack" && o.status !== "PAID") return false;
+      if (filter === "Shipped" && o.status !== "SHIPPED" && o.status !== "DELIVERED") return false;
+      if (filter !== "Cancelled" && filter !== "All" && o.status === "CANCELLED_REFUNDED") {
         return false;
       }
       if (!q) return true;
       return (
         o.code.toLowerCase().includes(q) ||
         o.customerName.toLowerCase().includes(q) ||
+        o.address.city.toLowerCase().includes(q) ||
+        o.address.zip.startsWith(q) ||
+        (o.trackingNumber ?? "").toLowerCase().includes(q) ||
         (digits.length >= 3 && o.phone.replace(/\D/g, "").includes(digits))
       );
     });
-  }, [orders, query, site, filter]);
+  }, [orders, query, filter]);
 
   if (!ready) {
     return <div className="mx-auto max-w-6xl px-4 py-24 text-ink-500">Loading...</div>;
@@ -49,28 +43,16 @@ export default function OrdersPage() {
     <div className="mx-auto max-w-6xl px-4 py-8">
       <h1 className="font-display text-3xl font-bold text-ink-950">Order Search</h1>
       <p className="mt-1 text-sm text-ink-700">
-        {orders.length} orders across {SITES.length} sites, online and paper.
+        {orders.length} {orders.length === 1 ? "order" : "orders"} this season.
       </p>
 
       <div className="mt-6 flex flex-wrap gap-3">
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Code, name or phone"
+          placeholder="Code, name, phone, town, ZIP or tracking"
           className="h-13 min-w-[240px] flex-1 rounded-lg border border-sand-300 bg-white px-4 text-[17px] text-ink-950 outline-none focus:border-leaf-700 focus:ring-2 focus:ring-leaf-200"
         />
-        <select
-          value={site}
-          onChange={(e) => setSite(e.target.value)}
-          className="h-13 rounded-lg border border-sand-300 bg-white px-4 font-semibold text-ink-900 outline-none focus:border-leaf-700 focus:ring-2 focus:ring-leaf-200"
-        >
-          <option value="all">All sites</option>
-          {SITES.map((s) => (
-            <option key={s.slug} value={s.slug}>
-              {s.name}
-            </option>
-          ))}
-        </select>
         <div className="flex flex-wrap gap-1 rounded-lg border border-sand-300 bg-white p-1">
           {FILTERS.map((f) => (
             <button
@@ -93,9 +75,9 @@ export default function OrdersPage() {
             <tr className="text-left text-xs font-semibold uppercase tracking-wider text-ink-500">
               <th className="px-5 py-3">Code</th>
               <th className="px-5 py-3">Name</th>
-              <th className="px-5 py-3">Site</th>
+              <th className="px-5 py-3">Ships to</th>
               <th className="px-5 py-3">Contents</th>
-              <th className="px-5 py-3">Channel</th>
+              <th className="px-5 py-3">Tracking</th>
               <th className="px-5 py-3">Status</th>
               <th className="px-5 py-3 text-right">Total</th>
             </tr>
@@ -122,22 +104,21 @@ export default function OrdersPage() {
                   <span className="font-semibold text-ink-900">{o.customerName}</span>
                   <span className="block text-xs text-ink-500">{o.phone}</span>
                 </td>
-                <td className="px-5 py-4 capitalize text-ink-700">
-                  {o.siteSlug.replace("-", " ")}
+                <td className="px-5 py-4 text-ink-700">
+                  {o.address.city}, {o.address.state}
+                  <span className="block text-xs text-ink-500">{o.address.zip}</span>
                 </td>
                 <td className="px-5 py-4 text-ink-700">
                   {o.items.map((i) => `${i.quantity} x ${itemLabel(i)}`).join(", ")}
                 </td>
-                <td className="px-5 py-4">
-                  <span
-                    className={`rounded px-2 py-1 text-xs font-semibold ${
-                      o.channel === "PAPER"
-                        ? "bg-esrog-100 text-esrog-800"
-                        : "bg-leaf-100 text-leaf-800"
-                    }`}
-                  >
-                    {o.channel === "PAPER" ? `Paper, ${o.paymentMethod.toLowerCase()}` : "Online"}
-                  </span>
+                <td className="px-5 py-4 text-ink-700">
+                  {o.trackingNumber ? (
+                    <span className="tnum text-xs">
+                      {o.carrier} {o.trackingNumber}
+                    </span>
+                  ) : (
+                    <span className="text-xs text-ink-500">-</span>
+                  )}
                 </td>
                 <td className="px-5 py-4">
                   <StatusBadge status={o.status} />

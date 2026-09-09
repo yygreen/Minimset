@@ -22,7 +22,6 @@ export async function GET() {
     staffLocked: STAFF_LOCKED,
     staffSignedIn: scope !== null,
     staffRole: scope?.role ?? null,
-    staffSite: scope?.site ?? null,
     graceMinutes: GRACE_MINUTES,
     serverNow: Date.now(),
   });

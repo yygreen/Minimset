@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { EXCHANGE_GUARANTEE, SEASON, SITES } from "@/lib/data";
+import { EXCHANGE_GUARANTEE, SEASON, SHIPPING, shippingLabel } from "@/lib/data";
 import { GRACE_MINUTES } from "@/lib/server/pricing";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/policies" },
   title: "Policies - V'samachta Arba Minim",
   description:
-    "Ordering, payment, changes and cancellation, collection at your Beis Medrash, the exchange guarantee, and what the order form stores.",
+    "Ordering, payment, shipping and delivery, changes and cancellation, the exchange guarantee, and what the order form stores.",
 };
 
 /**
@@ -31,27 +31,20 @@ const CONTENTS = [
   ["ordering", "Ordering"],
   ["payment", "Payment"],
   ["changes", "Changes and cancellation"],
-  ["collection", "Collecting in person"],
+  ["shipping", "Shipping and delivery"],
   ["guarantee", "The exchange guarantee"],
   ["privacy", "What we store about you"],
   ["contact", "Questions"],
 ] as const;
 
 export default function PoliciesPage() {
-  const pickup = SITES[0];
-  const pickupDate = new Date(`${pickup.distributionDateIso}T12:00:00`).toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-  });
-
   return (
     <>
       <section className="bg-sand-100 py-12 sm:py-16">
         <div className="mx-auto max-w-3xl px-4">
           <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Policies</p>
           <h1 className="mt-2 font-display text-[2.5rem] font-bold leading-[1.05] text-ink-950 sm:text-[3.4rem]">
-            How ordering, paying and collecting work.
+            How ordering, paying and delivery work.
           </h1>
           <p className="mt-4 text-[17px] leading-relaxed text-ink-700">
             The whole arrangement in one place, in the same words used everywhere else on the site.
@@ -76,14 +69,13 @@ export default function PoliciesPage() {
         <div className="space-y-8">
           <Section id="ordering" title="Ordering">
             <p>
-              Orders are placed on this site for the {SEASON.name} season and are collected in person.
-              You choose your community, your sets and how many, and give a name, a phone number and
-              an email address so your confirmation can reach you.
+              Orders are placed on this site for the {SEASON.name} season and are shipped to the
+              address on the order. You choose your sets and how many, and give a name, a phone
+              number, an email address and a delivery address.
             </p>
             <p>
-              Every order is given a code. That code is how you look your order up, how you change it,
-              and how it is handed to you at pickup. Anyone holding your code can collect on your
-              behalf, which is deliberate: send someone else if you cannot come yourself.
+              Every order is given a code. That code is how you look your order up and how you change
+              it before the deadline.
             </p>
             <p>
               Ordering closes at the season deadline, <strong>{SEASON.deadlineLabelEt}</strong>. Prices
@@ -118,21 +110,25 @@ export default function PoliciesPage() {
               paying for up to {GRACE_MINUTES} minutes afterwards; nothing new can be started.
             </p>
             <p>
-              Past the deadline, speak to your community rep. Their name and number are on the
-              homepage under <Link href="/#sites" className="font-semibold text-leaf-800 underline underline-offset-4">Pickup</Link>.
+              Past the deadline, get in touch — the shipment is already packed against the totals,
+              but a wrong delivery address can still be corrected until the box leaves.
             </p>
           </Section>
 
-          <Section id="collection" title="Collecting in person">
+          <Section id="shipping" title="Shipping and delivery">
             <p>
-              Nothing is posted or couriered. Every set is collected in person at your community&#39;s
-              host Beis Medrash on distribution day, {pickupDate}, between {pickup.windowStart} and{" "}
-              {pickup.windowEnd}. {SEASON.distributionNote}
+              Every order ships to the address on it. {SHIPPING.carrierNote} Shipping is one flat
+              charge per order, {shippingLabel().toLowerCase()}, however many sets are on it — your
+              own set and the boys&#39; travel in the same box.
             </p>
             <p>
-              Bring your order code. If you cannot come, send anyone with it. If nobody collects on
-              the day, contact your community rep — sets are not held indefinitely, and after Sukkos
-              they are of no use to anyone.
+              {SEASON.deliveryNote} The shipment lands after Yom Kippur and orders go out as it is
+              unpacked; you get a tracking number by email the day yours leaves. Delivery dates are
+              the carrier&#39;s, not ours, so keep an eye on the tracking as Yom Tov approaches.
+            </p>
+            <p>
+              Check the address before you pay. A package returned as undeliverable can be sent
+              again, but the second shipping charge is yours and time is short.
             </p>
             <p>
               The sets fly in from Eretz Yisrael sealed: esrog in its box, hadassim and aravos in a
@@ -158,8 +154,8 @@ export default function PoliciesPage() {
             </ul>
             <p>
               Records are held in a private server-side store that only the program can read. Staff
-              running distribution for the season see the orders for their community; that is how a
-              set gets handed to the right person on the day.
+              packing the season&#39;s shipment see the orders and their delivery addresses; that is
+              how a set reaches the right door.
             </p>
             <p>
               Your email address is used for one thing: your order confirmation. There is no mailing
@@ -169,7 +165,7 @@ export default function PoliciesPage() {
             </p>
             <p>
               Records are kept for the season and the reconciliation that follows it. To have yours
-              removed, ask your community rep.
+              removed, get in touch.
             </p>
           </Section>
 
@@ -177,9 +173,7 @@ export default function PoliciesPage() {
             <p>
               Most things are answered on the{" "}
               <Link href="/faq" className="font-semibold text-leaf-800 underline underline-offset-4">questions page</Link>. For
-              anything about your own order, your community rep is the fastest route — every rep is
-              listed with a phone number on the{" "}
-              <Link href="/#sites" className="font-semibold text-leaf-800 underline underline-offset-4">homepage</Link>.
+              anything about your own order, quote your order code and we can find it in seconds.
             </p>
           </Section>
         </div>

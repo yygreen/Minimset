@@ -44,7 +44,6 @@ export function priceCart(lines: unknown): { items: OrderItem[]; totalCents: num
         withPitom,
         quantity,
         unitPriceCents,
-        qtyPickedUp: 0,
       });
     } else if (raw.kind === "ADDON") {
       const addOn = ADDONS.find((a) => a.id === raw.addOnId);
@@ -56,7 +55,6 @@ export function priceCart(lines: unknown): { items: OrderItem[]; totalCents: num
         withPitom: false,
         quantity,
         unitPriceCents: addOn.priceCents,
-        qtyPickedUp: 0,
       });
     } else {
       throw new BadCart("bad line kind");

@@ -22,7 +22,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ code: string 
   if (!HAS_STORE) return bad("not configured", 503);
   const { code } = await ctx.params;
   if (!rateLimit(`edit:${clientIp(req)}`, 20, 60_000)) return bad("slow down", 429);
-  if (Date.now() >= DEADLINE_MS) return bad("the deadline has passed; call your community rep", 409);
+  if (Date.now() >= DEADLINE_MS) return bad("the deadline has passed; please get in touch", 409);
 
   let body: { lines?: unknown };
   try {
@@ -40,11 +40,12 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ code: string 
 
   const updated = await mutateOrder(code, (cur): Order | null => {
     if (cur.status === "CANCELLED_REFUNDED") return null;
-    if (cur.items.some((i) => i.qtyPickedUp > 0)) return null;
+    // Once the box is out of the building the contents are settled.
+    if (cur.status === "SHIPPED" || cur.status === "DELIVERED") return null;
     return {
       ...cur,
       items: priced.items,
-      totalCents: priced.totalCents,
+      totalCents: priced.totalCents + (cur.shippingCents ?? 0),
       updatedAt: new Date().toISOString(),
     };
   });
@@ -59,11 +60,11 @@ export async function DELETE(req: Request, ctx: { params: Promise<{ code: string
   if (!HAS_STORE) return bad("not configured", 503);
   const { code } = await ctx.params;
   if (!rateLimit(`cancel:${clientIp(req)}`, 10, 60_000)) return bad("slow down", 429);
-  if (Date.now() >= DEADLINE_MS) return bad("the deadline has passed; call your community rep", 409);
+  if (Date.now() >= DEADLINE_MS) return bad("the deadline has passed; please get in touch", 409);
 
   const updated = await mutateOrder(code, (cur): Order | null => {
     if (cur.status === "CANCELLED_REFUNDED") return cur;
-    if (cur.items.some((i) => i.qtyPickedUp > 0)) return null;
+    if (cur.status === "SHIPPED" || cur.status === "DELIVERED") return null;
     return { ...cur, status: "CANCELLED_REFUNDED", updatedAt: new Date().toISOString() };
   });
 

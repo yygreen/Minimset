@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Faq } from "@/components/Faq";
-import { EXCHANGE_GUARANTEE, SEASON } from "@/lib/data";
+import { EXCHANGE_GUARANTEE, SEASON, SHIPPING, shippingLabel } from "@/lib/data";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/faq" },
   title: "Questions - V'samachta Arba Minim",
   description:
-    "How the V'samachta pre-order program works: what you receive, why a Rav picks your lulav, the exchange guarantee at pickup, and when to collect.",
+    "How the V'samachta pre-order program works: what you receive, why a Rav picks your lulav, the replacement guarantee, shipping and when it arrives.",
 };
 
 const FAQ: { q: string; a: string[] }[] = [
@@ -18,13 +18,21 @@ const FAQ: { q: string; a: string[] }[] = [
     ],
   },
   {
-    q: "What if the Motz says it's not worth the money?",
-    a: [EXCHANGE_GUARANTEE, "Reserve stock is shipped for exactly this. You are never asked to come back another day."],
+    q: "What if the set isn't worth the money?",
+    a: [EXCHANGE_GUARANTEE, "Reserve stock is flown in for exactly this."],
   },
   {
-    q: "When and where do I pick up?",
+    q: "When will it arrive?",
     a: [
-      "The day after Yom Kippur, at your community's host Beis Medrash, 10:00 AM to 5:00 PM. Your confirmation has the exact address for your site. The whole community is served in two to three hours with a card system.",
+      `${SEASON.deliveryNote} The shipment lands after Yom Kippur and orders go out to the addresses on them as it is unpacked.`,
+      "You get a tracking number by email the day your box leaves, so you can see where it is as Yom Tov approaches.",
+    ],
+  },
+  {
+    q: "How much is shipping, and where do you ship?",
+    a: [
+      `One flat rate per order, ${shippingLabel().toLowerCase()}, however many sets are on it. Your own set and Chinuch sets for the boys travel in one box for one charge.`,
+      SHIPPING.carrierNote,
     ],
   },
   {
@@ -52,13 +60,15 @@ const FAQ: { q: string; a: string[] }[] = [
     ],
   },
   {
-    q: "What if I can't make the pickup window?",
-    a: ["Send someone with your code. If nobody can come, call your community rep before the window closes."],
+    q: "What if nobody is home when it arrives?",
+    a: [
+      "That is between you and the carrier — the tracking number lets you redirect it, hold it, or leave delivery instructions. Use an address where somebody can take a box before Yom Tov.",
+    ],
   },
   {
     q: "Can I change or cancel my order?",
     a: [
-      `Yes, any time before the deadline (${SEASON.deadlineLabelEt}), from your order page. A price difference is refunded or charged automatically. After the deadline, changes go through your community rep.`,
+      `Yes, any time before the deadline (${SEASON.deadlineLabelEt}), from your order page. A price difference is refunded or charged automatically. After the deadline the shipment is packed against the totals, but a wrong delivery address can still be corrected until the box leaves.`,
     ],
   },
 ];

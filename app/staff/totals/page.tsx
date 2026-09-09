@@ -1,15 +1,12 @@
 "use client";
 
 import { useMemo } from "react";
-import { GoldRule } from "@/components/Ui";
-import { LEVELS, SEASON, SITES, getLevel } from "@/lib/data";
+import { SEASON, getLevel } from "@/lib/data";
 import { addOnTotals, grandRevenue, isLive, itemLabel, levelTotals, money } from "@/lib/orders";
 import { useStore } from "@/lib/staff-store";
 
 export default function TotalsPage() {
-  const { orders, ready, reserve, role, repSite } = useStore();
-  // A rep's data is already server-filtered to his site; the heading should say so too.
-  const repSiteName = SITES.find((s) => s.slug === repSite)?.name ?? repSite;
+  const { orders, ready } = useStore();
 
   const live = useMemo(() => orders.filter(isLive), [orders]);
   const totals = useMemo(() => levelTotals(orders), [orders]);
@@ -19,44 +16,47 @@ export default function TotalsPage() {
   const extraHadassim = addons.find((a) => a.id === "extra-hadassim")?.qty ?? 0;
   const extraAravos = addons.find((a) => a.id === "extra-aravos")?.qty ?? 0;
 
-  const perSite = useMemo(
-    () =>
-      SITES.map((site) => {
-        const siteOrders = live.filter((o) => o.siteSlug === site.slug);
-        const sets = siteOrders.reduce(
-          (s, o) => s + o.items.filter((i) => i.kind === "LEVEL").reduce((n, i) => n + i.quantity, 0),
-          0,
-        );
-        const revenue = siteOrders.reduce((s, o) => s + o.totalCents, 0);
-        const perLevel = LEVELS.map((l) => ({
-          key: l.key,
-          qty: siteOrders.reduce(
-            (s, o) =>
-              s + o.items.filter((i) => i.levelKey === l.key).reduce((n, i) => n + i.quantity, 0),
-            0,
-          ),
-        }));
-        return { site, orders: siteOrders.length, sets, revenue, perLevel };
-      }),
-    [live],
-  );
+  /* Where the boxes go. Not a business unit any more, just the shape of the shipment. */
+  const byState = useMemo(() => {
+    const map = new Map<string, { state: string; orders: number; sets: number; revenue: number }>();
+    for (const o of live) {
+      const key = o.address?.state || "??";
+      const row = map.get(key) ?? { state: key, orders: 0, sets: 0, revenue: 0 };
+      row.orders += 1;
+      row.revenue += o.totalCents;
+      row.sets += o.items
+        .filter((i) => i.kind === "LEVEL")
+        .reduce((n, i) => n + i.quantity, 0);
+      map.set(key, row);
+    }
+    return [...map.values()].sort((a, b) => b.sets - a.sets);
+  }, [live]);
 
   const exportCsv = () => {
     const rows: string[][] = [
-      ["Code", "Site", "Name", "Phone", "Email", "Shul", "Channel", "Payment", "Status", "Contents", "Total USD"],
+      [
+        "Code", "Name", "Phone", "Email",
+        "Address 1", "Address 2", "City", "State", "ZIP",
+        "Status", "Carrier", "Tracking",
+        "Contents", "Shipping USD", "Total USD",
+      ],
     ];
     for (const o of live) {
       rows.push([
         o.code,
-        o.siteSlug,
         o.customerName,
         o.phone,
         o.email,
-        o.shul,
-        o.channel,
-        o.paymentMethod,
+        o.address.line1,
+        o.address.line2,
+        o.address.city,
+        o.address.state,
+        o.address.zip,
         o.status,
+        o.carrier ?? "",
+        o.trackingNumber ?? "",
         o.items.map((i) => `${i.quantity} x ${itemLabel(i)}`).join("; "),
+        ((o.shippingCents ?? 0) / 100).toFixed(2),
         (o.totalCents / 100).toFixed(2),
       ]);
     }
@@ -80,9 +80,7 @@ export default function TotalsPage() {
     <div className="mx-auto max-w-6xl px-4 py-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl font-bold text-ink-950">
-            {role === "rep" ? `${repSiteName} totals` : "HQ Totals"}
-          </h1>
+          <h1 className="font-display text-3xl font-bold text-ink-950">HQ Totals</h1>
           <p className="mt-1 text-sm text-ink-700">
             {SEASON.name}, the sheet you pull the moment the deadline passes.
           </p>
@@ -92,7 +90,7 @@ export default function TotalsPage() {
           onClick={exportCsv}
           className="flex h-12 items-center justify-center rounded-lg bg-leaf-800 px-6 text-sm font-semibold text-white transition hover:bg-leaf-900"
         >
-          Export packing sheet (CSV)
+          Export packing and address sheet (CSV)
         </button>
       </div>
 
@@ -143,13 +141,11 @@ export default function TotalsPage() {
                 <th className="px-5 py-3 text-right">Without pitom</th>
                 <th className="px-5 py-3 text-right">Sets</th>
                 <th className="px-5 py-3 text-right">Revenue</th>
-                <th className="px-5 py-3 text-right">Reserve left</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-sand-200">
               {totals.map((t) => {
                 const level = getLevel(t.levelKey);
-                const bucket = reserve[t.levelKey];
                 return (
                   <tr key={t.levelKey}>
                     <td className="px-5 py-4">
@@ -171,10 +167,6 @@ export default function TotalsPage() {
                       {t.sets}
                     </td>
                     <td className="tnum px-5 py-4 text-right">{money(t.revenueCents)}</td>
-                    <td className="tnum px-5 py-4 text-right">
-                      {bucket.shipped - bucket.used}
-                      <span className="text-xs text-ink-500"> / {bucket.shipped}</span>
-                    </td>
                   </tr>
                 );
               })}
@@ -194,40 +186,51 @@ export default function TotalsPage() {
                 <td className="tnum px-5 py-4 text-right">
                   {money(totals.reduce((s, t) => s + t.revenueCents, 0))}
                 </td>
-                <td className="px-5 py-4" />
               </tr>
             </tfoot>
           </table>
         </div>
       </section>
 
-      {/* per site */}
+      {/* where it ships */}
       <section className="mt-10">
-        <h2 className="font-display text-2xl font-bold text-ink-950">By site</h2>
-        <div className="mt-5 grid gap-4 md:grid-cols-2">
-          {perSite.map((row) => (
-            <div key={row.site.slug} className="rounded-2xl border border-sand-200 bg-white p-6 shadow-card">
-              <div className="flex items-baseline justify-between">
-                <h3 className="font-display text-xl font-bold text-ink-950">{row.site.name}</h3>
-                <span className="tnum font-display text-2xl font-bold text-ink-900">
-                  {row.sets}
-                  <span className="ml-1 text-sm font-normal text-ink-500">sets</span>
-                </span>
-              </div>
-              <p className="mt-1 text-sm text-ink-700">
-                {row.site.hostInstitution}, {row.orders} orders, {money(row.revenue)}
-              </p>
-              <GoldRule className="my-4" />
-              <ul className="space-y-1.5 text-sm">
-                {row.perLevel.map((l) => (
-                  <li key={l.key} className="flex justify-between">
-                    <span className="text-ink-700">{getLevel(l.key).name}</span>
-                    <span className="tnum font-semibold text-ink-950">{l.qty}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+        <h2 className="font-display text-2xl font-bold text-ink-950">Where it ships</h2>
+        <p className="mt-1 text-sm text-ink-700">
+          Orders and sets by state, heaviest first. Useful for sanity-checking postage before the
+          labels are bought.
+        </p>
+        <div className="mt-5 overflow-x-auto rounded-2xl border border-sand-200 bg-white shadow-card">
+          <table className="w-full min-w-[420px] text-sm">
+            <thead className="bg-sand-100 text-left">
+              <tr className="text-xs font-semibold uppercase tracking-wider text-ink-500">
+                <th className="px-5 py-3">State</th>
+                <th className="px-5 py-3 text-right">Orders</th>
+                <th className="px-5 py-3 text-right">Sets</th>
+                <th className="px-5 py-3 text-right">Revenue</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-sand-200">
+              {byState.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="px-5 py-8 text-center text-ink-500">
+                    No orders yet.
+                  </td>
+                </tr>
+              )}
+              {byState.map((row) => (
+                <tr key={row.state}>
+                  <td className="px-5 py-3.5 font-display text-lg font-bold text-ink-950">
+                    {row.state}
+                  </td>
+                  <td className="tnum px-5 py-3.5 text-right">{row.orders}</td>
+                  <td className="tnum px-5 py-3.5 text-right font-semibold text-ink-950">
+                    {row.sets}
+                  </td>
+                  <td className="tnum px-5 py-3.5 text-right">{money(row.revenue)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
 

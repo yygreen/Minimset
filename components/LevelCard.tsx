@@ -85,7 +85,7 @@ export function LevelCard({
           </p>
         )}
 
-        <p className="mt-3 text-[13px] text-ink-500">No shipping. Collect at your Beis Medrash. Change or cancel free until the deadline.</p>
+        <p className="mt-3 text-[13px] text-ink-500">Shipped to your door. Change or cancel free until the deadline.</p>
 
         <details className="group mt-4 shrink-0 rounded-xl border border-sand-200 bg-sand-50 md:mb-6">
           <summary className="flex items-center justify-between px-4 py-3 text-sm font-semibold text-leaf-800">

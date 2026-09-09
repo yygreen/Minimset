@@ -11,21 +11,25 @@ import {
   LEVELS,
   LevelKey,
   SEASON,
-  Site,
+  SHIPPING,
+  shippingLabel,
 } from "@/lib/data";
 import { IMG, type Photo } from "@/lib/images";
-import { Order, OrderItem, isPastDeadline, itemLabel, money, orderTotal } from "@/lib/orders";
+import {
+  Address,
+  Order,
+  OrderItem,
+  isPastDeadline,
+  itemLabel,
+  money,
+  orderTotal,
+} from "@/lib/orders";
 import { useStore } from "@/lib/store";
 import { StripePay } from "@/components/StripePay";
 
 type Step = 0 | 1 | 2 | 3;
 
-/* Five steps, not four: choosing the community is step one and happens on
-   /order/new before this component mounts. Showing it here as a completed step
-   keeps the journey honest -- the visitor has already made a decision, and can
-   go back and change it. Internally `step` still counts the four steps this
-   component owns; the display index is one higher. */
-const STEP_LABELS = ["Your community", "Your sets", "Your details", "Review", "Payment"];
+const STEP_LABELS = ["Your sets", "Delivery details", "Review", "Payment"];
 
 const EMPTY_QTY: Record<LevelKey, number> = {
   MEHUDAR_AA: 0,
@@ -45,7 +49,13 @@ const WHO: Record<LevelKey, string> = {
   CHINUCH: "For every boy, his own set",
 };
 
-export function OrderFlow({ site }: { site: Site }) {
+/* Deliberately not a dropdown of fifty. A short text field the customer's own
+   autofill can complete beats a select they have to scroll. Validated as two
+   letters, uppercased on the way out. */
+const STATE_RE = /^[A-Za-z]{2}$/;
+const ZIP_RE = /^\d{5}(-\d{4})?$/;
+
+export function OrderFlow() {
   const router = useRouter();
   const { placeOrder } = useStore();
 
@@ -53,19 +63,17 @@ export function OrderFlow({ site }: { site: Site }) {
   const [qty, setQty] = useState<Record<LevelKey, number>>({ ...EMPTY_QTY });
   const [pitom, setPitom] = useState(true);
   const [addonQty, setAddonQty] = useState<Record<string, number>>({});
-  const [openSpec, setOpenSpec] = useState<LevelKey | null>("MEHUDAR_AA");
   /* The level the visitor picked before they got here. It leads the list and is
      marked as theirs; the other two follow as alternatives and as the upsell
      that matters most -- a Chinuch set for each boy. */
   const [preselected, setPreselected] = useState<LevelKey | null>(null);
 
-  // ?level=KEY from a product page or a community card pre-selects one set of that level.
+  // ?level=KEY from a product page or a homepage card pre-selects one set of that level.
   // Read after mount so the page itself stays static (edge-cached) and fully server-rendered.
   useEffect(() => {
     const key = new URLSearchParams(window.location.search).get("level") as LevelKey | null;
     if (key && LEVELS.some((l) => l.key === key)) {
       setQty((q) => (Object.values(q).some((n) => n > 0) ? q : { ...EMPTY_QTY, [key]: 1 }));
-      setOpenSpec(key);
       setPreselected(key);
     }
   }, []);
@@ -73,7 +81,11 @@ export function OrderFlow({ site }: { site: Site }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [shul, setShul] = useState("");
+  const [line1, setLine1] = useState("");
+  const [line2, setLine2] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zip, setZip] = useState("");
   const [touched, setTouched] = useState(false);
 
   const [paying, setPaying] = useState(false);
@@ -127,7 +139,6 @@ export function OrderFlow({ site }: { site: Site }) {
         withPitom,
         quantity: n,
         unitPriceCents: unit,
-        qtyPickedUp: 0,
       });
     }
     for (const addon of ADDONS) {
@@ -140,36 +151,44 @@ export function OrderFlow({ site }: { site: Site }) {
         withPitom: false,
         quantity: n,
         unitPriceCents: addon.priceCents,
-        qtyPickedUp: 0,
       });
     }
     return out;
   }, [qty, pitom, addonQty]);
 
-  const total = orderTotal(items);
+  const subtotal = orderTotal(items);
+  /* Null means the rate is not agreed yet, so the site names no figure and the
+     total it shows is explicitly "before shipping". It never invents a price. */
+  const shipCents = SHIPPING.flatRateCents;
+  const total = subtotal + (shipCents ?? 0);
   const setCount = items.filter((i) => i.kind === "LEVEL").reduce((s, i) => s + i.quantity, 0);
-  const emailOk = email.trim() === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-  const detailsValid = name.trim().length > 1 && phone.replace(/\D/g, "").length >= 10 && emailOk;
 
-  const pickupDate = new Date(`${site.distributionDateIso}T12:00:00`).toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-  });
+  const emailOk = email.trim() === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const nameOk = name.trim().length > 1;
+  const phoneOk = phone.replace(/\D/g, "").length >= 10;
+  const line1Ok = line1.trim().length > 3;
+  const cityOk = city.trim().length > 1;
+  const stateOk = STATE_RE.test(state.trim());
+  const zipOk = ZIP_RE.test(zip.trim());
+  const detailsValid =
+    nameOk && phoneOk && emailOk && line1Ok && cityOk && stateOk && zipOk;
+
+  const address: Address = {
+    line1: line1.trim(),
+    line2: line2.trim(),
+    city: city.trim(),
+    state: state.trim().toUpperCase(),
+    zip: zip.trim(),
+  };
 
   /* ---------------- deadline closed ---------------- */
   if (closed) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-24 text-center">
-        <h1 className="font-display text-3xl font-bold text-ink-950">
-          Registration for {site.name} is closed
-        </h1>
+        <h1 className="font-display text-3xl font-bold text-ink-950">Ordering is closed</h1>
         <p className="mt-4 text-ink-700">
           The deadline passed on {SEASON.deadlineLabelEt}. The shipment is packed against the
           totals, so no further orders can be accepted this season.
-        </p>
-        <p className="mt-4 text-ink-700">
-          Questions? Speak to {site.repName} at {site.repPhone}.
         </p>
         <Link
           href="/"
@@ -202,12 +221,11 @@ export function OrderFlow({ site }: { site: Site }) {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          siteSlug: site.slug,
           lines,
           customerName: name.trim(),
           phone: phone.trim(),
           email: email.trim(),
-          shul: shul.trim(),
+          address,
           ticket,
         }),
       });
@@ -223,7 +241,7 @@ export function OrderFlow({ site }: { site: Site }) {
         setPayError(
           data.message ||
             data.error ||
-            `We could not place the order just now. Please try again, or call ${site.repName} at ${site.repPhone}.`,
+            "We could not place the order just now. Please try again in a moment.",
         );
         return;
       }
@@ -244,14 +262,13 @@ export function OrderFlow({ site }: { site: Site }) {
       // Keep a local copy so the confirmation works instantly and the code survives a refresh.
       placeOrder({
         code: data.code,
-        siteSlug: site.slug,
         status: "PAID",
-        channel: "ONLINE",
         customerName: name.trim(),
         phone: phone.trim(),
         email: email.trim(),
-        shul: shul.trim(),
+        address,
         items,
+        shippingCents: shipCents ?? 0,
         totalCents: total,
         paymentMethod: "CARD",
         createdAt: new Date().toISOString(),
@@ -261,14 +278,9 @@ export function OrderFlow({ site }: { site: Site }) {
       router.push(`/order/${data.code}?new=1`);
     } catch {
       setPaying(false);
-      setPayError(
-        `We could not reach the server. Check your connection and try again, or call ${site.repName} at ${site.repPhone}.`,
-      );
+      setPayError("We could not reach the server. Check your connection and try again.");
     }
   };
-
-  /* Carried back to the community step so changing town does not lose the set. */
-  const firstChosenLevel = (Object.keys(qty) as LevelKey[]).find((k) => qty[k] > 0) ?? null;
 
   /* Chosen level first, the rest in their normal order behind it. */
   const orderedLevels = preselected
@@ -286,42 +298,28 @@ export function OrderFlow({ site }: { site: Site }) {
       {/* header */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <Link href={`/${site.slug}`} className="inline-block py-1 text-[14px] text-ink-500 hover:text-leaf-800">
-            Back to {site.name}
+          <Link href="/" className="inline-block py-1 text-[14px] text-ink-500 hover:text-leaf-800">
+            Back to the program
           </Link>
           <h1 className="mt-1.5 font-display text-[2rem] font-bold leading-tight text-ink-950 sm:text-[2.6rem]">
-            Order for {site.name}
+            Order your sets
           </h1>
           <p className="mt-1 text-[15px] text-ink-700">
-            Pickup at {site.hostInstitution}, {pickupDate}, {site.windowStart} to {site.windowEnd}
+            {SEASON.deliveryNote} {shippingLabel()}.
           </p>
         </div>
       </div>
 
       {/* progress */}
-      <ol className="mt-6 grid grid-cols-5 gap-1.5" aria-label="Progress">
+      <ol className="mt-6 grid grid-cols-4 gap-1.5" aria-label="Progress">
         {STEP_LABELS.map((label, i) => {
-          const shown = step + 1;
-          const state = i === shown ? "current" : i < shown ? "done" : "todo";
-          if (i === 0) {
-            return (
-              <li key={label}>
-                <Link href={`/order/new?level=${firstChosenLevel ?? ""}`} className="block w-full text-left">
-                  <span className="block h-1.5 rounded-full bg-leaf-700" />
-                  <span className="mt-2 block truncate text-[12px] font-semibold text-leaf-800 sm:text-[13px]">
-                    <span className="hidden sm:inline">1. </span>
-                    {label}
-                  </span>
-                </Link>
-              </li>
-            );
-          }
+          const state = i === step ? "current" : i < step ? "done" : "todo";
           return (
             <li key={label}>
               <button
                 type="button"
-                disabled={i > shown}
-                onClick={() => setStep((i - 1) as Step)}
+                disabled={i > step}
+                onClick={() => setStep(i as Step)}
                 aria-current={state === "current" ? "step" : undefined}
                 className="w-full text-left disabled:cursor-default"
               >
@@ -365,8 +363,9 @@ export function OrderFlow({ site }: { site: Site }) {
                           Add to your order
                         </h2>
                         <p className="mt-1 text-[14px] leading-relaxed text-ink-700">
-                          One order can hold several sets. A Chinuch set for each boy is the usual
-                          addition - or change your mind here, nothing is fixed until you pay.
+                          One order can hold several sets, and they ship together in one box. A
+                          Chinuch set for each boy is the usual addition - or change your mind here,
+                          nothing is fixed until you pay.
                         </p>
                       </div>
                     )}
@@ -488,17 +487,17 @@ export function OrderFlow({ site }: { site: Site }) {
                 onClick={goDetails}
                 className="hidden h-14 w-full items-center justify-center rounded-lg bg-leaf-800 px-8 text-[17px] font-semibold text-white transition hover:bg-leaf-900 disabled:cursor-not-allowed disabled:opacity-40 lg:flex"
               >
-                {setCount === 0 ? "Choose at least one set" : `Continue - ${money(total)}`}
+                {setCount === 0 ? "Choose at least one set" : `Continue - ${money(subtotal)}`}
               </button>
             </div>
           )}
 
-          {/* ---------------- STEP 1: DETAILS ---------------- */}
+          {/* ---------------- STEP 1: DELIVERY DETAILS ---------------- */}
           {step === 1 && (
             <div className="rounded-2xl border border-sand-200 bg-white p-5 shadow-card sm:p-8">
-              <h2 className="font-display text-2xl font-bold text-ink-950">Your details</h2>
+              <h2 className="font-display text-2xl font-bold text-ink-950">Delivery details</h2>
               <p className="mt-1 text-[15px] text-ink-700">
-                Enough to find your order in seconds at pickup.
+                Where the box goes, and how we reach you if anything about it needs a word.
               </p>
 
               <div className="mt-6 grid gap-5 sm:grid-cols-2">
@@ -509,20 +508,20 @@ export function OrderFlow({ site }: { site: Site }) {
                   onChange={setName}
                   placeholder="Yaakov Friedman"
                   autoComplete="name"
-                  error={touched && name.trim().length < 2 ? "Please enter your name." : ""}
+                  error={touched && !nameOk ? "Please enter your name." : ""}
                 />
                 <Field
                   label="Phone"
                   required
                   value={phone}
                   onChange={setPhone}
-                  placeholder={`(${site.repPhone.replace(/\D/g, "").slice(0, 3)}) 555-0142`}
+                  placeholder="(555) 123-4567"
                   type="tel"
                   inputMode="tel"
                   autoComplete="tel"
                   error={
-                    touched && phone.replace(/\D/g, "").length < 10
-                      ? "A phone number is how the rep finds you."
+                    touched && !phoneOk
+                      ? "A phone number is required for delivery."
                       : ""
                   }
                 />
@@ -534,17 +533,66 @@ export function OrderFlow({ site }: { site: Site }) {
                   type="email"
                   inputMode="email"
                   autoComplete="email"
-                  hint="For your confirmation and pickup reminder."
+                  hint="For your confirmation and tracking number."
                   error={touched && !emailOk ? "That email does not look right. Leave it blank if you prefer." : ""}
                 />
+              </div>
+
+              <h3 className="mt-8 font-display text-lg font-bold text-ink-950">Shipping address</h3>
+              <p className="mt-1 text-[14px] text-ink-700">{SHIPPING.carrierNote}</p>
+
+              <div className="mt-4 grid gap-5 sm:grid-cols-2">
+                <div className="sm:col-span-2">
+                  <Field
+                    label="Street address"
+                    required
+                    value={line1}
+                    onChange={setLine1}
+                    placeholder="14 Forest Avenue"
+                    autoComplete="address-line1"
+                    error={touched && !line1Ok ? "Please enter a street address." : ""}
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <Field
+                    label="Apartment, suite, floor"
+                    value={line2}
+                    onChange={setLine2}
+                    placeholder="Apt 3B"
+                    autoComplete="address-line2"
+                    hint="Optional."
+                  />
+                </div>
                 <Field
-                  label="Shul"
-                  value={shul}
-                  onChange={setShul}
-                  placeholder="Adas Yisrael"
-                  autoComplete="organization"
-                  hint="Optional. Helps the rep group orders."
+                  label="City"
+                  required
+                  value={city}
+                  onChange={setCity}
+                  placeholder="Lakewood"
+                  autoComplete="address-level2"
+                  error={touched && !cityOk ? "Please enter a city." : ""}
                 />
+                <div className="grid grid-cols-[1fr_1.4fr] gap-4">
+                  <Field
+                    label="State"
+                    required
+                    value={state}
+                    onChange={(v) => setState(v.toUpperCase().slice(0, 2))}
+                    placeholder="NJ"
+                    autoComplete="address-level1"
+                    error={touched && !stateOk ? "Two letters." : ""}
+                  />
+                  <Field
+                    label="ZIP"
+                    required
+                    value={zip}
+                    onChange={setZip}
+                    placeholder="08701"
+                    inputMode="numeric"
+                    autoComplete="postal-code"
+                    error={touched && !zipOk ? "Five digits." : ""}
+                  />
+                </div>
               </div>
 
               <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row">
@@ -582,9 +630,17 @@ export function OrderFlow({ site }: { site: Site }) {
                       </span>
                     </li>
                   ))}
+                  <li className="flex items-baseline justify-between gap-4 py-3">
+                    <span className="text-ink-900">Shipping</span>
+                    <span className="tnum text-[15px] font-semibold text-ink-700">
+                      {shipCents === null ? "Added at checkout" : money(shipCents)}
+                    </span>
+                  </li>
                 </ul>
                 <div className="mt-3 flex items-baseline justify-between border-t-2 border-ink-950 pt-4">
-                  <span className="font-display text-xl font-bold text-ink-950">Total</span>
+                  <span className="font-display text-xl font-bold text-ink-950">
+                    {shipCents === null ? "Total before shipping" : "Total"}
+                  </span>
                   <span className="tnum font-display text-2xl font-bold text-ink-950">{money(total)}</span>
                 </div>
                 <button
@@ -602,7 +658,6 @@ export function OrderFlow({ site }: { site: Site }) {
                   <p className="mt-2 font-display text-lg font-bold text-ink-950">{name}</p>
                   <p className="text-[14px] text-ink-700">{phone}</p>
                   {email && <p className="text-[14px] text-ink-700">{email}</p>}
-                  {shul && <p className="text-[14px] text-ink-700">{shul}</p>}
                   <button
                     type="button"
                     onClick={() => setStep(1)}
@@ -612,16 +667,26 @@ export function OrderFlow({ site }: { site: Site }) {
                   </button>
                 </div>
                 <div className="rounded-2xl border border-sand-200 bg-white p-5 shadow-card">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Pickup</p>
-                  <p className="mt-2 font-display text-lg font-bold text-ink-950">{site.hostInstitution}</p>
-                  <p className="text-[14px] text-ink-700">
-                    {site.addressLines.join(", ")}
+                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Ship to</p>
+                  <p className="mt-2 text-[14px] leading-relaxed text-ink-900">
+                    {address.line1}
+                    {address.line2 && (
+                      <>
+                        <br />
+                        {address.line2}
+                      </>
+                    )}
                     <br />
-                    {site.city}, {site.state} {site.zip}
+                    {address.city}, {address.state} {address.zip}
                   </p>
-                  <p className="mt-2 text-[14px] text-ink-700">
-                    {pickupDate}, {site.windowStart} to {site.windowEnd}
-                  </p>
+                  <p className="mt-2 text-[14px] text-ink-700">{SEASON.deliveryNote}</p>
+                  <button
+                    type="button"
+                    onClick={() => setStep(1)}
+                    className="mt-2 inline-block py-1.5 text-[14px] font-semibold text-leaf-800 underline underline-offset-4"
+                  >
+                    Edit
+                  </button>
                 </div>
               </div>
 
@@ -687,7 +752,8 @@ export function OrderFlow({ site }: { site: Site }) {
                   {!payLive && (
                     <div className="mt-5 rounded-lg border border-esrog-300 bg-esrog-100 px-4 py-3 text-[14px] text-ink-900">
                       Card processing is not switched on yet. Your order is recorded and held under
-                      your code, and no card is charged. Your community rep settles payment with you.
+                      your code, and no card is charged. We will be in touch to settle payment
+                      before anything ships.
                     </div>
                   )}
 
@@ -746,19 +812,25 @@ export function OrderFlow({ site }: { site: Site }) {
                     </span>
                   </li>
                 ))}
+                <li className="flex justify-between gap-3">
+                  <span className="text-ink-700">Shipping</span>
+                  <span className="tnum font-semibold text-ink-950">
+                    {shipCents === null ? "At checkout" : money(shipCents)}
+                  </span>
+                </li>
               </ul>
             )}
             <div className="mt-5 flex items-baseline justify-between border-t border-sand-200 pt-4">
-              <span className="font-semibold text-ink-900">Total</span>
+              <span className="font-semibold text-ink-900">
+                {shipCents === null ? "Before shipping" : "Total"}
+              </span>
               <span className="tnum font-display text-2xl font-bold text-ink-950">{money(total)}</span>
             </div>
             <p className="mt-4 text-[13px] leading-relaxed text-ink-500">
               {setCount} complete {setCount === 1 ? "set" : "sets"}. Esrog, lulav, hadassim and
               aravos in each.
             </p>
-            <p className="mt-3 text-[13px] leading-relaxed text-ink-500">
-              Pickup {pickupDate}, {site.windowStart} to {site.windowEnd}, {site.hostInstitution}.
-            </p>
+            <p className="mt-3 text-[13px] leading-relaxed text-ink-500">{SEASON.deliveryNote}</p>
           </div>
         </aside>
       </div>
@@ -771,7 +843,7 @@ export function OrderFlow({ site }: { site: Site }) {
               <p className="text-[12px] text-ink-500">
                 {setCount === 0 ? "No sets yet" : `${setCount} ${setCount === 1 ? "set" : "sets"}`}
               </p>
-              <p className="tnum font-display text-xl font-bold text-ink-950">{money(total)}</p>
+              <p className="tnum font-display text-xl font-bold text-ink-950">{money(subtotal)}</p>
             </div>
             <button
               type="button"

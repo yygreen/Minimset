@@ -11,7 +11,7 @@ export default function NotFound() {
           That page is not in the box.
         </h1>
         <p className="mt-4 max-w-md text-[17px] leading-relaxed text-ink-700">
-          The link may be old or mistyped. The sets, the pickup locations and your order are all
+          The link may be old or mistyped. The sets, how delivery works and your order are all
           one tap away.
         </p>
         <div className="mt-7 flex flex-col gap-3 sm:flex-row">

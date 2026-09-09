@@ -16,13 +16,12 @@ export function json(data: unknown, status = 200): Response {
 export const ok = (data: unknown = { ok: true }) => json(data);
 export const bad = (message: string, status = 400) => json({ error: message }, status);
 
-/** The caller's scope: admin sees everything, a rep sees one site, null is not signed in. */
+/** The caller's scope, or null when they are not signed in. */
 export async function staffScope(): Promise<StaffScope | null> {
   if (!STAFF_LOCKED) return { role: "admin" };
   const jar = await cookies();
-  const data = verify<{ role?: string; site?: string }>(jar.get(STAFF_COOKIE)?.value);
+  const data = verify<{ role?: string }>(jar.get(STAFF_COOKIE)?.value);
   if (!data) return null;
-  if (data.role === "rep" && data.site) return { role: "rep", site: data.site };
   return { role: "admin" };
 }
 
@@ -35,17 +34,12 @@ export async function guardStaff(): Promise<Response | null> {
   return (await isStaff()) ? null : bad("not signed in", 401);
 }
 
-/** Admin only: totals, reserve edits, sample data, purges. */
+/** Admin only: totals, sample data, purges. */
 export async function guardAdmin(): Promise<Response | null> {
   const scope = await staffScope();
   if (!scope) return bad("not signed in", 401);
   if (scope.role !== "admin") return bad("admin only", 403);
   return null;
-}
-
-/** Is this order (by site) inside the caller's scope? */
-export function inScope(scope: StaffScope, siteSlug: string): boolean {
-  return scope.role === "admin" || scope.site === siteSlug;
 }
 
 /**

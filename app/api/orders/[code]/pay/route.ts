@@ -24,14 +24,13 @@ export async function POST(req: Request, ctx: { params: Promise<{ code: string }
   if (order.status !== "PENDING_PAYMENT") return bad("that order is not payable", 409);
   // The same window as ordering itself: pending orders do not outlive the grace period.
   if (Date.now() >= graceEndsMs() && Date.now() >= DEADLINE_MS) {
-    return bad("the deadline has passed; call your community rep", 409);
+    return bad("the deadline has passed for this order", 409);
   }
 
   try {
     const intent = await createPaymentIntent({
       amountCents: order.totalCents,
       code: order.code,
-      siteSlug: order.siteSlug,
       name: order.customerName,
       phone: order.phone,
     });

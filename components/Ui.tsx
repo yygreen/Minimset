@@ -47,10 +47,9 @@ export function Stepper({
 const STATUS_STYLE: Record<OrderStatus, { label: string; className: string }> = {
   PENDING_PAYMENT: { label: "Awaiting payment", className: "bg-esrog-100 text-esrog-800 ring-esrog-300" },
   PAID: { label: "Paid in full", className: "bg-leaf-50 text-leaf-800 ring-leaf-200" },
-  PARTIALLY_PICKED_UP: { label: "Partially picked up", className: "bg-esrog-200 text-esrog-900 ring-esrog-300" },
-  FULFILLED: { label: "Picked up", className: "bg-leaf-100 text-leaf-900 ring-leaf-700/40" },
+  SHIPPED: { label: "Shipped", className: "bg-esrog-200 text-esrog-900 ring-esrog-300" },
+  DELIVERED: { label: "Delivered", className: "bg-leaf-100 text-leaf-900 ring-leaf-700/40" },
   CANCELLED_REFUNDED: { label: "Cancelled, refunded", className: "bg-sand-100 text-ink-500 ring-sand-300" },
-  UNCLAIMED: { label: "Unclaimed", className: "bg-alert-100 text-alert-800 ring-alert-800/25" },
 };
 
 export function StatusBadge({ status }: { status: OrderStatus }) {

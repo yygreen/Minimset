@@ -61,7 +61,7 @@ const SHOTS: { n: number; title: string; how: string; why: string }[] = [
     n: 9,
     title: "Cartons ready to ship, or stacked at a Beis Medrash",
     how: "Horizontal, whole stack in frame, room lights fine.",
-    why: "The community pages show pickup day; a real stack beats a stock photo.",
+    why: "The program shows what lands in the box; a real stack beats a stock photo.",
   },
   {
     n: 10,

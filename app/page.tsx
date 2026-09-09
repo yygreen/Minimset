@@ -7,7 +7,7 @@ import { LevelCard } from "@/components/LevelCard";
 import { OpenOnly } from "@/components/OpenOnly";
 import { Share } from "@/components/Share";
 import { CompareTable } from "@/components/CompareTable";
-import { EXCHANGE_GUARANTEE, LEVELS, PARTNERSHIP_PARAGRAPH, SEASON, SITES, headlinePriceCents, altPriceCents } from "@/lib/data";
+import { EXCHANGE_GUARANTEE, LEVELS, PARTNERSHIP_PARAGRAPH, SEASON, SHIPPING, headlinePriceCents, altPriceCents, shippingLabel } from "@/lib/data";
 import { IMG, type Photo } from "@/lib/images";
 import { money } from "@/lib/orders";
 import { MEDIA } from "@/lib/trust";
@@ -34,7 +34,7 @@ const LEVEL_DETAIL: Record<string, { photo: Photo; promises: string[] }> = {
     photo: IMG.levelAA,
     promises: [
       "Sorted to the strictest standard in the program",
-      "Reserve stock at pickup, exchanged on the spot if the Motz says so",
+      "Reserve stock held back, so a set that falls short is replaced",
       "Sealed in Eretz Yisrael, opened only in your sukkah",
     ],
   },
@@ -57,10 +57,10 @@ const LEVEL_DETAIL: Record<string, { photo: Photo; promises: string[] }> = {
 };
 
 const STEPS = [
-  { n: "1", title: "Order and pay", body: `Pick your community and your sets. Pay in full before ${SEASON.deadlineLabelEt}.` },
+  { n: "1", title: "Order and pay", body: `Choose your sets and where they go. Pay in full before ${SEASON.deadlineLabelEt}.` },
   { n: "2", title: "The Rabbanim sort", body: "Morei Hora'ah in Eretz Yisrael select and inspect every item. Nothing is packed until it passes." },
   { n: "3", title: "It flies in sealed", body: "Esrog boxed, hadassim and aravos bagged, lulav sealed. One day in the air." },
-  { n: "4", title: "You collect after Yom Kippur", body: "Show your code at your Beis Medrash. In and out in minutes, with a Moreh Hora'ah at the table." },
+  { n: "4", title: "It ships to your door", body: "Boxed and tracked the moment it lands, addressed to you. In time to open it in your own sukkah." },
 ];
 
 const FAQ = [
@@ -71,8 +71,8 @@ const FAQ = [
     ],
   },
   {
-    q: "What if the Motz says it is not worth the money?",
-    a: ["It is exchanged right there, on the spot, from reserve stock brought for exactly that. You are never told to come back another day."],
+    q: "What if the set is not worth what I paid?",
+    a: ["Tell us and it is replaced from the reserve stock held back for exactly that. You do not argue the point and you are not left with it."],
   },
   {
     q: "What exactly is in a set?",
@@ -83,14 +83,12 @@ const FAQ = [
     a: ["Yes. The Kosher L'Bracha (Chinuch) set is $40, so every boy holds his own minim. One order can hold a Mehudar A-A for you and Chinuch sets for the boys."],
   },
   {
-    q: "When and where do I pick up?",
-    a: ["The day after Yom Kippur, at your community's host Beis Medrash, 10:00 AM to 5:00 PM. Your confirmation has the address. Send anyone with your code if you cannot come."],
+    q: "When will it arrive?",
+    a: ["Every set ships in time to arrive before Yom Tov. The shipment lands after Yom Kippur and goes straight out to the addresses on the orders; you get a tracking number by email the day yours leaves."],
   },
   {
-    q: "Do I have to order on the website?",
-    a: [
-      "No. In Eretz Yisrael most people order on a sheet left in the Beis Medrash: you write what you want, put the money in an envelope with it, and hand it in. Your community rep can take an order that way and enter it for you. It joins the same totals, and you collect on the same day with the same code.",
-    ],
+    q: "How much is shipping?",
+    a: ["One flat rate per order, added at checkout, however many sets are on it. A set for you and Chinuch sets for the boys travel in one box for one shipping charge."],
   },
   {
     q: "Why can't the deadline move?",
@@ -118,13 +116,6 @@ export default function HomePage() {
     .map((l) => `${SHORT_NAME[l.key] ?? l.name} $${headlinePriceCents(l) / 100}`)
     .join(" \u00b7 ");
 
-  /* Naming the towns answers "can I even get this?" in the hero, and self-
-     qualifies the visitor. "Now in your community" was not true for anyone
-     outside these four. */
-  const towns = SITES.filter((s) => s.status === "OPEN").map((s) => s.name);
-  const townLine =
-    towns.length > 1 ? `${towns.slice(0, -1).join(", ")} and ${towns[towns.length - 1]}` : towns[0];
-
   const jsonLd = [
     {
       "@context": "https://schema.org",
@@ -133,7 +124,7 @@ export default function HomePage() {
       url: "https://4minimset.com",
       logo: "https://4minimset.com/og.jpg",
       description:
-        "Pre-order program for complete lulav and etrog sets sorted by Morei Hora'ah in Eretz Yisrael and distributed sealed at host Beis Medrash locations in the United States.",
+        "Pre-order program for complete lulav and etrog sets sorted by Morei Hora'ah in Eretz Yisrael and shipped sealed to your door in the United States.",
     },
     {
       "@context": "https://schema.org",
@@ -171,28 +162,6 @@ export default function HomePage() {
         availability: "https://schema.org/PreOrder",
         priceValidUntil: SEASON.deadlineIso,
         url: "https://4minimset.com/#start",
-      },
-    })),
-    /* Likewise the per-community Event markup from the four site pages. */
-    ...SITES.map((s) => ({
-      "@context": "https://schema.org",
-      "@type": "Event",
-      name: `Arba Minim pickup - ${s.name}`,
-      startDate: s.distributionDateIso,
-      eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-      eventStatus: "https://schema.org/EventScheduled",
-      url: `https://4minimset.com/#${s.slug}`,
-      location: {
-        "@type": "Place",
-        name: s.hostInstitution,
-        address: {
-          "@type": "PostalAddress",
-          streetAddress: s.addressLines.join(", "),
-          addressLocality: s.city,
-          addressRegion: s.state,
-          postalCode: s.zip,
-          addressCountry: "US",
-        },
       },
     })),
   ];
@@ -250,18 +219,19 @@ export default function HomePage() {
             </OpenOnly>
             <h1 className="rise rise-2 mt-5 font-display text-[2.5rem] font-bold leading-[1.04] text-ink-950 sm:text-[3.4rem] lg:text-[3rem] xl:text-[3.5rem]">
               Your Arba Minim, chosen by a Rav.
-              <span className="block text-leaf-800">Ready for you after Yom Kippur.</span>
+              <span className="block text-leaf-800">Delivered to your door.</span>
             </h1>
             <p className="rise rise-3 mt-5 max-w-md text-[17px] leading-relaxed text-ink-700 sm:text-lg">
-              Mehudar sets from Eretz Yisrael, sealed and handed to you at your own Beis Medrash.
-              The system Meah Shearim and Kiryas Joel already use. This year in {townLine}.
+              Mehudar sets from Eretz Yisrael, sealed in the box they were packed in and shipped
+              to your address. The system Meah Shearim and Kiryas Joel already use, now anywhere
+              in the country.
             </p>
 
             <OpenOnly closed={
               <div className="rise rise-4 mt-7 rounded-2xl border border-esrog-300 bg-esrog-100 p-5">
                 <p className="font-display text-xl font-bold text-ink-950">Registration for {SEASON.name} has closed.</p>
                 <p className="mt-1 text-[15px] text-ink-700">
-                  The shipment is packed against the final totals. Already ordered? Your pickup details are on your order page.
+                  The shipment is packed against the final totals. Already ordered? Your delivery details are on your order page.
                 </p>
                 <Link href="/order" className="mt-4 inline-flex h-12 items-center rounded-lg bg-leaf-800 px-6 text-[15px] font-semibold text-white">
                   Find my order
@@ -321,7 +291,7 @@ export default function HomePage() {
             },
             {
               k: "Exchanged on the spot",
-              v: "If the Moreh Hora'ah at pickup says it is not worth the price, it is swapped there and then",
+              v: "If what arrives is not worth the price, it is replaced from reserve stock at our cost",
               icon: (
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="M4 9h13l-3-3M20 15H7l3 3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
@@ -348,25 +318,15 @@ export default function HomePage() {
       {/* ---------- QUICK START ---------- */}
       <section id="start" className="scroll-mt-20 border-b border-sand-200 bg-leaf-50">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-6 sm:py-7 lg:flex-row lg:items-center lg:gap-8">
-          <div className="lg:w-72 lg:shrink-0">
+          <div className="lg:flex-1">
             <p className="font-display text-xl font-bold text-ink-950 sm:text-2xl">Start your order</p>
-            <p className="mt-0.5 text-[14px] text-ink-700">Pick where you will collect. Three minutes on your phone.</p>
+            <p className="mt-0.5 text-[14px] text-ink-700">
+              Three minutes on your phone. {SEASON.deliveryNote}
+            </p>
           </div>
-          <ul className="grid flex-1 grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-3">
-            {SITES.map((site) => (
-              <li key={site.slug}>
-                <Link
-                  href={`/${site.slug}/order`}
-                  className="flex h-13 items-center justify-between rounded-lg border-2 border-leaf-800 bg-white px-4 text-[15px] font-semibold text-leaf-900 transition hover:bg-leaf-800 hover:text-white"
-                >
-                  {site.name}
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                    <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <OrderLink className="flex h-13 items-center justify-center rounded-lg bg-leaf-800 px-8 text-[16px] font-semibold text-white transition hover:bg-leaf-900 lg:shrink-0">
+            Order your set
+          </OrderLink>
         </div>
       </section>
 
@@ -612,16 +572,15 @@ export default function HomePage() {
           <div className="mt-10 grid gap-5 md:grid-cols-2 md:gap-6">
             <div className="rounded-2xl border border-sand-200 bg-white p-6 shadow-card sm:p-7">
               <h3 className="font-display text-xl font-bold text-ink-950 sm:text-2xl">
-                Two ways to order
+                One order, one box
               </h3>
               <p className="mt-3 text-[15px] leading-relaxed text-ink-700">
-                Order here in about three minutes. Or write it down: in Eretz Yisrael most people
-                order on a sheet left in the Beis Medrash, listing what is available and the prices.
-                You write what you want, put the money in an envelope with it, and hand it in.
+                Ordering takes about three minutes. Everything on the order travels together -
+                your own set and a Chinuch set for each boy - in one box, for one shipping charge.
               </p>
               <p className="mt-3 text-[15px] leading-relaxed text-ink-700">
-                Your community rep can take an order that way and enter it for you. It joins the
-                same totals, and you collect on the same day with the same code.
+                You get a code the moment you pay. It opens your order on any phone, and it is
+                the reference to quote if anything needs a word.
               </p>
             </div>
 
@@ -632,7 +591,7 @@ export default function HomePage() {
               <p className="mt-3 text-[15px] leading-relaxed text-ink-700">
                 Nothing is bought before orders close. When they do, the totals are pulled - how
                 many lulavim, how many hadassim, how many esrogim at each level - and that is what
-                gets packed and flown, along with reserve stock for exchanges on the day.
+                gets packed and flown, along with reserve stock for replacements.
               </p>
               <p className="mt-3 text-[15px] leading-relaxed text-ink-700">
                 Everything ordered by the deadline is on that flight. Anything after it waits for
@@ -676,88 +635,54 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ---------- PICKUP ---------- */}
-      <section id="sites" className="scroll-mt-20 py-14 sm:py-20">
+      {/* ---------- DELIVERY ---------- */}
+      <section id="delivery" className="scroll-mt-20 py-14 sm:py-20">
         <div className="mx-auto max-w-6xl px-4">
           <div className="max-w-2xl">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Pickup</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Delivery</p>
             <h2 className="mt-2 font-display text-[2rem] font-bold leading-tight text-ink-950 sm:text-[2.6rem]">
-              Where are you collecting?
+              It comes to you.
             </h2>
             <p className="mt-3 text-[16px] leading-relaxed text-ink-700 sm:text-[17px]">
-              Each community has its own host Beis Medrash and its own rep. Choose yours to start.
+              No collection point, no drive, no window to make. The shipment lands after Yom
+              Kippur and every order goes straight out to the address on it.
             </p>
           </div>
 
           <div className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
-            {SITES.map((site) => {
-              const date = new Date(`${site.distributionDateIso}T12:00:00`).toLocaleDateString("en-US", {
-                weekday: "long",
-                month: "long",
-                day: "numeric",
-              });
-              return (
-                <article
-                  key={site.slug}
-                  id={site.slug}
-                  className="flex scroll-mt-20 flex-col rounded-2xl border border-sand-200 bg-white p-5 shadow-card sm:p-6"
-                >
-                  <h3 className="font-display text-xl font-bold text-ink-950 sm:text-2xl">{site.name}</h3>
-                  <p className="text-[14px] text-ink-700">{site.hostInstitution}</p>
-
-                  {/* the detail the community pages used to carry */}
-                  <dl className="mt-4 mb-5 space-y-2 text-[14px] leading-snug">
-                    <div>
-                      <dt className="text-ink-500">Where</dt>
-                      <dd className="text-ink-950">
-                        {site.addressLines.join(", ")}
-                        <br />
-                        {site.city}, {site.state} {site.zip}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="text-ink-500">When</dt>
-                      <dd className="font-semibold text-ink-950">
-                        {date}
-                        <br />
-                        {site.windowStart} to {site.windowEnd}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="text-ink-500">Your rep</dt>
-                      <dd className="text-ink-950">
-                        {site.repName}
-                        <br />
-                        <a href={`tel:${site.repPhone.replace(/[^\d+]/g, "")}`} className="font-semibold text-leaf-800 underline underline-offset-4">
-                          {site.repPhone}
-                        </a>
-                      </dd>
-                    </div>
-                  </dl>
-
-                  <OpenOnly
-                    closed={
-                      <p className="mt-auto text-[14px] font-semibold text-ink-700">
-                        Ordering closed. Already ordered? Speak to {site.repName}.
-                      </p>
-                    }
-                  >
-                    <Link
-                      href={`/${site.slug}/order`}
-                      className="mt-auto flex h-11 items-center justify-center rounded-lg border-2 border-leaf-800 px-4 text-[15px] font-semibold text-leaf-900 transition hover:bg-leaf-800 hover:text-white"
-                    >
-                      Order for {site.name}
-                    </Link>
-                  </OpenOnly>
-                </article>
-              );
-            })}
+            {[
+              {
+                title: "Anywhere in the country",
+                body: SHIPPING.carrierNote,
+              },
+              {
+                title: "One flat rate",
+                body: `${shippingLabel()}, however many sets are on the order. Yours and the boys' travel in one box.`,
+              },
+              {
+                title: "Tracked from the door",
+                body: "You get a tracking number by email the day your box leaves, so you know when to expect it.",
+              },
+              {
+                title: "In time for Yom Tov",
+                body: SEASON.deliveryNote + " Sealed as it was packed in Eretz Yisrael, opened in your sukkah.",
+              },
+            ].map((card) => (
+              <article
+                key={card.title}
+                className="flex flex-col rounded-2xl border border-sand-200 bg-white p-5 shadow-card sm:p-6"
+              >
+                <h3 className="font-display text-lg font-bold text-ink-950 sm:text-xl">{card.title}</h3>
+                <p className="mt-2 text-[14px] leading-relaxed text-ink-700">{card.body}</p>
+              </article>
+            ))}
           </div>
 
-          <p className="mt-6 text-[14px] text-ink-500">
-            Your community not listed? Ask your Rav about hosting a site. The program spreads one
-            neighborhood at a time.
-          </p>
+          <OpenOnly>
+            <OrderLink className="mt-8 inline-flex h-13 items-center justify-center rounded-lg bg-leaf-800 px-8 text-[16px] font-semibold text-white transition hover:bg-leaf-900">
+              Order your set
+            </OrderLink>
+          </OpenOnly>
         </div>
       </section>
 
@@ -798,7 +723,7 @@ export default function HomePage() {
             <Share
               compact
               path="/"
-              text="Rav-inspected Arba Minim sets from Eretz Yisrael, sealed, pickup after Yom Kippur. Sets from $40:"
+              text="Rav-inspected Arba Minim sets from Eretz Yisrael, sealed and shipped to your door before Yom Tov. Sets from $40:"
             />
           </div>
         </div>

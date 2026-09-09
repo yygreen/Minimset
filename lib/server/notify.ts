@@ -12,30 +12,32 @@
  *
  * The SMS/WhatsApp seam is the same shape: add a sender here, call it from notifyPaid.
  */
-import { PARTNERSHIP_PARAGRAPH, EXCHANGE_GUARANTEE, SEASON, getSite } from "@/lib/data";
+import { PARTNERSHIP_PARAGRAPH, EXCHANGE_GUARANTEE, SEASON } from "@/lib/data";
 import { itemLabel, money, type Order } from "@/lib/orders";
 import { logNotification } from "./repo";
 
 export const NOTIFY_ENABLED = process.env.NOTIFY_ENABLED === "1" && Boolean(process.env.RESEND_API_KEY);
 
 export function confirmationText(order: Order): { subject: string; text: string } {
-  const site = getSite(order.siteSlug);
+  const a = order.address;
   const lines = order.items.map((i) => `  ${i.quantity} x ${itemLabel(i)}  ${money(i.unitPriceCents * i.quantity)}`);
   const text = [
-    `Your pickup code is ${order.code}.`,
+    `Your order code is ${order.code}.`,
     "",
     "Your order",
     ...lines,
+    order.shippingCents > 0 ? `  Shipping  ${money(order.shippingCents)}` : "",
     `  Total  ${money(order.totalCents)}`,
     "",
     PARTNERSHIP_PARAGRAPH,
     "",
-    "Pickup",
-    site ? `  ${site.hostInstitution}, ${site.city}, ${site.state}` : `  ${order.siteSlug}`,
-    site ? `  ${site.windowStart} to ${site.windowEnd}` : "",
-    `  ${SEASON.distributionNote}`,
+    "Shipping to",
+    `  ${order.customerName}`,
+    `  ${a.line1}`,
+    a.line2 ? `  ${a.line2}` : "",
+    `  ${a.city}, ${a.state} ${a.zip}`,
     "",
-    "Show this code at the table. It is your card.",
+    `  ${SEASON.deliveryNote} You will get a tracking number the day your box leaves.`,
     "",
     EXCHANGE_GUARANTEE,
     "",

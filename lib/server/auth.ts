@@ -19,23 +19,12 @@ export const STAFF_PIN = process.env.STAFF_PIN || "";
 export const STAFF_LOCKED = STAFF_PIN.length > 0;
 
 /**
- * Per-rep scoping, the spec's permission matrix. SITE_PINS is
- * "baltimore:1234,lakewood:5678,...": each PIN signs a rep in for exactly one site. STAFF_PIN
- * stays the admin PIN and sees everything. A rep's scope is enforced SERVER-side on every
- * staff endpoint - hiding a tab is a courtesy, the query check is the control.
+ * Staff scoping. There used to be a second tier -- a per-community rep PIN (SITE_PINS),
+ * scoped to one Beis Medrash table -- back when orders were collected in person. The
+ * program ships to the door now, so there is one office and one role.
  */
 export interface StaffScope {
-  role: "admin" | "rep";
-  site?: string;
-}
-
-function sitePins(): Map<string, string> {
-  const out = new Map<string, string>();
-  for (const part of (process.env.SITE_PINS || "").split(",")) {
-    const i = part.indexOf(":");
-    if (i > 0) out.set(part.slice(0, i).trim(), part.slice(i + 1).trim());
-  }
-  return out;
+  role: "admin";
 }
 
 function sign(payload: string): string {
@@ -72,18 +61,15 @@ export function verify<T = Record<string, unknown>>(token: string | undefined | 
   }
 }
 
-/** Which door this PIN opens: admin, one site, or none. */
+/** Which door this PIN opens. */
 export function resolvePin(pin: string): StaffScope | null {
   const clean = pin.trim();
   if (!STAFF_LOCKED) return { role: "admin" };
   if (safeEqual(clean, STAFF_PIN)) return { role: "admin" };
-  for (const [site, sitePin] of sitePins()) {
-    if (safeEqual(clean, sitePin)) return { role: "rep", site };
-  }
   return null;
 }
 
-/** 12 hours: one distribution day, without asking a volunteer to re-enter the PIN all morning. */
+/** 12 hours: a full packing day, without asking anyone to re-enter the PIN all morning. */
 export const STAFF_TTL_MS = 12 * 60 * 60 * 1000;
 /** A checkout ticket is good for an hour of filling in a form. */
 export const TICKET_TTL_MS = 60 * 60 * 1000;

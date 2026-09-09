@@ -11,8 +11,6 @@ import {
   LevelKey,
   PARTNERSHIP_PARAGRAPH,
   SEASON,
-  Site,
-  getSite,
 } from "@/lib/data";
 import { Order, OrderItem, isPastDeadline, itemLabel, money, orderTotal } from "@/lib/orders";
 import { useStore } from "@/lib/store";
@@ -73,7 +71,6 @@ function OrderStatus() {
 
   const local = orders.find((o) => o.code === code);
   const order = remote ?? local;
-  const site = order ? getSite(order.siteSlug) : undefined;
   const closed = isPastDeadline();
 
   /**
@@ -113,7 +110,7 @@ function OrderStatus() {
         error?: string;
       };
       if (!res.ok || !d.clientSecret || !d.publishableKey) {
-        setPayStartErr(d.error || "The payment could not be started. Try again, or call your rep.");
+        setPayStartErr(d.error || "The payment could not be started. Please try again.");
         return;
       }
       setPayInfo({ clientSecret: d.clientSecret, publishableKey: d.publishableKey });
@@ -124,13 +121,13 @@ function OrderStatus() {
 
   if (!ready || (!asked && !local)) return <Loading />;
 
-  if (!order || !site) {
+  if (!order) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-24 text-center">
         <h1 className="font-display text-3xl font-bold text-ink-950">Order not found</h1>
         <p className="mt-4 text-ink-700">
           We could not find an order with the code <strong>{code}</strong>. Check the code on your
-          confirmation, or call your community rep.
+          confirmation email.
         </p>
         <Link
           href="/order"
@@ -142,16 +139,16 @@ function OrderStatus() {
     );
   }
 
-  const pickedUnits = order.items.reduce((s, i) => s + i.qtyPickedUp, 0);
-  const totalUnits = order.items.reduce((s, i) => s + i.quantity, 0);
   const cancelled = order.status === "CANCELLED_REFUNDED";
-
-  const pickupDate = new Date(`${site.distributionDateIso}T12:00:00`).toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
+  const shipped = order.status === "SHIPPED" || order.status === "DELIVERED";
+  const address = order.address;
+  const shippedDate = order.shippedAt
+    ? new Date(order.shippedAt).toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+      })
+    : "";
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:py-10 lg:py-14">
@@ -214,18 +211,19 @@ function OrderStatus() {
         </div>
       )}
 
-      {/* (2) pickup code + QR */}
+      {/* (2) order code + QR */}
       <section className="rounded-2xl border border-sand-200 bg-white p-6 shadow-card sm:p-8">
         <div className="flex flex-wrap items-center justify-between gap-6">
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">
-              Your pickup code
+              Your order code
             </p>
             <p className="tnum mt-2 font-display text-[3rem] font-bold tracking-[0.12em] text-ink-950">
               {order.code}
             </p>
             <p className="mt-3 max-w-sm text-[14px] leading-snug text-ink-700">
-              This is your card. Show it at pickup.
+              Keep this. It opens your order on any phone, and it is the reference to quote if
+              you get in touch.
             </p>
           </div>
           <div className="rounded-xl border border-sand-200 bg-white p-3 shadow-card">
@@ -253,10 +251,11 @@ function OrderStatus() {
             <StatusBadge status={order.status} />
           </div>
 
-          {order.status === "PARTIALLY_PICKED_UP" && (
-            <p className="mt-4 rounded-lg bg-esrog-100 px-4 py-3 text-[14px] text-ink-900">
-              {pickedUnits} of {totalUnits} items collected. The rest is still waiting for you at
-              the table.
+          {shipped && order.trackingNumber && (
+            <p className="mt-4 rounded-lg bg-leaf-50 px-4 py-3 text-[14px] text-ink-900">
+              {order.status === "DELIVERED" ? "Delivered" : "Shipped"}
+              {shippedDate ? ` ${shippedDate}` : ""} by {order.carrier}. Tracking{" "}
+              <strong className="font-semibold">{order.trackingNumber}</strong>.
             </p>
           )}
 
@@ -304,11 +303,6 @@ function OrderStatus() {
                     <span className="text-[14px] text-ink-900">
                       <strong className="font-semibold">{item.quantity} x</strong>{" "}
                       {itemLabel(item)}
-                      {item.qtyPickedUp > 0 && (
-                        <span className="ml-2 text-[12px] text-leaf-700">
-                          ({item.qtyPickedUp} collected)
-                        </span>
-                      )}
                     </span>
                     <span className="tnum font-semibold text-ink-900">
                       {money(item.unitPriceCents * item.quantity)}
@@ -316,6 +310,12 @@ function OrderStatus() {
                   </li>
                 ))}
               </ul>
+              {order.shippingCents > 0 && (
+                <div className="mt-3 flex items-baseline justify-between text-[14px]">
+                  <span className="text-ink-700">Shipping</span>
+                  <span className="tnum font-semibold text-ink-900">{money(order.shippingCents)}</span>
+                </div>
+              )}
               <div className="mt-3 flex items-baseline justify-between border-t-2 border-leaf-800 pt-3">
                 <span className="font-display text-lg font-bold text-ink-950">
                   {cancelled ? "Refunded" : "Paid in full"}
@@ -324,55 +324,48 @@ function OrderStatus() {
                   {money(order.totalCents)}
                 </span>
               </div>
-              <p className="mt-2 text-[12px] text-ink-500">
-                {order.channel === "PAPER"
-                  ? `Paper order, ${order.paymentMethod === "CASH" ? "cash" : "check"} received by the rep`
-                  : "Paid by card"}
-              </p>
+              <p className="mt-2 text-[12px] text-ink-500">Paid by card</p>
             </>
           )}
         </section>
 
-        {/* (3) pickup details */}
+        {/* (3) delivery details */}
         <section className="rounded-2xl border border-sand-200 bg-white p-6 shadow-card">
           <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">
-            Where and when
+            Shipping to
           </p>
-          <p className="mt-2 font-display text-lg font-bold text-ink-950">
-            {site.hostInstitution}
-          </p>
-          <p className="text-[14px] text-ink-700">
-            {site.addressLines.join(", ")}
+          <p className="mt-2 text-[15px] leading-relaxed text-ink-950">
+            <strong className="font-semibold">{order.customerName}</strong>
             <br />
-            {site.city}, {site.state} {site.zip}
+            {address.line1}
+            {address.line2 && (
+              <>
+                <br />
+                {address.line2}
+              </>
+            )}
+            <br />
+            {address.city}, {address.state} {address.zip}
           </p>
           <GoldRule className="my-4" />
-          <p className="text-[15px] text-ink-900">
-            {pickupDate}
-            <br />
-            <strong className="font-semibold text-ink-950">
-              {site.windowStart} to {site.windowEnd}
-            </strong>
-          </p>
-          <a
-            href={pickupIcs(site, order.code)}
-            download={`pickup-${order.code}.ics`}
-            className="mt-4 inline-flex h-11 items-center gap-2 rounded-lg border-2 border-leaf-800 px-4 text-[14px] font-semibold text-leaf-900 transition hover:bg-leaf-800 hover:text-white"
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <rect x="2" y="3" width="12" height="11" rx="2" stroke="currentColor" strokeWidth="1.6" />
-              <path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-            </svg>
-            Add pickup to my calendar
-          </a>
+          {order.trackingNumber ? (
+            <p className="text-[15px] text-ink-900">
+              {order.status === "DELIVERED" ? "Delivered" : "On its way"}
+              {shippedDate ? `, sent ${shippedDate}` : ""}.
+              <br />
+              <strong className="font-semibold text-ink-950">
+                {order.carrier} {order.trackingNumber}
+              </strong>
+            </p>
+          ) : (
+            <p className="text-[15px] text-ink-900">
+              {SEASON.deliveryNote} You will get a tracking number by email the day your box
+              leaves.
+            </p>
+          )}
           <p className="mt-4 text-[14px] text-ink-700">
-            Rep: {site.repName} -{" "}
-            <a
-              href={`tel:${site.repPhone.replace(/\D/g, "")}`}
-              className="inline-block py-1 font-semibold text-leaf-800 underline underline-offset-2"
-            >
-              {site.repPhone}
-            </a>
+            Wrong address? You can change it until {SEASON.deadlineLabelEt} — get in touch and
+            quote code {order.code}.
           </p>
         </section>
       </div>
@@ -407,19 +400,19 @@ function OrderStatus() {
       <section className="mt-6 rounded-2xl border border-sand-200 bg-white p-6 shadow-card">
         {cancelled ? (
           <p className="text-[14px] text-ink-700">
-            This order was cancelled and refunded in full. To order again, start a new order for{" "}
+            This order was cancelled and refunded in full. To order again,{" "}
             <Link
-              href={`/${site.slug}/order`}
+              href="/order/new"
               className="font-semibold text-leaf-800 underline underline-offset-2"
             >
-              {site.name}
+              start a new order
             </Link>
             .
           </p>
         ) : closed ? (
           <p className="text-[14px] text-ink-700">
             The deadline has passed and the shipment is packed against these totals. For any
-            change, speak to {site.repName} at {site.repPhone}.
+            change, get in touch and quote code {order.code}.
           </p>
         ) : (
           <div className="flex flex-wrap items-center justify-between gap-4">
@@ -442,7 +435,7 @@ function OrderStatus() {
                       });
                       const data = (await res.json().catch(() => ({}))) as { order?: Order; error?: string };
                       if (!res.ok || !data.order) {
-                        setActionError(data.error || "That order could not be cancelled. Call your rep.");
+                        setActionError(data.error || "That order could not be cancelled. Please get in touch.");
                         setBusy(false);
                         return;
                       }
@@ -490,16 +483,16 @@ function OrderStatus() {
       <section data-noprint className="mt-6 rounded-2xl border border-sand-200 bg-white p-6 shadow-card">
         <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Pass it on</p>
         <p className="mt-2 text-[15px] leading-relaxed text-ink-700">
-          Know a family in {site.name} that still needs a set? Send them the {site.name} page.
+          Know a family that still needs a set? Send them the program.
         </p>
         <div className="mt-4">
           <Share
             compact
             stretch
-            path={`/${site.slug}`}
+            path="/"
             label="WhatsApp"
             copyLabel="Copy page link"
-            text={`Arba Minim for ${site.name}: Rav-inspected sets from $40, pick up at ${site.hostInstitution} after Yom Kippur.`}
+            text="Arba Minim: Rav-inspected sets from $40, sealed in Eretz Yisrael and shipped to your door before Yom Tov."
           />
         </div>
       </section>
@@ -508,33 +501,6 @@ function OrderStatus() {
 }
 
 /* ---------------- share / copy link row ---------------- */
-
-/** Pickup-day reminder as an .ics data URL; opens the phone's calendar, no server involved. */
-function pickupIcs(site: Site, code: string): string {
-  const d = site.distributionDateIso.replace(/-/g, "");
-  const toHm = (t: string) => {
-    const m = t.match(/(\d+):(\d+)\s*(AM|PM)/i);
-    if (!m) return "100000";
-    let h = Number(m[1]) % 12;
-    if (/pm/i.test(m[3])) h += 12;
-    return `${String(h).padStart(2, "0")}${m[2]}00`;
-  };
-  const lines = [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
-    "PRODID:-//V'samachta Arba Minim//4minimset.com//EN",
-    "BEGIN:VEVENT",
-    `UID:pickup-${code}@4minimset.com`,
-    `DTSTART:${d}T${toHm(site.windowStart)}`,
-    `DTEND:${d}T${toHm(site.windowEnd)}`,
-    `SUMMARY:Pick up Arba Minim (code ${code})`,
-    `LOCATION:${site.hostInstitution}, ${site.addressLines.join(", ")}, ${site.city}, ${site.state} ${site.zip}`,
-    `DESCRIPTION:Show your code ${code} at the table. https://4minimset.com/order/${code}`,
-    "END:VEVENT",
-    "END:VCALENDAR",
-  ];
-  return "data:text/calendar;charset=utf-8," + encodeURIComponent(lines.join("\r\n"));
-}
 
 function ShareRow({ code }: { code: string }) {
   const [copied, setCopied] = useState(false);
@@ -617,7 +583,6 @@ function Editor({
         unitPriceCents:
           level.basePriceCents +
           (withPitom && level.pitomSurchargeCents ? level.pitomSurchargeCents : 0),
-        qtyPickedUp: Math.min(existing?.qtyPickedUp ?? 0, n),
       });
     }
     for (const addon of ADDONS) {
@@ -631,7 +596,6 @@ function Editor({
         withPitom: false,
         quantity: n,
         unitPriceCents: addon.priceCents,
-        qtyPickedUp: Math.min(existing?.qtyPickedUp ?? 0, n),
       });
     }
     return out;

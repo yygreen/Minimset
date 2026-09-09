@@ -1,5 +1,5 @@
 /**
- * V'samachta Arba Minim — catalog, sites and season.
+ * V'samachta Arba Minim — catalog, shipping and season.
  * Halachic product copy in LEVELS is verbatim from the operator's spec (§3).
  * Do not paraphrase it.
  */
@@ -9,12 +9,9 @@ export type LevelKey = "MEHUDAR_AA" | "MEHUDAR_A" | "CHINUCH";
 export type OrderStatus =
   | "PENDING_PAYMENT"
   | "PAID"
-  | "PARTIALLY_PICKED_UP"
-  | "FULFILLED"
-  | "CANCELLED_REFUNDED"
-  | "UNCLAIMED";
-
-export type Channel = "ONLINE" | "PAPER";
+  | "SHIPPED"
+  | "DELIVERED"
+  | "CANCELLED_REFUNDED";
 
 export interface Level {
   key: LevelKey;
@@ -36,22 +33,6 @@ export interface AddOn {
   priceCents: number;
 }
 
-export interface Site {
-  slug: string;
-  name: string;
-  hostInstitution: string;
-  addressLines: string[];
-  city: string;
-  state: string;
-  zip: string;
-  distributionDateIso: string;
-  windowStart: string;
-  windowEnd: string;
-  repName: string;
-  repPhone: string;
-  status: "OPEN" | "CLOSED";
-}
-
 export const SEASON = {
   name: "Sukkos 5787",
   year: 2026,
@@ -62,8 +43,40 @@ export const SEASON = {
   deadlineIso: "2026-09-13T00:30:00.000Z",
   deadlineLabelEt: "Motzaei Shabbos, September 12, 8:30 PM EDT",
   deadlineLabelIl: "3:30 AM IST, Sunday September 13",
-  distributionNote: "Distribution is the day after Yom Kippur at each host Beis Medrash.",
+  /** What the customer is promised about arrival, in one sentence, everywhere. */
+  deliveryNote: "Every set ships in time to arrive before Yom Tov.",
 } as const;
+
+/**
+ * Shipping.
+ *
+ * Shopify's rate is the one that charges the customer; this constant only decides
+ * what the site SAYS and what the fallback order flow totals. Keep the two equal.
+ *
+ * flatRateCents is null until the real rate is set. Null is not a placeholder price
+ * -- it is a different sentence: the page says shipping is added at checkout and
+ * names no figure, rather than printing a number nobody has agreed to. Set it to
+ * the Shopify rate in cents and every "+ $X shipping" on the site fills itself in.
+ */
+export const SHIPPING = {
+  flatRateCents: null as number | null,
+  carrierNote: "Tracked shipping within the continental United States.",
+} as const;
+
+/** The shipping line as a customer reads it, whether or not a rate is set yet. */
+export function shippingLabel(): string {
+  return SHIPPING.flatRateCents === null
+    ? "Flat-rate shipping added at checkout"
+    : `${moneyCents(SHIPPING.flatRateCents)} flat-rate shipping`;
+}
+
+/** Local money formatter so this module stays free of order-layer imports. */
+function moneyCents(cents: number): string {
+  return `$${(cents / 100).toLocaleString("en-US", {
+    minimumFractionDigits: cents % 100 === 0 ? 0 : 2,
+    maximumFractionDigits: 2,
+  })}`;
+}
 
 export const LEVELS: Level[] = [
   {
@@ -155,76 +168,16 @@ export const ADDONS: AddOn[] = [
   },
 ];
 
-export const SITES: Site[] = [
-  {
-    slug: "baltimore",
-    name: "Baltimore",
-    hostInstitution: "Adas Yisrael",
-    addressLines: ["Beis Medrash Hall", "Park Heights"],
-    city: "Baltimore",
-    state: "MD",
-    zip: "21215",
-    distributionDateIso: "2026-09-22",
-    windowStart: "10:00 AM",
-    windowEnd: "5:00 PM",
-    repName: "R' Shimon Friedman",
-    repPhone: "(410) 555-0142",
-    status: "OPEN",
-  },
-  {
-    slug: "lakewood",
-    name: "Lakewood",
-    hostInstitution: "Forest Park Beis Medrash",
-    addressLines: ["Main Beis Medrash", "Forest Avenue"],
-    city: "Lakewood",
-    state: "NJ",
-    zip: "08701",
-    distributionDateIso: "2026-09-22",
-    windowStart: "10:00 AM",
-    windowEnd: "5:00 PM",
-    repName: "R' Yaakov Weiss",
-    repPhone: "(732) 555-0118",
-    status: "OPEN",
-  },
-  {
-    slug: "monsey",
-    name: "Monsey",
-    hostInstitution: "Wesley Hills Beis Medrash",
-    addressLines: ["Simcha Hall", "Route 306"],
-    city: "Monsey",
-    state: "NY",
-    zip: "10952",
-    distributionDateIso: "2026-09-22",
-    windowStart: "10:00 AM",
-    windowEnd: "5:00 PM",
-    repName: "R' Menachem Roth",
-    repPhone: "(845) 555-0167",
-    status: "OPEN",
-  },
-  {
-    slug: "five-towns",
-    name: "Five Towns",
-    hostInstitution: "Central Avenue Beis Medrash",
-    addressLines: ["Lower Level Hall", "Central Avenue"],
-    city: "Cedarhurst",
-    state: "NY",
-    zip: "11516",
-    distributionDateIso: "2026-09-22",
-    windowStart: "10:00 AM",
-    windowEnd: "5:00 PM",
-    repName: "R' Eliezer Katz",
-    repPhone: "(516) 555-0193",
-    status: "OPEN",
-  },
-];
-
 export const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
 
 export const PARTNERSHIP_PARAGRAPH =
   "Your order and payment make you a full partner in the Arba Minim being acquired for this community. Every set is selected and inspected by Morei Hora'ah who are experts in hilchos Daled Minim, and arrives sealed — kasher v'yashar, one hundred percent.";
 
+/* The guarantee as it reads once nobody is standing at a table. Reserve stock is
+   still flown in for exactly this; what changed is that the swap happens by post
+   rather than in person. Operator copy -- confirm before the season opens. */
 export const EXCHANGE_GUARANTEE =
-  "A Moreh Hora'ah will be present at distribution. If he determines an item is not worth what you paid, it will be exchanged on the spot.";
+  "If a Moreh Hora'ah would rule that what you received is not worth what you paid, tell us and it is replaced from reserve stock at our cost. You are not left arguing about it.";
 
 export function getLevel(key: LevelKey): Level {
   const level = LEVELS.find((l) => l.key === key);
@@ -234,10 +187,6 @@ export function getLevel(key: LevelKey): Level {
 
 export function getLevelBySlug(slug: string): Level | undefined {
   return LEVELS.find((l) => l.slug === slug);
-}
-
-export function getSite(slug: string): Site | undefined {
-  return SITES.find((s) => s.slug === slug);
 }
 
 export function getAddOn(id: string): AddOn | undefined {

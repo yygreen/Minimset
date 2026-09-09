@@ -1,17 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { LEVELS, SITES } from "@/lib/data";
-import { EMPTY_RESERVE, useStore } from "@/lib/staff-store";
+import { useStore } from "@/lib/staff-store";
 
 /**
- * Admin strip: how much reserve stock flew in per site per level, and the sample data used to
- * review the screens before real orders exist. Clearing samples only ever touches orders that
- * were seeded; a real order is never in reach of this button.
+ * Admin strip: the sample data used to review the screens before real orders exist.
+ * Clearing samples only ever touches orders that were seeded; a real order is never in
+ * reach of this button.
  */
 export function StaffTools() {
-  const { orders, reserveBySite, setShipped, seedDemo, clearDemo, signOut, locked, reload } =
-    useStore();
+  const { orders, seedDemo, clearDemo, signOut, locked, reload } = useStore();
   const [busy, setBusy] = useState("");
   const demoCount = orders.filter((o) => o.isDemo).length;
   const realCount = orders.length - demoCount;
@@ -23,60 +21,7 @@ export function StaffTools() {
   };
 
   return (
-    <div className="mt-12 grid gap-5 lg:grid-cols-2">
-      {/* reserve */}
-      <section className="rounded-2xl border border-sand-200 bg-white p-6 shadow-card">
-        <h2 className="font-display text-xl font-bold text-ink-950">Reserve stock</h2>
-        <p className="mt-1 text-sm text-ink-700">
-          Spare sets flown in per site, for exchanges at the table. Used counts up as the Motz
-          swaps an item.
-        </p>
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[420px] text-sm">
-            <thead>
-              <tr className="text-left text-[12px] uppercase tracking-wide text-ink-500">
-                <th className="pb-2 pr-3 font-semibold">Site</th>
-                {LEVELS.map((l) => (
-                  <th key={l.key} className="pb-2 pr-3 font-semibold">
-                    {l.tier}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {SITES.map((s) => {
-                const r = reserveBySite[s.slug] ?? EMPTY_RESERVE;
-                return (
-                  <tr key={s.slug} className="border-t border-sand-200">
-                    <td className="py-2.5 pr-3 font-semibold text-ink-900">{s.name}</td>
-                    {LEVELS.map((l) => (
-                      <td key={l.key} className="py-2.5 pr-3">
-                        <label className="flex items-center gap-2">
-                          <span className="sr-only">{`${s.name} ${l.name} shipped`}</span>
-                          <input
-                            type="number"
-                            min={0}
-                            defaultValue={r[l.key].shipped}
-                            onBlur={(e) => {
-                              const n = Number(e.target.value);
-                              if (Number.isFinite(n) && n !== r[l.key].shipped) {
-                                void setShipped(s.slug, l.key, n);
-                              }
-                            }}
-                            className="tnum h-10 w-16 rounded-lg border border-sand-300 bg-white px-2 text-center text-ink-950 outline-none focus:border-leaf-700 focus:ring-2 focus:ring-leaf-200"
-                          />
-                          <span className="tnum text-[12px] text-ink-500">used {r[l.key].used}</span>
-                        </label>
-                      </td>
-                    ))}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
+    <div className="mt-12 grid gap-5">
       {/* sample data + session */}
       <section className="rounded-2xl border border-sand-200 bg-white p-6 shadow-card">
         <h2 className="font-display text-xl font-bold text-ink-950">Sample data</h2>

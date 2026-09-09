@@ -37,7 +37,6 @@ export interface Intent {
 export async function createPaymentIntent(args: {
   amountCents: number;
   code: string;
-  siteSlug: string;
   name: string;
   phone: string;
 }): Promise<Intent> {
@@ -55,7 +54,6 @@ export async function createPaymentIntent(args: {
       description: `Arba Minim ${args.code}`,
       statement_descriptor_suffix: "ARBA MINIM",
       "metadata[code]": args.code,
-      "metadata[site]": args.siteSlug,
       "metadata[name]": args.name,
       "metadata[phone]": args.phone,
     }),

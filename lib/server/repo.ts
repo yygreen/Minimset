@@ -3,56 +3,51 @@
  *
  * Layout in the private blob store:
  *   orders/{CODE}.json      one order, the source of truth
- *   index/{site}.json       compact rows for the staff screens (rebuildable, see reconcile)
- *   reserve/{site}.json     reserve stock per level, per site (the spec's ReserveStock)
+ *   index/all.json          compact rows for the staff screens (rebuildable, see reconcile)
  *   notify/{CODE}/{id}.json the notification log
  *   audit/{day}.json        who did what on a staff screen
  *
- * The index is a cache, never the truth: countOrders() compares it against a listing of
+ * The index is a cache, never the truth: listAllRows() compares it against a listing of
  * orders/ and rebuilds when they disagree, so a lost CAS race heals itself instead of
  * quietly under-reporting a paid order.
+ *
+ * There used to be one index and one reserve-stock record per community, back when
+ * orders were collected at four Beis Medrash tables. The program ships to the door
+ * now: one index, no reserve.
  */
-import { CODE_ALPHABET, SITES, type LevelKey } from "@/lib/data";
-import type { Channel, Order, OrderItem, OrderStatus } from "@/lib/orders";
+import { CODE_ALPHABET } from "@/lib/data";
+import type { Order, OrderItem, OrderStatus } from "@/lib/orders";
 import { Conflict, createJson, deletePath, listPaths, readJson, updateJson } from "./kv";
 
 export interface IndexRow {
   code: string;
-  siteSlug: string;
   status: OrderStatus;
-  channel: Channel;
   customerName: string;
   phone: string;
+  /** Enough of the address to scan a list without opening every order. */
+  city: string;
+  state: string;
   totalCents: number;
   sets: number;
   createdAt: string;
   isDemo?: boolean;
 }
 
-export interface SiteIndex {
+export interface OrderIndex {
   rows: IndexRow[];
 }
 
-export type Reserve = Record<LevelKey, { shipped: number; used: number }>;
-
-const EMPTY_RESERVE: Reserve = {
-  MEHUDAR_AA: { shipped: 0, used: 0 },
-  MEHUDAR_A: { shipped: 0, used: 0 },
-  CHINUCH: { shipped: 0, used: 0 },
-};
-
 const orderPath = (code: string) => `orders/${code}.json`;
-const indexPath = (site: string) => `index/${site}.json`;
-const reservePath = (site: string) => `reserve/${site}.json`;
+const INDEX_PATH = "index/all.json";
 
 export function rowOf(order: Order): IndexRow {
   return {
     code: order.code,
-    siteSlug: order.siteSlug,
     status: order.status,
-    channel: order.channel,
     customerName: order.customerName,
     phone: order.phone,
+    city: order.address?.city ?? "",
+    state: order.address?.state ?? "",
     totalCents: order.totalCents,
     sets: order.items.filter((i) => i.kind === "LEVEL").reduce((n, i) => n + i.quantity, 0),
     createdAt: order.createdAt,
@@ -77,8 +72,8 @@ export async function getOrder(code: string): Promise<Order | null> {
 }
 
 async function putRow(order: Order): Promise<void> {
-  await updateJson<SiteIndex>(
-    indexPath(order.siteSlug),
+  await updateJson<OrderIndex>(
+    INDEX_PATH,
     () => ({ rows: [] }),
     (cur) => {
       const rows = cur.rows.filter((r) => r.code !== order.code);
@@ -89,9 +84,9 @@ async function putRow(order: Order): Promise<void> {
   );
 }
 
-async function dropRow(siteSlug: string, code: string): Promise<void> {
-  await updateJson<SiteIndex>(
-    indexPath(siteSlug),
+async function dropRow(code: string): Promise<void> {
+  await updateJson<OrderIndex>(
+    INDEX_PATH,
     () => ({ rows: [] }),
     (cur) => ({ rows: cur.rows.filter((r) => r.code !== code) }),
   );
@@ -139,21 +134,16 @@ export async function mutateOrder(
   return next;
 }
 
-export async function listSiteRows(siteSlug: string): Promise<IndexRow[]> {
-  const rec = await readJson<SiteIndex>(indexPath(siteSlug));
-  return rec?.value.rows ?? [];
-}
-
-/** Every row across every site, index-first, with a self-heal when the index is behind. */
+/** Every row, index-first, with a self-heal when the index is behind the orders. */
 export async function listAllRows(): Promise<IndexRow[]> {
-  const perSite = await Promise.all(SITES.map((s) => listSiteRows(s.slug)));
-  const rows = perSite.flat();
+  const rec = await readJson<OrderIndex>(INDEX_PATH);
+  const rows = rec?.value.rows ?? [];
   const paths = await listPaths("orders/");
   if (paths.length === rows.length) return rows;
   return reconcile();
 }
 
-/** Rebuild every index from the orders themselves. The index is a cache; this is the truth. */
+/** Rebuild the index from the orders themselves. The index is a cache; this is the truth. */
 export async function reconcile(): Promise<IndexRow[]> {
   const paths = await listPaths("orders/");
   const orders: Order[] = [];
@@ -164,60 +154,16 @@ export async function reconcile(): Promise<IndexRow[]> {
     );
     orders.push(...batch.filter((o): o is Order => Boolean(o)));
   }
-  const bySite = new Map<string, IndexRow[]>();
-  for (const o of orders) {
-    const rows = bySite.get(o.siteSlug) ?? [];
-    rows.push(rowOf(o));
-    bySite.set(o.siteSlug, rows);
-  }
-  for (const site of SITES) {
-    const rows = (bySite.get(site.slug) ?? []).sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
-    await updateJson<SiteIndex>(
-      indexPath(site.slug),
-      () => ({ rows: [] }),
-      () => ({ rows }),
-    );
-  }
-  return [...bySite.values()].flat();
+  const rows = orders
+    .map(rowOf)
+    .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+  await updateJson<OrderIndex>(INDEX_PATH, () => ({ rows: [] }), () => ({ rows }));
+  return rows;
 }
 
-export async function countSiteOrders(siteSlug: string): Promise<number> {
-  const rows = await listSiteRows(siteSlug);
+export async function countOrders(): Promise<number> {
+  const rows = await listAllRows();
   return rows.filter((r) => r.status !== "CANCELLED_REFUNDED").length;
-}
-
-export async function getReserve(siteSlug: string): Promise<Reserve> {
-  const rec = await readJson<Reserve>(reservePath(siteSlug));
-  return rec?.value ?? { ...EMPTY_RESERVE };
-}
-
-/** `used` is optional: an admin correcting a miscount may set it, otherwise it is left alone. */
-export async function setReserveShipped(
-  siteSlug: string,
-  level: LevelKey,
-  shipped: number,
-  used?: number,
-) {
-  return updateJson<Reserve>(
-    reservePath(siteSlug),
-    () => ({ ...EMPTY_RESERVE }),
-    (cur) => ({
-      ...cur,
-      [level]: {
-        shipped: Math.max(0, Math.trunc(shipped)),
-        used: used === undefined ? cur[level].used : Math.max(0, Math.trunc(used)),
-      },
-    }),
-  );
-}
-
-/** An exchange takes one unit out of reserve. Allowed past zero, but the caller is warned. */
-export async function useReserve(siteSlug: string, level: LevelKey): Promise<Reserve | null> {
-  return updateJson<Reserve>(
-    reservePath(siteSlug),
-    () => ({ ...EMPTY_RESERVE }),
-    (cur) => ({ ...cur, [level]: { ...cur[level], used: cur[level].used + 1 } }),
-  );
 }
 
 export async function logNotification(code: string, kind: string, detail: unknown) {
@@ -241,7 +187,7 @@ export async function logAudit(entry: Record<string, unknown>) {
  */
 export async function purgeOrder(order: Order): Promise<void> {
   await deletePath(orderPath(order.code));
-  await dropRow(order.siteSlug, order.code);
+  await dropRow(order.code);
   for (const path of await listPaths(`notify/${order.code}/`)) await deletePath(path);
 }
 
@@ -251,7 +197,7 @@ export async function deleteDemoOrders(): Promise<number> {
   const demo = rows.filter((r) => r.isDemo);
   for (const r of demo) {
     await deletePath(orderPath(r.code));
-    await dropRow(r.siteSlug, r.code);
+    await dropRow(r.code);
   }
   return demo.length;
 }

@@ -45,7 +45,7 @@ export default function OrderLookupPage() {
       router.push(`/order/${found.code}`);
       return;
     }
-    setError(`No order found for code ${clean}. Check the code on your confirmation, or ask your rep.`);
+    setError(`No order found for code ${clean}. Check the code on your confirmation email.`);
   };
 
   return (
@@ -55,7 +55,7 @@ export default function OrderLookupPage() {
         Find your order
       </h1>
       <p className="mt-3 text-[17px] leading-relaxed text-ink-700">
-        Enter the code from your confirmation. It is the same code on your pickup card.
+        Enter the code from your confirmation email.
       </p>
 
       <form onSubmit={submit} className="mt-8 rounded-2xl border border-sand-200 bg-white p-5 shadow-card sm:p-6">

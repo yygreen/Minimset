@@ -48,8 +48,8 @@ export default function AboutPage() {
             </p>
             <p>
               The moment the deadline passes, the totals are exact. The shipment is packed against
-              those totals, plus a reserve for exchanges, and flown to America - about one day in
-              transit.
+              those totals, plus a reserve for replacements, and flown to America - about one day
+              in transit.
             </p>
           </div>
 
@@ -64,8 +64,8 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* distribution day: the photo takes the left, so the two blocks
-            alternate text-image, image-text rather than repeating one shape */}
+        {/* delivery: the photo takes the left, so the two blocks alternate
+            text-image, image-text rather than repeating one shape */}
         <div className="mt-14 lg:mt-20 lg:grid lg:grid-cols-2 lg:items-center lg:gap-14">
           <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-card">
             <Image
@@ -78,20 +78,20 @@ export default function AboutPage() {
           </div>
 
           <div className="mt-8 lg:mt-0">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Distribution day</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Delivery</p>
             <h2 className="mt-2 font-display text-[2rem] font-bold leading-tight text-ink-950 sm:text-[2.6rem]">
-              A card system, not a scramble.
+              It arrives at your door.
             </h2>
             <div className="mt-4 space-y-4 text-[17px] leading-relaxed text-ink-700">
               <p>
-                The day after Yom Kippur, everyone comes to the host Beis Medrash, 10:00 AM to 5:00
-                PM. Distributors already know what each person ordered, what he is entitled to, and
-                what he paid. A whole community is served in two to three hours.
+                As the shipment is unpacked, every order goes out to the address on it, tracked,
+                in time to arrive before Yom Tov. Nobody drives anywhere and nobody waits in a
+                line; you get a tracking number the day your box leaves.
               </p>
               <p>
-                Everything arrives closed up: the esrog in a box, the hadassim and aravos in a
-                sealed bag. A Moreh Hora&#39;ah stands at pickup, and if he rules an item is not
-                worth what you paid, it is exchanged on the spot.
+                Everything arrives closed up: the esrog in its box, the hadassim and aravos in a
+                sealed bag, the lulav sealed. You open it in your own sukkah. If what you received
+                would not be worth what you paid, it is replaced from reserve stock at our cost.
               </p>
             </div>
           </div>
