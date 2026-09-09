@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { EXCHANGE_GUARANTEE, SEASON, SHIPPING, shippingLabel } from "@/lib/data";
+import { EXCHANGE_GUARANTEE, SEASON, SHIPPING, shippingAmount } from "@/lib/data";
 import { GRACE_MINUTES } from "@/lib/server/pricing";
 
 export const metadata: Metadata = {
@@ -118,8 +118,8 @@ export default function PoliciesPage() {
           <Section id="shipping" title="Shipping and delivery">
             <p>
               Every order ships to the address on it. {SHIPPING.carrierNote} Shipping is one flat
-              charge per order, {shippingLabel().toLowerCase()}, however many sets are on it — your
-              own set and the boys&#39; travel in the same box.
+              charge per order{shippingAmount() ? `, ${shippingAmount()}` : ""}, however many sets
+              are on it — your own set and the boys&#39; travel in the same box.
             </p>
             <p>
               {SEASON.deliveryNote} The shipment lands after Yom Kippur and orders go out as it is

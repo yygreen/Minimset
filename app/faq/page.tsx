@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Faq } from "@/components/Faq";
-import { EXCHANGE_GUARANTEE, SEASON, SHIPPING, shippingLabel } from "@/lib/data";
+import { EXCHANGE_GUARANTEE, SEASON, SHIPPING, shippingAmount } from "@/lib/data";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/faq" },
@@ -31,7 +31,7 @@ const FAQ: { q: string; a: string[] }[] = [
   {
     q: "How much is shipping, and where do you ship?",
     a: [
-      `One flat rate per order, ${shippingLabel().toLowerCase()}, however many sets are on it. Your own set and Chinuch sets for the boys travel in one box for one charge.`,
+      `One flat rate per order${shippingAmount() ? `, ${shippingAmount()}` : ""}, however many sets are on it. Your own set and Chinuch sets for the boys travel in one box for one charge.`,
       SHIPPING.carrierNote,
     ],
   },

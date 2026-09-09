@@ -53,21 +53,38 @@ export const SEASON = {
  * Shopify's rate is the one that charges the customer; this constant only decides
  * what the site SAYS and what the fallback order flow totals. Keep the two equal.
  *
- * flatRateCents is null until the real rate is set. Null is not a placeholder price
- * -- it is a different sentence: the page says shipping is added at checkout and
- * names no figure, rather than printing a number nobody has agreed to. Set it to
- * the Shopify rate in cents and every "+ $X shipping" on the site fills itself in.
+ * flatRateCents may be null, and null is not a placeholder price -- it is a
+ * different sentence: the page says shipping is added at checkout and names no
+ * figure, rather than printing a number nobody has agreed to. With a figure set,
+ * every "+ $X shipping" on the site fills itself in.
+ *
+ * $7.99 matches the "Standard" rate in Shopify, verified against the live store
+ * on 2026-09-09: one flat charge per ORDER (a five-item cart quotes the same
+ * $7.99 as a single set), quoted in all fifty states including Alaska and
+ * Hawaii. If the Shopify rate changes, change it here in the same minute --
+ * a site that names one figure while checkout charges another is worse than a
+ * site that names none.
  */
 export const SHIPPING = {
-  flatRateCents: null as number | null,
-  carrierNote: "Tracked shipping within the continental United States.",
+  flatRateCents: 799,
+  carrierNote: "Tracked shipping to anywhere in the United States, 3 to 5 business days.",
 } as const;
 
-/** The shipping line as a customer reads it, whether or not a rate is set yet. */
+/**
+ * Two renderings of the same fact, because a sentence that already says "flat
+ * rate" should not have "flat-rate shipping" dropped into the middle of it.
+ *
+ * shippingLabel() stands on its own. shippingAmount() is the bare figure for a
+ * sentence that has already set the context, and is null while no rate is set.
+ */
 export function shippingLabel(): string {
   return SHIPPING.flatRateCents === null
     ? "Flat-rate shipping added at checkout"
     : `${moneyCents(SHIPPING.flatRateCents)} flat-rate shipping`;
+}
+
+export function shippingAmount(): string | null {
+  return SHIPPING.flatRateCents === null ? null : moneyCents(SHIPPING.flatRateCents);
 }
 
 /** Local money formatter so this module stays free of order-layer imports. */

@@ -160,7 +160,10 @@ export function OrderFlow() {
   /* Null means the rate is not agreed yet, so the site names no figure and the
      total it shows is explicitly "before shipping". It never invents a price. */
   const shipCents = SHIPPING.flatRateCents;
-  const total = subtotal + (shipCents ?? 0);
+  /* An empty cart is not a $7.99 order. Shipping only exists once there is a box
+     to put in the post, so the rail reads $0 until something is chosen. */
+  const shipApplied = items.length > 0 ? (shipCents ?? 0) : 0;
+  const total = subtotal + shipApplied;
   const setCount = items.filter((i) => i.kind === "LEVEL").reduce((s, i) => s + i.quantity, 0);
 
   const emailOk = email.trim() === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
@@ -268,7 +271,7 @@ export function OrderFlow() {
         email: email.trim(),
         address,
         items,
-        shippingCents: shipCents ?? 0,
+        shippingCents: shipApplied,
         totalCents: total,
         paymentMethod: "CARD",
         createdAt: new Date().toISOString(),

@@ -6,7 +6,7 @@ import { LevelCard } from "@/components/LevelCard";
 import { OpenOnly } from "@/components/OpenOnly";
 import { Share } from "@/components/Share";
 import { CompareTable } from "@/components/CompareTable";
-import { EXCHANGE_GUARANTEE, LEVELS, PARTNERSHIP_PARAGRAPH, SEASON, SHIPPING, headlinePriceCents, altPriceCents, shippingLabel } from "@/lib/data";
+import { EXCHANGE_GUARANTEE, LEVELS, PARTNERSHIP_PARAGRAPH, SEASON, SHIPPING, headlinePriceCents, altPriceCents, shippingAmount } from "@/lib/data";
 import { IMG, type Photo } from "@/lib/images";
 import { money } from "@/lib/orders";
 import { MEDIA } from "@/lib/trust";
@@ -632,7 +632,7 @@ export default function HomePage() {
               },
               {
                 title: "One flat rate",
-                body: `${shippingLabel()}, however many sets are on the order. Yours and the boys' travel in one box.`,
+                body: `${shippingAmount() ?? "Added at checkout"}, however many sets are on the order. Yours and the boys' travel in one box.`,
               },
               {
                 title: "Tracked from the door",

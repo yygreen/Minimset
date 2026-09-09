@@ -88,7 +88,7 @@ Policies. `contact-information` and the Shopify-generated `privacy-policy` are
 fine as they are.
 
 **2.3 Set the flat rate.** Settings → Shipping and delivery → the shipping
-profile these products use → the zone covering the continental United States.
+profile these products use → the zone covering the United States.
 Delete any rate that came with the store and add one:
 
 ```

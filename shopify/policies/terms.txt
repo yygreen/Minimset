@@ -12,7 +12,8 @@ how you change it before the deadline.
 Payment
 
 Sets are paid for in full at the time of ordering, together with one flat
-shipping charge per order, shown at checkout before you pay.
+shipping charge of $7.99 per order, however many sets are on it. The total is
+shown at checkout before you pay.
 
 The deadline
 
@@ -34,8 +35,9 @@ for the season.
 Delivery
 
 Every set ships in time to arrive before Yom Tov, tracked, to the address on
-the order. Delivery dates are the carrier's. Shipping, wrong addresses and
-undeliverable packages are covered in the shipping policy.
+the order, typically 3 to 5 business days in carriage. Delivery dates are the
+carrier's. Shipping, wrong addresses and undeliverable packages are covered in
+the shipping policy.
 
 Questions
 
