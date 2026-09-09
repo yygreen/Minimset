@@ -87,35 +87,6 @@ export function LevelCard({
 
         <p className="mt-3 text-[13px] text-ink-500">Shipped to your door. Change or cancel free until the deadline.</p>
 
-        <details className="group mt-4 shrink-0 rounded-xl border border-sand-200 bg-sand-50 md:mb-6">
-          <summary className="flex items-center justify-between px-4 py-3 text-sm font-semibold text-leaf-800">
-            The standard, word for word
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 14 14"
-              fill="none"
-              aria-hidden="true"
-              className="transition group-open:rotate-180"
-            >
-              <path d="M2.5 5l4.5 4.5L11.5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </summary>
-          <dl className="space-y-3 border-t border-sand-200 px-4 py-4 text-[14px] leading-relaxed text-ink-700">
-            {(
-              [
-                ["Esrog", level.spec.esrog],
-                ["Lulav", level.spec.lulav],
-                ["Hadassim", level.spec.hadassim],
-              ] as const
-            ).map(([term, text]) => (
-              <div key={term}>
-                <dt className="font-display text-[15px] font-bold text-ink-950">{term}</dt>
-                <dd className="mt-0.5">{text}</dd>
-              </div>
-            ))}
-          </dl>
-        </details>
 
         <OrderLink
           level={level.key}

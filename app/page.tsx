@@ -330,9 +330,9 @@ export default function HomePage() {
       <InspectedBy />
 
       {/* ---------- THE SETS ---------- */}
-      <section id="levels" className="scroll-mt-20 py-14 sm:py-20">
+      <section id="levels" className="scroll-mt-[68px] pb-14 pt-10 sm:pb-20 sm:pt-12">
         <div className="mx-auto max-w-6xl px-4">
-          <div className="max-w-2xl">
+          <div className="max-w-3xl">
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">The sets</p>
             <h2 className="mt-2 font-display text-[2rem] font-bold leading-tight text-ink-950 sm:text-[2.6rem]">
               Three levels of hiddur. Every one a complete set.
@@ -343,7 +343,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="mt-8 grid gap-5 sm:mt-10 md:grid-cols-3 md:gap-6">
+          <div className="mt-6 grid gap-5 sm:mt-7 md:grid-cols-3 md:gap-6">
             {LEVELS.map((level, i) => (
               <LevelCard key={level.key} level={level} featured={i === 0} />
             ))}
