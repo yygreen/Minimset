@@ -709,9 +709,17 @@ export default function HomePage() {
           <p className="mx-auto mt-3 max-w-md text-[16px] text-ink-700">
             Sets from ${from}. Sealed, inspected, and shipped to your door.
           </p>
-          <OrderLink className="mt-7 inline-flex h-14 items-center justify-center rounded-lg bg-leaf-800 px-9 text-[17px] font-semibold text-white shadow-lift transition hover:bg-leaf-900">
-            Order your set
-          </OrderLink>
+          <OpenOnly
+            closed={
+              <p className="mt-7 text-[16px] font-semibold text-ink-700">
+                Ordering closed for {SEASON.name}.
+              </p>
+            }
+          >
+            <OrderLink className="mt-7 inline-flex h-14 items-center justify-center rounded-lg bg-leaf-800 px-9 text-[17px] font-semibold text-white shadow-lift transition hover:bg-leaf-900">
+              Order your set
+            </OrderLink>
+          </OpenOnly>
           <div className="mt-8 flex flex-col items-center gap-2">
             <p className="text-[13px] text-ink-500">Pass it on to your shul chat</p>
             <Share

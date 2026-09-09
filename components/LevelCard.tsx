@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { OrderLink } from "@/components/OrderLink";
+import { OpenOnly } from "@/components/OpenOnly";
 import { headlinePriceCents, type Level } from "@/lib/data";
 import { IMG, type Photo } from "@/lib/images";
 import { money } from "@/lib/orders";
@@ -88,16 +89,27 @@ export function LevelCard({
         <p className="mt-3 text-[13px] text-ink-500">Shipped to your door. Change or cancel free until the deadline.</p>
 
 
-        <OrderLink
-          level={level.key}
-          className={`mt-6 flex min-h-13 items-center justify-center rounded-lg px-5 py-3 md:mt-auto text-center text-[15px] font-semibold leading-snug transition ${
-            featured
-              ? "bg-leaf-800 text-white hover:bg-leaf-900"
-              : "border-2 border-leaf-800 text-leaf-900 hover:bg-leaf-800 hover:text-white"
-          }`}
+        {/* Past the deadline this must not stay clickable. It is a Shopify cart
+            permalink, so it would reach a working checkout and take money for a
+            set that is not in the shipment. */}
+        <OpenOnly
+          closed={
+            <p className="mt-6 min-h-13 rounded-lg border-2 border-sand-300 px-5 py-3 text-center text-[15px] font-semibold leading-snug text-ink-500 md:mt-auto">
+              Ordering closed for this season
+            </p>
+          }
         >
-          Order this set
-        </OrderLink>
+          <OrderLink
+            level={level.key}
+            className={`mt-6 flex min-h-13 items-center justify-center rounded-lg px-5 py-3 md:mt-auto text-center text-[15px] font-semibold leading-snug transition ${
+              featured
+                ? "bg-leaf-800 text-white hover:bg-leaf-900"
+                : "border-2 border-leaf-800 text-leaf-900 hover:bg-leaf-800 hover:text-white"
+            }`}
+          >
+            Order this set
+          </OrderLink>
+        </OpenOnly>
       </div>
     </article>
   );
