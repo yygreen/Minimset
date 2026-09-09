@@ -5,7 +5,19 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SEASON } from "@/lib/data";
 import { OrderLink } from "./OrderLink";
+import { SHOPIFY_LIVE, accountUrl } from "@/lib/shopify";
 import { msUntilDeadline } from "@/lib/orders";
+
+/**
+ * Where "My Order" goes. Once Shopify owns the orders this site's own lookup
+ * cannot answer for them -- it matches on its own order codes, so a Shopify
+ * order number returns "not found". One constant so the header, the mobile
+ * menu and both footer links cannot disagree.
+ *
+ * next/link renders a plain anchor for an absolute URL, so the same component
+ * serves both states.
+ */
+const MY_ORDER_HREF = SHOPIFY_LIVE ? accountUrl() : "/order";
 
 /* ---------------- copy in both languages ---------------- */
 
@@ -36,7 +48,7 @@ const T = {
         links: [
           { href: "/#levels", label: "The three levels" },
           { href: "/#delivery", label: "How delivery works" },
-          { href: "/order", label: "Look up my order" },
+          { href: MY_ORDER_HREF, label: "Look up my order" },
         ],
       },
       {
@@ -131,7 +143,7 @@ export function Header() {
               {item.label}
             </Link>
           ))}
-          <Link href="/order" className="text-[15px] font-medium text-ink-700 transition hover:text-leaf-800">
+          <Link href={MY_ORDER_HREF} className="text-[15px] font-medium text-ink-700 transition hover:text-leaf-800">
             {t.myOrder}
           </Link>
           {!ordering && (
@@ -169,7 +181,7 @@ export function Header() {
       {menu && (
         <div className="border-t border-sand-200 bg-sand-50 lg:hidden">
           <div className="mx-auto flex max-w-6xl flex-col px-4 py-2">
-            {[...t.nav, { href: "/order", label: t.myOrder }].map((item) => (
+            {[...t.nav, { href: MY_ORDER_HREF, label: t.myOrder }].map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -268,7 +280,7 @@ export function Footer() {
           <p className="flex flex-wrap items-center gap-x-4">
             <Link href="/" className="inline-block py-1 hover:text-leaf-800">Home</Link>
             <Link href="/#faq" className="inline-block py-1 hover:text-leaf-800">{he ? "שאלות" : "Questions"}</Link>
-            <Link href="/order" className="inline-block py-1 hover:text-leaf-800">{t.myOrder}</Link>
+            <Link href={MY_ORDER_HREF} className="inline-block py-1 hover:text-leaf-800">{t.myOrder}</Link>
           </p>
         </div>
       </footer>

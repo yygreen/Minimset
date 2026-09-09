@@ -139,6 +139,23 @@ export function catalogUrl(): string {
   return `https://${SHOPIFY_DOMAIN}${CATALOG_PATH}`;
 }
 
+/**
+ * Where "My Order" belongs once Shopify owns the orders.
+ *
+ * This site's own lookup answers by order CODE and reads its own store, so a
+ * Shopify order number returns "not found" -- verified against the live site:
+ * a pre-switch code resolves, 1001 and #1001 both 404. Pointing a customer at
+ * it would tell them their order does not exist.
+ *
+ * Shopify redirects /account to its hosted customer accounts. The store runs
+ * NEW customer accounts (legacyCustomerAccounts: false), so somebody who
+ * checked out as a guest can still sign in with the email they used and see
+ * the order. No password, no account made at checkout.
+ */
+export function accountUrl(): string {
+  return `https://${SHOPIFY_DOMAIN}/account`;
+}
+
 /** An href that leaves the site, so it needs a plain anchor rather than next/link. */
 export function isExternal(href: string): boolean {
   return /^https?:\/\//i.test(href);
