@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve("."),
   },
+  /* /faq was a real page and may be bookmarked, shared or indexed. Its content
+     is now the homepage FAQ section, so send people to it rather than a 404. */
+  async redirects() {
+    return [{ source: "/faq", destination: "/#faq", permanent: true }];
+  },
 };
 
 export default nextConfig;

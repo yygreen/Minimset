@@ -1,17 +1,14 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useStore } from "@/lib/store";
 
 export default function OrderLookupPage() {
   const router = useRouter();
-  const { orders, ready } = useStore();
+  const { findOrder } = useStore();
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
-
-  const mine = orders.slice(0, 3);
 
   const [busy, setBusy] = useState(false);
 
@@ -39,7 +36,7 @@ export default function OrderLookupPage() {
       /* fall through to the local copy */
     }
 
-    const found = orders.find((o) => o.code === clean);
+    const found = findOrder(clean);
     setBusy(false);
     if (found) {
       router.push(`/order/${found.code}`);
@@ -82,34 +79,6 @@ export default function OrderLookupPage() {
         </button>
       </form>
 
-      {ready && mine.length > 0 && (
-        <div className="mt-10">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">
-            Recent orders on this device
-          </p>
-          <ul className="mt-3 divide-y divide-sand-200 rounded-2xl border border-sand-200 bg-white shadow-card">
-            {mine.map((o) => (
-              <li key={o.code}>
-                <Link
-                  href={`/order/${o.code}`}
-                  className="flex items-center justify-between gap-4 px-5 py-4 transition hover:bg-sand-50"
-                >
-                  <span>
-                    <span className="font-display text-lg font-bold text-ink-950">{o.code}</span>
-                    <span className="ml-3 text-[14px] text-ink-700">{o.customerName}</span>
-                  </span>
-                  <span className="flex items-center gap-1 text-[14px] font-semibold text-leaf-800">
-                    Open
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                      <path d="M5 3l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   );
 }

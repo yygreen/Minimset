@@ -67,16 +67,23 @@ function variantFor(level: LevelKey | undefined): string | null {
 /**
  * The go-live switch, deliberately separate from the ids.
  *
- * Knowing a variant id is not the same as the store being ready to take money:
- * the products have to be published, a payment provider connected and the flat
- * shipping rate configured. Without those, a live CTA hands a customer a
- * checkout that cannot quote a price for getting the box to them.
+ * Knowing a variant id is not the same as the store being ready to take money.
+ * While the store was half-built this defaulted OFF and had to be opted into,
+ * because a live CTA pointing at a checkout that cannot quote shipping is worse
+ * than no CTA at all.
  *
- * So the ids can be committed and verified while the buttons stay on the
- * on-site flow, and going live is one environment variable and a redeploy --
- * reversible in the same minute if the test order finds something wrong.
+ * As of 2026-09-09 the store is ready, verified against it directly rather than
+ * from the admin UI: Shopify Payments accepting and paying out, all three
+ * products Active and published, all four variants returning a real checkout,
+ * a $7.99 flat rate quoting in all fifty states, and the policies replaced.
+ * So the default flips: live unless explicitly switched off.
+ *
+ * NEXT_PUBLIC_SHOPIFY_LIVE=0 in Vercel is now the kill switch. It is read at
+ * build time like any NEXT_PUBLIC_ value, so setting it needs a redeploy --
+ * which is the same minute either way, and the reason the escape hatch is a
+ * variable rather than a code change.
  */
-const ENABLED = process.env.NEXT_PUBLIC_SHOPIFY_LIVE === "1";
+const ENABLED = process.env.NEXT_PUBLIC_SHOPIFY_LIVE !== "0";
 
 /** True once the store is switched on AND can take an order for at least one set. */
 export const SHOPIFY_LIVE =
@@ -124,6 +131,11 @@ export function orderHref(level?: LevelKey): string {
   if (!SHOPIFY_LIVE) return level ? `/order/new?level=${level}` : "/order/new";
   const variant = variantFor(level);
   if (variant) return cartUrl([{ variantId: variant, qty: 1 }]) ?? `https://${SHOPIFY_DOMAIN}${CATALOG_PATH}`;
+  return `https://${SHOPIFY_DOMAIN}${CATALOG_PATH}`;
+}
+
+/** The storefront's own catalog page. Where a retired on-site route now sends people. */
+export function catalogUrl(): string {
   return `https://${SHOPIFY_DOMAIN}${CATALOG_PATH}`;
 }
 

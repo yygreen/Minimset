@@ -90,6 +90,30 @@ const FAQ = [
     a: ["One flat rate per order, added at checkout, however many sets are on it. A set for you and Chinuch sets for the boys travel in one box for one shipping charge."],
   },
   {
+    q: "Who is behind this?",
+    a: [
+      "V'samachta has run this pre-order model in Eretz Yisrael for about seventeen years, starting in Meah Shearim. Kiryas Joel already runs the same system in America. This platform brings it to more American communities.",
+    ],
+  },
+  {
+    q: "Why do I pay in full up front?",
+    a: [
+      "Full payment before the deadline is what makes the numbers exact: the shipment is packed against real totals, not a guess. It also makes every buyer a partner in the minim brought in for the season.",
+    ],
+  },
+  {
+    q: "What if nobody is home when it arrives?",
+    a: [
+      "That is between you and the carrier - the tracking number lets you redirect it, hold it, or leave delivery instructions. Use an address where somebody can take a box before Yom Tov.",
+    ],
+  },
+  {
+    q: "Can I change or cancel my order?",
+    a: [
+      `Yes, any time before the deadline (${SEASON.deadlineLabelEt}), from your order page. A price difference is refunded or charged automatically. After the deadline the shipment is packed against the totals, but a wrong delivery address can still be corrected until the box leaves.`,
+    ],
+  },
+  {
     q: "Why can't the deadline move?",
     a: [
       "The whole season travels as one shipment. When orders close the totals are pulled, that exact quantity is packed in Eretz Yisrael, and it flies in together with reserve stock for exchanges. Everything ordered by the deadline is on that flight.",
@@ -662,7 +686,7 @@ export default function HomePage() {
       </section>
 
       {/* ---------- FAQ ---------- */}
-      <section className="border-t border-sand-200 bg-white py-14 sm:py-20">
+      <section id="faq" className="scroll-mt-20 border-t border-sand-200 bg-white py-14 sm:py-20">
         <div className="mx-auto max-w-6xl px-4">
           <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Questions</p>
           <h2 className="mt-2 max-w-3xl font-display text-[2rem] font-bold leading-tight text-ink-950 sm:text-[2.6rem]">
@@ -671,9 +695,6 @@ export default function HomePage() {
           <div className="mt-10">
             <Faq items={FAQ} />
           </div>
-          <Link href="/faq" className="mt-6 inline-block text-[15px] font-semibold text-leaf-800 underline underline-offset-4">
-            Read every question
-          </Link>
         </div>
       </section>
 

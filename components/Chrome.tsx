@@ -15,7 +15,7 @@ const T = {
       { href: "/#levels", label: "The Sets" },
       { href: "/#how", label: "How It Works" },
       { href: "/#delivery", label: "Delivery" },
-      { href: "/faq", label: "FAQ" },
+      { href: "/#faq", label: "FAQ" },
       { href: "/about", label: "About" },
     ],
     myOrder: "My Order",
@@ -45,7 +45,7 @@ const T = {
           { href: "/#minim", label: "The four minim" },
           { href: "/#how", label: "How it works" },
           { href: "/about", label: "About the program" },
-          { href: "/faq", label: "Questions" },
+          { href: "/#faq", label: "Questions" },
           { href: "/policies", label: "Policies" },
         ],
       },
@@ -267,7 +267,7 @@ export function Footer() {
           <p>{t.legal}</p>
           <p className="flex flex-wrap items-center gap-x-4">
             <Link href="/" className="inline-block py-1 hover:text-leaf-800">Home</Link>
-            <Link href="/faq" className="inline-block py-1 hover:text-leaf-800">{he ? "שאלות" : "Questions"}</Link>
+            <Link href="/#faq" className="inline-block py-1 hover:text-leaf-800">{he ? "שאלות" : "Questions"}</Link>
             <Link href="/order" className="inline-block py-1 hover:text-leaf-800">{t.myOrder}</Link>
           </p>
         </div>

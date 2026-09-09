@@ -181,7 +181,7 @@ export default function PoliciesPage() {
           <Section id="contact" title="Questions">
             <p>
               Most things are answered on the{" "}
-              <Link href="/faq" className="font-semibold text-leaf-800 underline underline-offset-4">questions page</Link>. For
+              <Link href="/#faq" className="font-semibold text-leaf-800 underline underline-offset-4">questions on the homepage</Link>. For
               anything about your own order, quote your order code and we can find it in seconds.
             </p>
           </Section>
