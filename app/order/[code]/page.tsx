@@ -364,7 +364,7 @@ function OrderStatus() {
             </p>
           )}
           <p className="mt-4 text-[14px] text-ink-700">
-            Wrong address? You can change it until {SEASON.deadlineLabelEt} — get in touch and
+            Wrong address? You can change it until ordering closes — get in touch and
             quote code {order.code}.
           </p>
         </section>
@@ -417,8 +417,7 @@ function OrderStatus() {
         ) : (
           <div className="flex flex-wrap items-center justify-between gap-4">
             <p className="max-w-lg text-[14px] text-ink-700">
-              You can change or cancel this order yourself until{" "}
-              <strong className="font-semibold text-ink-950">{SEASON.deadlineLabelEt}</strong>.
+              You can change or cancel this order yourself until ordering closes for the season.
               Cancelling refunds the full amount.
             </p>
             {confirmCancel ? (

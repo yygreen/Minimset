@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Lulav and Etrog Sets, Rav-Inspected | V'samachta Arba Minim",
     description:
-      "Complete Arba Minim sets from $40, sorted by a Rav in Eretz Yisrael and sealed. Order before Motzaei Shabbos, delivered to your door before Yom Tov.",
+      "Complete Arba Minim sets from $40, sorted by a Rav in Eretz Yisrael and sealed, delivered to your door before Yom Tov.",
     type: "website",
     siteName: "V'samachta Arba Minim",
     images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "V'samachta Arba Minim: complete lulav and esrog sets from Eretz Yisrael" }],

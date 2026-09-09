@@ -43,7 +43,6 @@ for blk in addon_src.split('  {')[1:]:
     })
 
 season = re.search(r'name:\s*"(Sukkos [^"]+)"', src).group(1)
-deadline = re.search(r'deadlineLabelEt:\s*"([^"]+)"', src).group(1)
 
 # every value must have parsed, or the CSV would be quietly wrong
 for k, v in LEVELS.items():
@@ -51,7 +50,7 @@ for k, v in LEVELS.items():
 assert len(ADDONS) == 3 and all(a["price"] for a in ADDONS), ADDONS
 print("parsed:", {k: (v["name"], v["base"], v["pitom"]) for k, v in LEVELS.items()})
 print("addons:", [(a["name"], a["price"]) for a in ADDONS])
-print("season:", season, "| deadline:", deadline)
+print("season:", season)
 
 IMG = {
     "MEHUDAR_AA": ("https://4minimset.com/img/inspect-real.jpg", "Two chassidim examining an esrog and a sleeved lulav"),
@@ -93,7 +92,7 @@ def body(v):
         "<p>Every set ships to the address on your order, tracked, in time to arrive before Yom "
         "Tov. One flat shipping charge per order however many sets are on it. If what arrives "
         "would not be worth what you paid, it is replaced from reserve stock at our cost.</p>"
-        f"<p>Ordering closes {deadline}.</p>"
+        "<p>Ordering closes at the season deadline.</p>"
     )
 
 HEAD = ["Handle","Title","Body (HTML)","Vendor","Type","Tags","Published",

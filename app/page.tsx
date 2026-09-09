@@ -57,7 +57,7 @@ const LEVEL_DETAIL: Record<string, { photo: Photo; promises: string[] }> = {
 };
 
 const STEPS = [
-  { n: "1", title: "Order and pay", body: `Choose your sets and where they go. Pay in full before ${SEASON.deadlineLabelEt}.` },
+  { n: "1", title: "Order and pay", body: "Choose your sets and where they go. Pay in full before ordering closes for the season." },
   { n: "2", title: "The Rabbanim sort", body: "Morei Hora'ah in Eretz Yisrael select and inspect every item. Nothing is packed until it passes." },
   { n: "3", title: "It flies in sealed", body: "Esrog boxed, hadassim and aravos bagged, lulav sealed. One day in the air." },
   { n: "4", title: "It ships to your door", body: "Boxed and tracked the moment it lands, addressed to you. In time to open it in your own sukkah." },
@@ -111,7 +111,7 @@ const FAQ = [
   {
     q: "Can I change or cancel my order?",
     a: [
-      `Yes, any time before the deadline (${SEASON.deadlineLabelEt}), from your order page. A price difference is refunded or charged automatically. After the deadline the shipment is packed against the totals, but a wrong delivery address can still be corrected until the box leaves.`,
+      "Yes, any time before ordering closes. Reply to your confirmation email and we will change the sets or refund you in full. After that the shipment is packed against the totals, but a wrong delivery address can still be corrected until the box leaves.",
     ],
   },
   {
@@ -700,7 +700,7 @@ export default function HomePage() {
         </div>
         <div className="relative mx-auto max-w-6xl px-4 py-16 text-center sm:py-24">
           <h2 className="mx-auto max-w-2xl font-display text-[2.1rem] font-bold leading-tight text-ink-950 sm:text-[2.8rem]">
-            Order before Motzaei Shabbos. Open your box in your sukkah.
+            Order while the season is open. Open your box in your sukkah.
           </h2>
           <p className="mx-auto mt-3 max-w-md text-[16px] text-ink-700">
             Sets from ${from}. Sealed, inspected, and shipped to your door.

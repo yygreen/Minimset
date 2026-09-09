@@ -190,7 +190,7 @@ export function OrderFlow() {
       <div className="mx-auto max-w-2xl px-4 py-24 text-center">
         <h1 className="font-display text-3xl font-bold text-ink-950">Ordering is closed</h1>
         <p className="mt-4 text-ink-700">
-          The deadline passed on {SEASON.deadlineLabelEt}. The shipment is packed against the
+          Ordering has closed for the season. The shipment is packed against the
           totals, so no further orders can be accepted this season.
         </p>
         <Link
@@ -695,9 +695,9 @@ export function OrderFlow() {
 
               <div className="rounded-2xl border border-esrog-300 bg-esrog-100 p-5">
                 <p className="text-[14px] leading-relaxed text-ink-900">
-                  <strong className="font-semibold">Before you pay:</strong> orders close{" "}
-                  {SEASON.deadlineLabelEt}. Until then you can change or cancel yourself from your
-                  order page. After that the shipment is packed against these totals.
+                  <strong className="font-semibold">Before you pay:</strong> ordering closes for
+                  the season shortly. Until then you can change or cancel yourself from your order
+                  page. After that the shipment is packed against these totals.
                 </p>
               </div>
 

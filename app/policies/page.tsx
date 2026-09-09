@@ -88,7 +88,7 @@ export default function PoliciesPage() {
               it before the deadline.
             </p>
             <p>
-              Ordering closes at the season deadline, <strong>{SEASON.deadlineLabelEt}</strong>. Prices
+              Ordering closes at the season deadline. Prices
               are calculated on the server at the moment you order, never in your browser.
             </p>
           </Section>
