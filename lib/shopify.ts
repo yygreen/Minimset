@@ -55,6 +55,21 @@ function clean(id: string | undefined): string | null {
   return /^\d{6,}$/.test(v) ? v : null;
 }
 
+/**
+ * The variant for a level and, where the level offers one, a pitom choice.
+ * Only Mehudar A-A has two; asking for withPitom on the others is harmless.
+ */
+export function variantIdFor(level: LevelKey, withPitom = true): string | null {
+  if (level === "MEHUDAR_AA") {
+    return withPitom
+      ? clean(VARIANT.MEHUDAR_AA_PITOM) ?? clean(VARIANT.MEHUDAR_AA_NO_PITOM)
+      : clean(VARIANT.MEHUDAR_AA_NO_PITOM) ?? clean(VARIANT.MEHUDAR_AA_PITOM);
+  }
+  if (level === "MEHUDAR_A") return clean(VARIANT.MEHUDAR_A);
+  if (level === "CHINUCH") return clean(VARIANT.CHINUCH);
+  return null;
+}
+
 /** The default variant for a level: with a pitom for A-A, since that is the set most people mean. */
 function variantFor(level: LevelKey | undefined): string | null {
   if (level === "MEHUDAR_AA") return clean(VARIANT.MEHUDAR_AA_PITOM) ?? clean(VARIANT.MEHUDAR_AA_NO_PITOM);

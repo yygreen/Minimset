@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Faq } from "@/components/Faq";
 import { OrderLink } from "@/components/OrderLink";
+import { AddToCart } from "@/components/AddToCart";
 import { LevelCard } from "@/components/LevelCard";
 import { OpenOnly } from "@/components/OpenOnly";
 import { Share } from "@/components/Share";
@@ -418,12 +419,12 @@ export default function HomePage() {
                     </ul>
 
                     <OpenOnly>
-                      <OrderLink
+                      <AddToCart
                         level={level.key}
                         className="mt-7 inline-flex h-13 items-center justify-center rounded-lg bg-leaf-800 px-7 text-[16px] font-semibold text-white transition hover:bg-leaf-900"
                       >
-                        Order {level.name}
-                      </OrderLink>
+                        Add to cart
+                      </AddToCart>
                     </OpenOnly>
                   </div>
                 </div>

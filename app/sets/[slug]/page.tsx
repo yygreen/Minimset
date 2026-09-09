@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { OpenOnly } from "@/components/OpenOnly";
-import { OrderLink } from "@/components/OrderLink";
+import { AddToCart } from "@/components/AddToCart";
 import { LEVELS, getLevelBySlug, headlinePriceCents } from "@/lib/data";
 import { IMG, type Photo } from "@/lib/images";
 import { money } from "@/lib/orders";
@@ -92,12 +92,12 @@ export default async function SetSignpost({ params }: { params: Promise<{ slug: 
                 Full details and the standard
               </Link>
               <OpenOnly>
-                <OrderLink
+                <AddToCart
                   level={level.key}
                   className="flex h-13 items-center justify-center rounded-lg bg-leaf-800 px-7 text-[16px] font-semibold text-white transition hover:bg-leaf-900"
                 >
-                  Order {level.name}
-                </OrderLink>
+                  Add to cart
+                </AddToCart>
               </OpenOnly>
             </div>
 

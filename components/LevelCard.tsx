@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { OrderLink } from "@/components/OrderLink";
+import { AddToCart } from "@/components/AddToCart";
 import { OpenOnly } from "@/components/OpenOnly";
 import { headlinePriceCents, type Level } from "@/lib/data";
 import { IMG, type Photo } from "@/lib/images";
@@ -104,7 +104,7 @@ export function LevelCard({
               </p>
             }
           >
-            <OrderLink
+            <AddToCart
               level={level.key}
               className={`flex min-h-13 items-center justify-center rounded-lg px-5 py-3 text-center text-[15px] font-semibold leading-snug transition ${
                 featured
@@ -112,8 +112,8 @@ export function LevelCard({
                   : "border-2 border-leaf-800 text-leaf-900 hover:bg-leaf-800 hover:text-white"
               }`}
             >
-              Order this set
-            </OrderLink>
+              Add to cart
+            </AddToCart>
           </OpenOnly>
         </div>
       </div>

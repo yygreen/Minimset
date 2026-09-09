@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SEASON } from "@/lib/data";
 import { OrderLink } from "./OrderLink";
+import { CartButton } from "./CartButton";
 import { SHOPIFY_LIVE } from "@/lib/shopify";
 import { msUntilDeadline } from "@/lib/orders";
 
@@ -153,6 +154,7 @@ export function Header() {
               {t.myOrder}
             </Link>
           )}
+          <CartButton />
           {!ordering && (
             <OrderLink className="flex h-11 items-center rounded-lg bg-leaf-800 px-5 text-[15px] font-semibold text-white shadow-sm transition hover:bg-leaf-900">
               {t.orderNow}
@@ -161,6 +163,7 @@ export function Header() {
         </nav>
 
         <div className={`flex items-center gap-2 lg:hidden ${he ? "mr-auto" : "ml-auto"}`}>
+          <CartButton className="!px-3" />
           {!ordering && (
             <OrderLink className="flex h-11 items-center whitespace-nowrap rounded-lg bg-leaf-800 px-4 text-[14px] font-semibold text-white">
               <span className="min-[400px]:hidden">{he ? "להזמנה" : "Order"}</span>

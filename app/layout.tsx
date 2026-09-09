@@ -3,6 +3,8 @@ import { Frank_Ruhl_Libre, Inter } from "next/font/google";
 import "./globals.css";
 import { Footer, Header, StickyCta } from "@/components/Chrome";
 import { StoreProvider } from "@/lib/store";
+import { CartProvider } from "@/lib/cart";
+import { CartDrawer } from "@/components/CartDrawer";
 
 const frank = Frank_Ruhl_Libre({
   variable: "--font-frank",
@@ -47,10 +49,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${frank.variable} ${inter.variable} h-full`}>
       <body className="flex min-h-full flex-col">
         <StoreProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <StickyCta />
+          <CartProvider>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <StickyCta />
+            <CartDrawer />
+          </CartProvider>
         </StoreProvider>
       </body>
     </html>
