@@ -161,7 +161,7 @@ export default function HomePage() {
         priceCurrency: "USD",
         availability: "https://schema.org/PreOrder",
         priceValidUntil: SEASON.deadlineIso,
-        url: "https://4minimset.com/#start",
+        url: "https://4minimset.com/#levels",
       },
     })),
   ];
@@ -313,24 +313,6 @@ export default function HomePage() {
       </section>
 
       <InspectedBy />
-
-      <OpenOnly>
-      {/* ---------- QUICK START ---------- */}
-      <section id="start" className="scroll-mt-20 border-b border-sand-200 bg-leaf-50">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-6 sm:py-7 lg:flex-row lg:items-center lg:gap-8">
-          <div className="lg:flex-1">
-            <p className="font-display text-xl font-bold text-ink-950 sm:text-2xl">Start your order</p>
-            <p className="mt-0.5 text-[14px] text-ink-700">
-              Three minutes on your phone. {SEASON.deliveryNote}
-            </p>
-          </div>
-          <OrderLink className="flex h-13 items-center justify-center rounded-lg bg-leaf-800 px-8 text-[16px] font-semibold text-white transition hover:bg-leaf-900 lg:shrink-0">
-            Order your set
-          </OrderLink>
-        </div>
-      </section>
-
-      </OpenOnly>
 
       {/* ---------- THE SETS ---------- */}
       <section id="levels" className="scroll-mt-20 py-14 sm:py-20">
