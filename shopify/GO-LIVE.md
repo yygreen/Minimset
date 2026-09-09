@@ -147,10 +147,37 @@ an esrog, and forcing one costs orders.
 **4.2 Phone number required.** Same page. Carriers ask for it, and it is the
 only way to reach somebody whose address turns out to be wrong.
 
-**4.3 Taxes.** Settings → Taxes and duties. Whether Arba Minim are taxable in
-each state you ship to, and where the program has nexus. Shipping to the whole
-country makes this bigger than it was with four towns, not smaller. That is an
-accountant's answer, not mine, but it has to exist before money moves.
+**4.3 Taxes. New Jersey only, and it is already live.** Settings → Taxes and
+duties shows *New Jersey - Action required - Physical presence threshold met in
+September 2026*. That is the Lakewood location creating nexus in NJ. Nowhere
+else: economic nexus needs roughly $100k of sales or 200 transactions into one
+state in a year, which a single Sukkos season will not approach.
+
+- **Registered in NJ** → *Set up tax collection*, enter the tax ID. It charges
+  NJ-bound orders only. Do it before the phase 7 test order so the tax line is
+  visible in a real checkout.
+- **Not registered** → do not tick the box. Collecting tax you cannot remit is
+  worse than not collecting. Registration is the blocker, and it is not
+  instant.
+- **Never switch on all fifty states.** Every state registered is a state that
+  must be filed in, quarterly, including the quarters with no sales.
+
+**Why this cannot be a "later" item here.** A normal shop fixes tax next month
+and a handful of orders were affected. This program's entire season lands in
+the days before the deadline; later is after all of it. Uncollected NJ tax at
+6.625% is about $7.82 on a $117.99 Mehudar A-A -- more than the $7.99 shipping
+charged on it -- and it cannot be recovered from the customer afterwards.
+
+Whether Arba Minim are taxable in NJ at all is the accountant's answer, not
+mine. They are neither food nor clothing, so taxable tangible property is the
+default assumption, but a qualifying religious non-profit may sit differently.
+
+Leave alone on that page: every non-US region (the shipping zone is US-only, so
+nobody else can check out), tax-inclusive pricing (off -- Shopify itself says US
+stores should not include tax in the price), duties and import taxes (off --
+domestic only, and it carries a 0.5% fee), and the country-of-origin and HS-code
+fields (customs data for international orders). "Charge sales tax on shipping"
+is automatic for the US and correct: NJ taxes delivery on taxable goods.
 
 **4.4 Payments.** Yours to connect, in your own name. Everything else here can
 be done first.
