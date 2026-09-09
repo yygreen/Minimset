@@ -254,11 +254,9 @@ export default function HomePage() {
               <div className="rise rise-4 mt-7 rounded-2xl border border-esrog-300 bg-esrog-100 p-5">
                 <p className="font-display text-xl font-bold text-ink-950">Registration for {SEASON.name} has closed.</p>
                 <p className="mt-1 text-[15px] text-ink-700">
-                  The shipment is packed against the final totals. Already ordered? Your delivery details are on your order page.
+                  The shipment is packed against the final totals. Already ordered? Your delivery
+                  details and tracking are in your confirmation email.
                 </p>
-                <Link href="/order" className="mt-4 inline-flex h-12 items-center rounded-lg bg-leaf-800 px-6 text-[15px] font-semibold text-white">
-                  Find my order
-                </Link>
               </div>
             }>
             <div className="rise rise-4 mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">

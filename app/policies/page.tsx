@@ -112,9 +112,10 @@ export default function PoliciesPage() {
 
           <Section id="changes" title="Changes and cancellation">
             <p>
-              You can change or cancel your order yourself, free, at any time up to the deadline. Open
-              your order with its code from <Link href="/order" className="font-semibold text-leaf-800 underline underline-offset-4">Look up my order</Link>,
-              and edit or cancel from there. Changing your sets reprices the order on the server.
+              You can change or cancel your order, free, at any time up to the deadline. Reply to
+              your confirmation email or get in touch quoting your order number, and we will change
+              the sets or refund you in full. Your confirmation also carries a link to the order
+              itself, where you can see exactly what is on it.
             </p>
             <p>
               After the deadline the shipment is packed against the final totals, so the site stops

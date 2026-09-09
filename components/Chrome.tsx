@@ -5,19 +5,24 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SEASON } from "@/lib/data";
 import { OrderLink } from "./OrderLink";
-import { SHOPIFY_LIVE, accountUrl } from "@/lib/shopify";
+import { SHOPIFY_LIVE } from "@/lib/shopify";
 import { msUntilDeadline } from "@/lib/orders";
 
 /**
- * Where "My Order" goes. Once Shopify owns the orders this site's own lookup
- * cannot answer for them -- it matches on its own order codes, so a Shopify
- * order number returns "not found". One constant so the header, the mobile
- * menu and both footer links cannot disagree.
+ * "My Order" only exists while this site owns the orders.
  *
- * next/link renders a plain anchor for an absolute URL, so the same component
- * serves both states.
+ * Its lookup answers by this site's own order code, against this site's own
+ * store. A Shopify order never lands there -- there is no Admin API
+ * integration, and adding one would mean a secret token this public repo must
+ * not hold. So with Shopify live the link is not repointed, it is gone: a
+ * lookup that cannot answer is worse than no lookup, and Shopify already
+ * emails every customer an order-status link of its own.
+ *
+ * It returns by itself if NEXT_PUBLIC_SHOPIFY_LIVE=0 ever pulls the kill
+ * switch, because then the on-site flow is taking the orders again and the
+ * lookup is the right answer.
  */
-const MY_ORDER_HREF = SHOPIFY_LIVE ? accountUrl() : "/order";
+const SHOW_MY_ORDER = !SHOPIFY_LIVE;
 
 /* ---------------- copy in both languages ---------------- */
 
@@ -48,7 +53,7 @@ const T = {
         links: [
           { href: "/#levels", label: "The three levels" },
           { href: "/#delivery", label: "How delivery works" },
-          { href: MY_ORDER_HREF, label: "Look up my order" },
+          ...(SHOW_MY_ORDER ? [{ href: "/order", label: "Look up my order" }] : []),
         ],
       },
       {
@@ -143,9 +148,11 @@ export function Header() {
               {item.label}
             </Link>
           ))}
-          <Link href={MY_ORDER_HREF} className="text-[15px] font-medium text-ink-700 transition hover:text-leaf-800">
-            {t.myOrder}
-          </Link>
+          {SHOW_MY_ORDER && (
+            <Link href="/order" className="text-[15px] font-medium text-ink-700 transition hover:text-leaf-800">
+              {t.myOrder}
+            </Link>
+          )}
           {!ordering && (
             <OrderLink className="flex h-11 items-center rounded-lg bg-leaf-800 px-5 text-[15px] font-semibold text-white shadow-sm transition hover:bg-leaf-900">
               {t.orderNow}
@@ -181,7 +188,7 @@ export function Header() {
       {menu && (
         <div className="border-t border-sand-200 bg-sand-50 lg:hidden">
           <div className="mx-auto flex max-w-6xl flex-col px-4 py-2">
-            {[...t.nav, { href: MY_ORDER_HREF, label: t.myOrder }].map((item) => (
+            {[...t.nav, ...(SHOW_MY_ORDER ? [{ href: "/order", label: t.myOrder }] : [])].map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -280,7 +287,9 @@ export function Footer() {
           <p className="flex flex-wrap items-center gap-x-4">
             <Link href="/" className="inline-block py-1 hover:text-leaf-800">Home</Link>
             <Link href="/#faq" className="inline-block py-1 hover:text-leaf-800">{he ? "שאלות" : "Questions"}</Link>
-            <Link href={MY_ORDER_HREF} className="inline-block py-1 hover:text-leaf-800">{t.myOrder}</Link>
+            {SHOW_MY_ORDER && (
+              <Link href="/order" className="inline-block py-1 hover:text-leaf-800">{t.myOrder}</Link>
+            )}
           </p>
         </div>
       </footer>
