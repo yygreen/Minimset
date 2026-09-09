@@ -37,7 +37,6 @@ export const SHOPIFY_DOMAIN = (process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN || DEFAULT
   .replace(/\/+$/, "");
 
 /** Where a plain "Order Now" lands when no single set has been chosen. */
-const CATALOG_PATH = (process.env.NEXT_PUBLIC_SHOPIFY_CATALOG_PATH ?? "/collections/all").trim();
 
 /**
  * One numeric variant id per thing that can be bought. Mehudar A-A is sold as
@@ -123,21 +122,27 @@ export function cartUrl(lines: CartLine[], attributes?: Record<string, string>):
 /**
  * Where an order CTA should point.
  *
- * With Shopify configured: straight into a Shopify cart holding that set (or
- * the catalog, when the CTA is not tied to one set). Without it: the on-site
- * order flow, unchanged.
+ * Shopify is the till, not the shop window. A CTA tied to one set goes STRAIGHT
+ * into a Shopify cart holding it, which lands the customer in checkout -- the
+ * last step, and the only step Shopify owns.
+ *
+ * A CTA not tied to a set (the header's "Order Now", the closing call) used to
+ * go to the Shopify catalog. That is the wrong page to hand anybody: a bare
+ * three-product grid with none of the sorting standard, none of the reasons,
+ * stock photographs at three different crops and a "Join our email list" block
+ * under it. Everything that sells is on this site. So an untargeted CTA scrolls
+ * to the sets here and lets the customer choose; the button beside the set he
+ * chooses is the one that leaves for checkout.
  */
 export function orderHref(level?: LevelKey): string {
   if (!SHOPIFY_LIVE) return level ? `/order/new?level=${level}` : "/order/new";
   const variant = variantFor(level);
-  if (variant) return cartUrl([{ variantId: variant, qty: 1 }]) ?? `https://${SHOPIFY_DOMAIN}${CATALOG_PATH}`;
-  return `https://${SHOPIFY_DOMAIN}${CATALOG_PATH}`;
+  if (variant) return cartUrl([{ variantId: variant, qty: 1 }]) ?? LEVELS_ANCHOR;
+  return LEVELS_ANCHOR;
 }
 
-/** The storefront's own catalog page. Where a retired on-site route now sends people. */
-export function catalogUrl(): string {
-  return `https://${SHOPIFY_DOMAIN}${CATALOG_PATH}`;
-}
+/** The sets, on this site. Where a customer chooses before Shopify sees him. */
+const LEVELS_ANCHOR = "/#levels";
 
 /**
  * Where "My Order" belongs once Shopify owns the orders.

@@ -108,7 +108,6 @@ end up in the site's JavaScript.
 | `NEXT_PUBLIC_SHOPIFY_VARIANT_MEHUDAR_AA_NO_PITOM` | variant ID for Mehudar A-A, no pitom |
 | `NEXT_PUBLIC_SHOPIFY_VARIANT_MEHUDAR_A` | variant ID for Mehudar A |
 | `NEXT_PUBLIC_SHOPIFY_VARIANT_CHINUCH` | variant ID for Chinuch |
-| `NEXT_PUBLIC_SHOPIFY_CATALOG_PATH` | optional, default `/collections/all` — where a plain "Order Now" lands |
 | `NEXT_PUBLIC_SHOPIFY_LIVE` | **`1` to switch the CTAs over.** Anything else, or unset, and they keep using the on-site flow |
 
 The switch is separate from the ids on purpose. Knowing a variant id is not the
@@ -124,8 +123,11 @@ new deployment to take effect.
 ## 6. Check it
 
 - A set card's "Order this set" goes to
-  `https://<store>/cart/<variant>:1` and shows that set in the cart.
-- "Order Now" in the header goes to the collection.
+  `https://<store>/cart/<variant>:1`, which lands in checkout with that set on
+  it. Shopify is the till, not the shop window: a CTA not tied to one set
+  scrolls to the sets on this site instead, because the bare Shopify catalog
+  carries none of the sorting standard and none of the reasons to buy.
+- "Order Now" in the header scrolls to the sets on this site, not to Shopify.
 - Checkout offers exactly one shipping option at the agreed flat rate.
 - The figure on the site matches the figure Shopify charges.
 - A test order arrives in Shopify with the delivery address on it.
