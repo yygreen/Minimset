@@ -7,7 +7,7 @@ import { LevelCard } from "@/components/LevelCard";
 import { OpenOnly } from "@/components/OpenOnly";
 import { Share } from "@/components/Share";
 import { CompareTable } from "@/components/CompareTable";
-import { EXCHANGE_GUARANTEE, LEVELS, PARTNERSHIP_PARAGRAPH, SEASON, SHIPPING, headlinePriceCents, altPriceCents, shippingAmount } from "@/lib/data";
+import { STANDARD_NOTE, LEVELS, PARTNERSHIP_PARAGRAPH, SEASON, SHIPPING, headlinePriceCents, altPriceCents, shippingAmount } from "@/lib/data";
 import { IMG, type Photo } from "@/lib/images";
 import { money } from "@/lib/orders";
 import { MEDIA } from "@/lib/trust";
@@ -34,7 +34,7 @@ const LEVEL_DETAIL: Record<string, { photo: Photo; promises: string[] }> = {
     photo: IMG.levelAA,
     promises: [
       "Sorted to the strictest standard in the program",
-      "Reserve stock held back, so a set that falls short is replaced",
+      "Reserve stock travels with the shipment",
       "Sealed in Eretz Yisrael, opened only in your sukkah",
     ],
   },
@@ -71,8 +71,8 @@ const FAQ = [
     ],
   },
   {
-    q: "What if the set is not worth what I paid?",
-    a: ["Tell us and it is replaced from the reserve stock held back for exactly that. You do not argue the point and you are not left with it."],
+    q: "What if something is not right with the set?",
+    a: ["Tell us as soon as it arrives. Every item was inspected and approved by Morei Hora'ah before the box was sealed, and reserve stock travels with the shipment."],
   },
   {
     q: "What exactly is in a set?",
@@ -290,8 +290,8 @@ export default function HomePage() {
               ),
             },
             {
-              k: "Replaced if it falls short",
-              v: "If what arrives is not worth the price, it is replaced from reserve stock at our cost",
+              k: "Approved before it is sealed",
+              v: "Every item passes a Moreh Hora'ah in Eretz Yisrael before the box is closed",
               icon: (
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="M4 9h13l-3-3M20 15H7l3 3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
@@ -588,7 +588,7 @@ export default function HomePage() {
             <h2 className="mt-2 font-display text-[2rem] font-bold leading-tight text-ink-950 sm:text-[2.6rem]">
               The Motz is in the room.
             </h2>
-            <p className="mt-4 max-w-lg text-[17px] leading-relaxed text-ink-900">{EXCHANGE_GUARANTEE}</p>
+            <p className="mt-4 max-w-lg text-[17px] leading-relaxed text-ink-900">{STANDARD_NOTE}</p>
             <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-ink-700">
               Reserve stock flies in for exactly this. Kasher v&#39;yashar, one hundred percent, and you
               rely on the Rabbanim who bring it.

@@ -6,7 +6,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { GoldRule, QrBlock, StatusBadge, Stepper } from "@/components/Ui";
 import {
   ADDONS,
-  EXCHANGE_GUARANTEE,
+  STANDARD_NOTE,
   LEVELS,
   LevelKey,
   PARTNERSHIP_PARAGRAPH,
@@ -378,12 +378,12 @@ function OrderStatus() {
         <p className="mt-3 text-[16px] leading-relaxed text-ink-900">{PARTNERSHIP_PARAGRAPH}</p>
       </section>
 
-      {/* (6) replacement guarantee */}
+      {/* (6) the sorting standard */}
       <section className="mt-6 rounded-2xl border border-leaf-200 bg-leaf-50 p-6 sm:p-8">
         <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">
-          The Motz guarantee
+          Inspected before it was sealed
         </p>
-        <p className="mt-3 text-[16px] leading-relaxed text-ink-900">{EXCHANGE_GUARANTEE}</p>
+        <p className="mt-3 text-[16px] leading-relaxed text-ink-900">{STANDARD_NOTE}</p>
         {order.exchanges.length > 0 && (
           <div className="mt-5 border-t border-leaf-200 pt-5">
             <p className="text-[14px] font-semibold text-leaf-800">Exchange on record</p>

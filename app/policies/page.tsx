@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { EXCHANGE_GUARANTEE, SEASON, SHIPPING, shippingAmount } from "@/lib/data";
+import { STANDARD_NOTE, SEASON, SHIPPING, shippingAmount } from "@/lib/data";
 import { GRACE_MINUTES } from "@/lib/server/pricing";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/policies" },
   title: "Policies - V'samachta Arba Minim",
   description:
-    "Ordering, payment, shipping and delivery, changes and cancellation, the replacement guarantee, and what the order form stores.",
+    "Ordering, payment, shipping and delivery, changes and cancellation, the sorting standard, and what the order form stores.",
 };
 
 /**
@@ -33,7 +33,7 @@ const CONTENTS = [
   ["payment", "Payment"],
   ["changes", "Changes and cancellation"],
   ["shipping", "Shipping and delivery"],
-  ["guarantee", "The replacement guarantee"],
+  ["guarantee", "If something is not right"],
   ["privacy", "What we store about you"],
   ["contact", "Questions"],
 ] as const;
@@ -149,9 +149,12 @@ export default function PoliciesPage() {
             </p>
           </Section>
 
-          <Section id="guarantee" title="The replacement guarantee">
-            <p>{EXCHANGE_GUARANTEE}</p>
-            <p>Reserve stock is flown in for exactly this.</p>
+          <Section id="guarantee" title="If something is not right">
+            <p>{STANDARD_NOTE}</p>
+            <p>
+              Arba Minim are perishable goods selected to order, so tell us quickly rather than
+              after Yom Tov; there is very little anyone can do once the season has passed.
+            </p>
           </Section>
 
           <Section id="privacy" title="What we store about you">

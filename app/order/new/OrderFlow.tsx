@@ -7,7 +7,7 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { Stepper } from "@/components/Ui";
 import {
   ADDONS,
-  EXCHANGE_GUARANTEE,
+  STANDARD_NOTE,
   LEVELS,
   LevelKey,
   SEASON,
@@ -791,7 +791,7 @@ export function OrderFlow() {
 
               <p className="mt-6 border-t border-sand-200 pt-5 text-[13px] leading-relaxed text-ink-500">
                 {payLive && "Statement descriptor: VSAMACHTA ARBA MINIM. "}
-                {EXCHANGE_GUARANTEE}
+                {STANDARD_NOTE}
               </p>
             </div>
           )}

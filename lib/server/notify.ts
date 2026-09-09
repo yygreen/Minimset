@@ -12,7 +12,7 @@
  *
  * The SMS/WhatsApp seam is the same shape: add a sender here, call it from notifyPaid.
  */
-import { PARTNERSHIP_PARAGRAPH, EXCHANGE_GUARANTEE, SEASON } from "@/lib/data";
+import { PARTNERSHIP_PARAGRAPH, STANDARD_NOTE, SEASON } from "@/lib/data";
 import { itemLabel, money, type Order } from "@/lib/orders";
 import { logNotification } from "./repo";
 
@@ -39,7 +39,7 @@ export function confirmationText(order: Order): { subject: string; text: string 
     "",
     `  ${SEASON.deliveryNote} You will get a tracking number the day your box leaves.`,
     "",
-    EXCHANGE_GUARANTEE,
+    STANDARD_NOTE,
     "",
     `Find your order any time: https://4minimset.com/order/${order.code}`,
   ]

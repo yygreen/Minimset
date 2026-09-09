@@ -90,8 +90,8 @@ def body(v):
         "<p><strong>Aravos.</strong> Fresh aravos, included in every set.</p>"
         "<h3>Delivery</h3>"
         "<p>Every set ships to the address on your order, tracked, in time to arrive before Yom "
-        "Tov. One flat shipping charge per order however many sets are on it. If what arrives "
-        "would not be worth what you paid, it is replaced from reserve stock at our cost.</p>"
+        "Tov. One flat shipping charge per order however many sets are on it. If something is "
+        "not right with what arrives, tell us as soon as it does.</p>"
         "<p>Ordering closes at the season deadline.</p>"
     )
 

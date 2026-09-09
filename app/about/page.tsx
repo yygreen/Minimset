@@ -90,8 +90,8 @@ export default function AboutPage() {
               </p>
               <p>
                 Everything arrives closed up: the esrog in its box, the hadassim and aravos in a
-                sealed bag, the lulav sealed. You open it in your own sukkah. If what you received
-                would not be worth what you paid, it is replaced from reserve stock at our cost.
+                sealed bag, the lulav sealed. You open it in your own sukkah. If something is not
+                right with what arrives, tell us as soon as it does.
               </p>
             </div>
           </div>

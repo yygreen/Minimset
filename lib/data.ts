@@ -190,11 +190,23 @@ export const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
 export const PARTNERSHIP_PARAGRAPH =
   "Your order and payment make you a full partner in the Arba Minim being acquired for this community. Every set is selected and inspected by Morei Hora'ah who are experts in hilchos Daled Minim, and arrives sealed — kasher v'yashar, one hundred percent.";
 
-/* The guarantee as it reads once nobody is standing at a table. Reserve stock is
-   still flown in for exactly this; what changed is that the swap happens by post
-   rather than in person. Operator copy -- confirm before the season opens. */
-export const EXCHANGE_GUARANTEE =
-  "If a Moreh Hora'ah would rule that what you received is not worth what you paid, tell us and it is replaced from reserve stock at our cost. You are not left arguing about it.";
+/**
+ * What the program stands behind, stated as a fact rather than a remedy.
+ *
+ * Under pickup this was a real guarantee: a Moreh Hora'ah stood at the table
+ * with reserve stock and swapped a set in front of you, three days before Yom
+ * Tov. Shipping breaks the mechanism, not just the wording -- a replacement
+ * posted after a complaint takes the same 3 to 5 days as the original, so on a
+ * box that arrived close to Yom Tov it can arrive too late to be worth
+ * anything. A promise that cannot be kept in the case that matters is worse
+ * than none.
+ *
+ * So this says what is true and commits to nothing: the sorting standard, that
+ * reserve stock travels, and an invitation to get in touch. Any actual remedy
+ * is the operator's to offer case by case, not the site's to promise.
+ */
+export const STANDARD_NOTE =
+  "Every item is inspected and approved by Morei Hora'ah in Eretz Yisrael before the box is sealed, and reserve stock travels with the shipment. If something is not right with what arrives, tell us as soon as it does.";
 
 export function getLevel(key: LevelKey): Level {
   const level = LEVELS.find((l) => l.key === key);
