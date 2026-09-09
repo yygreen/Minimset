@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Countdown } from "@/components/Countdown";
 import { Faq } from "@/components/Faq";
 import { OrderLink } from "@/components/OrderLink";
 import { LevelCard } from "@/components/LevelCard";
@@ -254,12 +253,6 @@ export default function HomePage() {
             <p className="rise rise-4 tnum mt-3 text-[14px] font-semibold text-ink-700">{ladder}</p>
 
             </OpenOnly>
-            <div className="mt-8">
-              <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-ink-700">
-                Orders close in
-              </p>
-              <Countdown />
-            </div>
           </div>
         </div>
       </section>
@@ -290,7 +283,7 @@ export default function HomePage() {
               ),
             },
             {
-              k: "Exchanged on the spot",
+              k: "Replaced if it falls short",
               v: "If what arrives is not worth the price, it is replaced from reserve stock at our cost",
               icon: (
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">

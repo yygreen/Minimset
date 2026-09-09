@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/policies" },
   title: "Policies - V'samachta Arba Minim",
   description:
-    "Ordering, payment, shipping and delivery, changes and cancellation, the exchange guarantee, and what the order form stores.",
+    "Ordering, payment, shipping and delivery, changes and cancellation, the replacement guarantee, and what the order form stores.",
 };
 
 /**
@@ -32,7 +32,7 @@ const CONTENTS = [
   ["payment", "Payment"],
   ["changes", "Changes and cancellation"],
   ["shipping", "Shipping and delivery"],
-  ["guarantee", "The exchange guarantee"],
+  ["guarantee", "The replacement guarantee"],
   ["privacy", "What we store about you"],
   ["contact", "Questions"],
 ] as const;
@@ -136,11 +136,11 @@ export default function PoliciesPage() {
             </p>
           </Section>
 
-          <Section id="guarantee" title="The exchange guarantee">
+          <Section id="guarantee" title="The replacement guarantee">
             <p>{EXCHANGE_GUARANTEE}</p>
             <p>
-              Reserve stock is flown in for exactly this. The exchange happens there and then — you
-              are never asked to come back another day.
+              Reserve stock is flown in for exactly this. Tell us and a replacement goes out at
+              our cost; you are not left arguing the point.
             </p>
           </Section>
 

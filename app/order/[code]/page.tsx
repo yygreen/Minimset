@@ -378,7 +378,7 @@ function OrderStatus() {
         <p className="mt-3 text-[16px] leading-relaxed text-ink-900">{PARTNERSHIP_PARAGRAPH}</p>
       </section>
 
-      {/* (6) exchange guarantee */}
+      {/* (6) replacement guarantee */}
       <section className="mt-6 rounded-2xl border border-leaf-200 bg-leaf-50 p-6 sm:p-8">
         <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">
           The Motz guarantee

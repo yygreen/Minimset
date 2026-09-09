@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SEASON } from "@/lib/data";
 import { OrderLink } from "./OrderLink";
-import { Countdown } from "./Countdown";
 import { msUntilDeadline } from "@/lib/orders";
 
 /* ---------------- copy in both languages ---------------- */
@@ -28,7 +27,7 @@ const T = {
     totals: "HQ Totals",
     allOrders: "All Orders",
     stickyFrom: "Sets from $40",
-    stickyCloses: "Closes in",
+    stickyDelivery: "Shipped to your door",
     footerBlurb:
       "Arba Minim mehudar l'chatchilah at affordable prices. Seventeen years in Eretz Yisrael, now serving American communities.",
     cols: [
@@ -216,7 +215,7 @@ export function Header() {
  * flow, on product pages (which have their own bar) and on staff screens.
  */
 export function StickyCta() {
-  const { pathname, he, t, dir } = useLocale();
+  const { pathname, t, dir } = useLocale();
   const [shown, setShown] = useState(false);
 
   useEffect(() => {
@@ -242,10 +241,8 @@ export function StickyCta() {
     >
       <div className="flex items-center gap-3">
         <div className="min-w-0 flex-1 leading-tight">
-          <p className="text-[12px] font-semibold text-ink-700">{t.stickyFrom}</p>
-          <p className="text-[12px] text-ink-500">
-            {t.stickyCloses} <Countdown variant="inline" he={he} />
-          </p>
+          <p className="text-[13px] font-semibold text-ink-700">{t.stickyFrom}</p>
+          <p className="text-[12px] text-ink-500">{t.stickyDelivery}</p>
         </div>
         <OrderLink
           tabIndex={shown ? 0 : -1}
