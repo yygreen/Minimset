@@ -168,10 +168,11 @@ export default function PoliciesPage() {
               how a set reaches the right door.
             </p>
             <p>
-              Your email address is used for one thing: your order confirmation. There is no mailing
-              list, and nothing is sold or passed to anyone outside the program. Confirmation sending
-              is currently switched off: messages are written to a log, and sending begins once a
-              sending domain is set up.
+              Your email address is used to send your order confirmation and, when your box
+              leaves, your tracking number. Both come from Shopify, which processes the order.
+              Checkout also offers a box to hear from us when next season opens; that is the only
+              thing we would ever email you beyond your own order, and nothing is sold or passed to
+              anyone outside the program.
             </p>
             <p>
               Records are kept for the season and the reconciliation that follows it. To have yours
