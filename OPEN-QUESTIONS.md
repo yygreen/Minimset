@@ -5,30 +5,48 @@ waiting on someone. Numbered so answers can come back as "1, 4, 9…".
 
 Status of the backend as of this writing (`/api/status` on the live site):
 `store: true`, `payments: "demo"`, `notifications: "off"`, `staffLocked: true`.
-So orders are recorded, **no card is charged**, and **no email is sent**.
+So orders taken *on this site* are recorded, **no card is charged**, and **no
+email is sent**. Shopify is a separate story — see item 1.
+
+---
+
+## Settled on 2026-09-09, after Joseph described the framework
+
+Raised, reviewed and closed. Kept here only so nobody re-opens them:
+
+- **The deadline.** Motzaei Shabbos, September 12, 8:30 PM EDT stands.
+- **The replacement guarantee.** `EXCHANGE_GUARANTEE` in `lib/data.ts` is a
+  sentence I wrote when pickup was removed, because the old one promised a
+  Moreh Hora'ah standing at a distribution table. Accepted as it reads: *"If a
+  Moreh Hora'ah would rule that what you received is not worth what you paid,
+  tell us and it is replaced from reserve stock at our cost."* It is a
+  customer-facing promise, live on the homepage, `/faq`, the payment step and
+  the Shopify refund policy.
+- **"Seventeen years."** Stands, in four places.
+- **Kiryas Joel**, claimed twice with nothing attached. Stands as it is.
+- **The photographs.** Generic Daled Minim market shots rather than the
+  program's own. Accepted; `/brief` still lists what to shoot if that changes.
+- **Paper and envelope orders.** How most people order in Meah Shearim, and not
+  being built for America.
+- **"About one day in transit."** Confirmed by Joseph.
+
+Numbering below keeps its gaps on purpose, so an answer sent earlier as
+"11, 16" still points at the same thing.
 
 ---
 
 ## A. Blocking — the site cannot take a real order until these are settled
 
-**1. The payment deadline.**
-The whole site is built on one value: `SEASON.deadlineIso` =
-**Motzaei Shabbos, September 12 2026, 8:30 PM EDT**. That date was an
-assumption, never confirmed. It drives the countdown, the server-side cutoff,
-the open/closed state of ordering, and every date label on 17 pages. If it is
-wrong, everything is wrong.
+**1. Who takes the money.**
+Half done. **Shopify Payments is connected and verified** — accepting payments,
+payouts to Shopify Balance — and all four cart permalinks reach a live
+checkout. What is left is the switch: `NEXT_PUBLIC_SHOPIFY_LIVE=1` in Vercel
+(Production) and a redeploy, which is what moves all eleven CTAs off the
+on-site flow. Until then this site's own `/api/status` still reports
+`payments: "demo"`: an order placed here is recorded and marked paid with no
+card charged. Do not send traffic in between.
 
-**2. Distribution day.**
-Currently **Tuesday, September 22 2026, 10:00 AM – 5:00 PM** at all four sites.
-Confirm the date, and whether every community really runs the same day and the
-same hours.
-
-**3. Who takes the money.**
-`payments` is `demo`: an order is recorded and marked paid with no card
-charged. Either connect the Shopify store (see section D) or put your own
-Stripe keys in Vercel. Nothing can go live until one of those is true.
-
-**4. Order confirmations.**
+**2. Order confirmations.**
 `notifications` is `off`. Confirmation emails are written to a log and never
 sent. Needs a sending domain and a Resend key before a buyer gets anything in
 writing.
@@ -53,13 +71,6 @@ and light, which is the awkward shape for parcel pricing.
 and it feeds tax calculation, so it has to be the real place the boxes go out
 from.
 
-**5c. The replacement guarantee wording.** `EXCHANGE_GUARANTEE` in
-`lib/data.ts` used to promise a Moreh Hora'ah present at distribution. There is
-no distribution, so it now reads: *"If a Moreh Hora'ah would rule that what you
-received is not worth what you paid, tell us and it is replaced from reserve
-stock at our cost."* That is a promise to customers and needs the operator's
-agreement.
-
 **10. A contact for the program itself.** There is none anywhere on the site —
 no phone, no email, no address. This mattered before; it is now the *only*
 route a customer has, because there is no community rep to call.
@@ -67,58 +78,35 @@ route a customer has, because there is no community rep to call.
 **11. Prices.** $110 Mehudar A-A with pitom / $100 without, $65 Mehudar A, $40
 Chinuch. Extras: hadassim $12, aravos $6, koishiklach $5. Confirm each.
 
-**12. Reserve stock.** The staff screens track reserve per site per level for
-exchanges. Nobody has said how much reserve actually flies in.
-
 ## C. Trust — the reason a stranger would or would not buy
-
-**13. The Morei Hora'ah who sort.** The site says "a Rav" and "Morei Hora'ah"
-generically, seven times, and names nobody. An empty slot is already wired into
-the homepage that renders the moment names are supplied — name, role, city, and
-confirmation that each Rav agrees to be published.
 
 **14. Whose esrogim.** The site describes bletlech, shilush and tiyumes in
 detail and never says which mesorah — Chazon Ish, Yanover, or another — nor
 anything about orlah or the grower's hechsher. To a knowledgeable buyer this is
 the most conspicuous gap on the page.
 
-**15. Who V'samachta is.** "V'samachta was established in Eretz Yisrael" — by
-whom, in what year, at what address, under what organisation?
+**15. The legal entity behind the store.** Who V'samachta is as an operation is
+settled — Joseph runs it, it began in his own neighbourhood in Meah Shearim and
+spread from there. What is still open is the entity the money belongs to: the
+name on the IRS letter, the tax ID and the bank account behind Shopify
+Payments. Nothing about the program's story; everything about who receives
+$110 from a stranger in Baltimore.
 
 **16. The Morei Hora'ah who do the sorting.** Named, not "a Moreh Hora'ah".
 This is the whole basis of the offer and it is currently anonymous. It matters
 more now than it did: nobody meets a Rav at a table any more, so the names are
 the only place that trust can live.
 
-**17. Kiryas Joel.** Claimed twice as the proof that this works in America,
-with nothing attached. Who runs it there, how many sets last year, and is there
-someone who would take a call from a stranger?
-
-**18. Numbers.** "Seventeen years" is the only figure on the whole site. Sets
-per season, communities served, neighbourhoods in Eretz Yisrael.
-
-**19. A letter.** A scanned michtav or haskama, or a photograph of the real
-Meah Shearim order sheet, would do more than the entire About page. Does one
-exist that may be published?
-
-**20. Your own photographs.** Every photo on the site is a generic Daled Minim
-market shot, not V'samachta's operation. The `/brief` page lists exactly what
-to shoot — a Rav checking an esrog, the seal going on, the packing, a boxed
-set ready to go out. Also wanted: a 20–40 second clip of a Rav checking and
-sealing a set; the player is already built and hidden until a file exists.
-
-**21. The hero photograph is too small.** 780×860 pixels, blown up more than
-twice its real size on any retina screen. Either send a larger original of that
-market shot, or pick a different hero from the ones already in the repo
-(several are 2400px wide).
-
 ## D. Shopify
 
-**22. The store domain** — `something.myshopify.com` or a custom shop domain.
+**22. RESOLVED.** The store domain is `4minimset.myshopify.com`, committed as
+the default in `lib/shopify.ts`.
 
-**23. Four variant IDs** — Mehudar A-A with pitom, Mehudar A-A no pitom,
-Mehudar A, Chinuch. The wiring is deployed and inert until these are set;
-`SHOPIFY.md` has the full setup.
+**23. RESOLVED.** All four variant IDs were read from the store's own
+`products.json` and committed in `lib/shopify.ts`: `45801595633799` (A-A with
+pitom, $110), `45801595666567` (A-A no pitom, $100), `45801595732103`
+(Mehudar A, $65), `45801595797639` (Chinuch, $40). Each was tested against the
+live store and returns a real checkout. They are public values, not secrets.
 
 **24. Do the extras get sold in Shopify** (extra hadassim, extra aravos,
 koishiklach), or do they come off the site?
@@ -132,25 +120,11 @@ an uncovered address stops checkout dead.
 which will not know about a Shopify order. Point it at the Shopify
 order-status page, or remove it.
 
-**27. Paper and envelope orders.** Currently entered by a rep through the staff
-screens here. In Shopify the equivalent is a draft order the rep creates and
-marks paid. Which way is it being run this season?
-
 **28. Closing at the deadline.** Shopify does not close a store on a date by
 itself. Someone has to set the products to Draft at the deadline, or an app
 has to do it.
 
 ## E. Copy that asserts something unverified
-
-**29. "Seventeen years"** — from what year to what year?
-
-**30. "Kiryas Joel already runs the same system"** — see item 17.
-
-**31. "About one day in transit"** — is the shipment actually flown, and to
-which airport, and who clears it?
-
-**32. "A whole community is served in two to three hours"** — from Eretz
-Yisrael's experience, or measured in America?
 
 **33. The sorting standards** in LEVELS are marked in the code as verbatim from
 the operator's spec. Confirm they are still current for this season.
