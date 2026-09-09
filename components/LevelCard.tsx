@@ -89,27 +89,33 @@ export function LevelCard({
         <p className="mt-3 text-[13px] text-ink-500">Shipped to your door. Change or cancel free until the deadline.</p>
 
 
-        {/* Past the deadline this must not stay clickable. It is a Shopify cart
-            permalink, so it would reach a working checkout and take money for a
-            set that is not in the shipment. */}
-        <OpenOnly
-          closed={
-            <p className="mt-6 min-h-13 rounded-lg border-2 border-sand-300 px-5 py-3 text-center text-[15px] font-semibold leading-snug text-ink-500 md:mt-auto">
-              Ordering closed for this season
-            </p>
-          }
-        >
-          <OrderLink
-            level={level.key}
-            className={`mt-6 flex min-h-13 items-center justify-center rounded-lg px-5 py-3 md:mt-auto text-center text-[15px] font-semibold leading-snug transition ${
-              featured
-                ? "bg-leaf-800 text-white hover:bg-leaf-900"
-                : "border-2 border-leaf-800 text-leaf-900 hover:bg-leaf-800 hover:text-white"
-            }`}
+        {/* The wrapper owns the spacing, not the button. md:mt-auto pushes the
+            action to the foot of the card so the three line up, but on the
+            tallest card it resolves to zero and the button ends up against the
+            line above it -- so pt-7 guarantees a gap whatever mt-auto does. */}
+        <div className="mt-7 md:mt-auto md:pt-7">
+          {/* Past the deadline this must not stay clickable. It is a Shopify cart
+              permalink, so it would reach a working checkout and take money for a
+              set that is not in the shipment. */}
+          <OpenOnly
+            closed={
+              <p className="flex min-h-13 items-center justify-center rounded-lg border-2 border-sand-300 px-5 py-3 text-center text-[15px] font-semibold leading-snug text-ink-500">
+                Ordering closed for this season
+              </p>
+            }
           >
-            Order this set
-          </OrderLink>
-        </OpenOnly>
+            <OrderLink
+              level={level.key}
+              className={`flex min-h-13 items-center justify-center rounded-lg px-5 py-3 text-center text-[15px] font-semibold leading-snug transition ${
+                featured
+                  ? "bg-leaf-800 text-white hover:bg-leaf-900"
+                  : "border-2 border-leaf-800 text-leaf-900 hover:bg-leaf-800 hover:text-white"
+              }`}
+            >
+              Order this set
+            </OrderLink>
+          </OpenOnly>
+        </div>
       </div>
     </article>
   );

@@ -349,15 +349,10 @@ export default function HomePage() {
             ))}
           </div>
 
-          <p className="mt-6 text-[14px] text-ink-500">
-            One order can hold several sets. A Mehudar A-A for you and Chinuch sets for the boys is
-            the usual order.
-          </p>
-
           {/* The compare table sits with the cards rather than in a section of
               its own: the question it answers -- which level -- is the one the
               cards have just raised. */}
-          <div id="compare" className="mt-12 scroll-mt-20 border-t border-sand-200 pt-10">
+          <div id="compare" className="mt-14 scroll-mt-20 sm:mt-16">
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Compare</p>
             <h3 className="mt-2 font-display text-[1.9rem] font-bold leading-tight text-ink-950 sm:text-[2.3rem]">
               The three standards, side by side.
