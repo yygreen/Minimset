@@ -35,5 +35,6 @@ delivered.
 Shipping charges
 
 The $7.99 shipping charge covers getting your order to you and is returned with
-a cancellation made before the deadline. On a package returned to us as
-undeliverable, see the shipping policy.
+a cancellation made before the deadline. An order you collect carries no
+shipping charge in the first place. On a package returned to us as
+undeliverable, see the shipping and local pickup policy.

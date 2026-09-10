@@ -57,8 +57,17 @@ All of this is invented and visible to the public right now.
 
 **5–9. RESOLVED by removal, 2026-09-09.** The four communities, their host
 institutions, rep names, rep phone numbers and addresses were all invented, and
-all of it is gone: the program ships to the door, so there are no pickup sites
-to describe. Nothing invented remains on the public site in their place.
+all of it is gone. Nothing invented remains on the public site in their place.
+
+**5c. Pickup came back, as one real location, 2026-09-10.** The season flyer
+names a pickup point in **Airmont, NY**, and Joseph is building it in Shopify
+as a local-pickup location. It sits beside shipping rather than replacing it —
+the customer chooses in checkout. `PICKUP` in `lib/data.ts` holds the town and
+nothing else on purpose: the street address, the collection day and the window
+are only ever what Shopify has on the location, because that is what reaches
+the customer in the Ready for pickup email. Do not print them on the site from
+memory. **Still open:** the address itself, the collection day and the window,
+and whether more towns follow — `PICKUP.towns` takes a list.
 
 **5a. The flat shipping rate.** The one number the new model needs and does not
 have. `SHIPPING.flatRateCents` in `lib/data.ts` is `null`, so the site says
@@ -76,8 +85,18 @@ return address on Shopify-bought labels.
 no phone, no email, no address. This mattered before; it is now the *only*
 route a customer has, because there is no community rep to call.
 
-**11. Prices.** $110 Mehudar A-A with pitom / $100 without, $65 Mehudar A, $40
-Chinuch. Extras: hadassim $12, aravos $6, koishiklach $5. Confirm each.
+**11. Prices — RAISED 2026-09-10, from the season flyer.** $120 Mehudar A-A
+with pitom / $110 without, $70 Mehudar A, $45 Chinuch. The flyer's "was" prices
+match the old site figures exactly, which is the confirmation that these are the
+new ones and not a different product.
+
+**11a. The Shopify variants still carry the old prices.** $110 / $100 / $65 /
+$40 on the live store, against $120 / $110 / $70 / $45 on the site. Shopify is
+what charges the card, so until the four variant prices are changed the site
+advertises one figure and bills another. See GO-LIVE phase 0.4.
+
+**11b. Extras.** Hadassim $12, aravos $6, koishiklach $5 — never confirmed, and
+all three are still Draft in Shopify. The flyer does not price them either.
 
 ## C. Trust — the reason a stranger would or would not buy
 
@@ -91,7 +110,7 @@ settled — Joseph runs it, it began in his own neighbourhood in Meah Shearim an
 spread from there. What is still open is the entity the money belongs to: the
 name on the IRS letter, the tax ID and the bank account behind Shopify
 Payments. Nothing about the program's story; everything about who receives
-$110 from a stranger in Baltimore.
+$120 from a stranger in Baltimore.
 
 **16. The Morei Hora'ah who do the sorting.** Named, not "a Moreh Hora'ah".
 This is the whole basis of the offer and it is currently anonymous. It matters
@@ -105,9 +124,10 @@ the default in `lib/shopify.ts`.
 
 **23. RESOLVED.** All four variant IDs were read from the store's own
 `products.json` and committed in `lib/shopify.ts`: `45801595633799` (A-A with
-pitom, $110), `45801595666567` (A-A no pitom, $100), `45801595732103`
-(Mehudar A, $65), `45801595797639` (Chinuch, $40). Each was tested against the
-live store and returns a real checkout. They are public values, not secrets.
+pitom), `45801595666567` (A-A no pitom), `45801595732103` (Mehudar A),
+`45801595797639` (Chinuch). Each was tested against the live store and returns a
+real checkout. They are public values, not secrets. Prices are deliberately not
+recorded here — see 11a, they are the store's to state, not this file's.
 
 **24. Do the extras get sold in Shopify** (extra hadassim, extra aravos,
 koishiklach), or do they come off the site?

@@ -73,7 +73,7 @@ def seo_desc(v):
     """Shopify allows 160 characters and the headline alone was using 70. The
     rest names what actually separates this from a shop counter: a Rav sorted
     it, it arrives sealed, and it comes to the door."""
-    tail = " Sorted by Morei Hora'ah in Eretz Yisrael, sealed, shipped to your door."
+    tail = " Sorted by Morei Hora'ah in Eretz Yisrael, sealed. Shipped or collected locally."
     head = v["headline"]
     return (head + tail)[:158] if len(head) + len(tail) <= 158 else head[:158]
 
@@ -88,9 +88,10 @@ def body(v):
         f"<p><strong>Lulav.</strong> {v['lulav']}</p>"
         f"<p><strong>Hadassim.</strong> {v['hadassim']}</p>"
         "<p><strong>Aravos.</strong> Fresh aravos, included in every set.</p>"
-        "<h3>Delivery</h3>"
-        "<p>Every set ships to the address on your order, tracked, in time to arrive before Yom "
-        "Tov. One flat shipping charge per order however many sets are on it. If something is "
+        "<h3>Getting it</h3>"
+        "<p>Shipped tracked to the address on your order, or collected at the local pickup "
+        "location - you choose at checkout. Every set is ready in time for Yom Tov. One flat "
+        "shipping charge per order however many sets are on it, and nothing to pay for pickup. If something is "
         "not right with what arrives, tell us as soon as it does.</p>"
         "<p>Ordering closes at the season deadline.</p>"
     )
@@ -112,7 +113,7 @@ def row(**k):
 # Status=draft would take it off sale. These products are already active in the
 # store; the CSV now preserves that. For a first import into a fresh store,
 # set Status to "draft" here and publish deliberately.
-TAGS = f"Arba Minim, Lulav and Esrog, {season}, Pre-order, Shipped"
+TAGS = f"Arba Minim, Lulav and Esrog, {season}, Pre-order, Shipped, Local pickup"
 VENDOR = "V'samachta Arba Minim"
 
 # ---------------- the three sets ----------------
@@ -145,7 +146,7 @@ with open('shopify/products-sets.csv','w',newline='') as f:
                    "Variant Weight Unit": "g"},
                 # The SEO title has to carry the price a shopper actually meets,
                 # which for A-A is the with-pitom default. Built from base alone
-                # it advertised $100 against a $110 product page.
+                # it advertised $110 against a $120 product page.
                 **({"Image Src": img, "Image Position": "1", "Image Alt Text": alt,
                     "SEO Title": f"{v['name']} Lulav and Esrog Set, ${(v['base'] + (v['pitom'] or 0))//100}",
                     "SEO Description": seo_desc(v)} if first else {}),
@@ -159,7 +160,7 @@ with open('shopify/products-extras.csv','w',newline='') as f:
         img, alt = ADDON_IMG[a["id"]]
         w.writerow(row(
             Handle=a["id"], Title=a["name"],
-            **{"Body (HTML)": f"<p>{a['note']}</p><p>Ships in the same box as your set, at no extra shipping charge.</p>"},
+            **{"Body (HTML)": f"<p>{a['note']}</p><p>Travels with your set, at no extra shipping charge.</p>"},
             Vendor=VENDOR, Type="Arba Minim Extra", Tags=TAGS, Published="TRUE",
             **{"Option1 Name": "Title", "Option1 Value": "Default Title",
                "Variant SKU": f"VS-5787-{a['id'].upper().replace('-','')}",

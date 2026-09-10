@@ -7,7 +7,7 @@ import { LevelCard } from "@/components/LevelCard";
 import { OpenOnly } from "@/components/OpenOnly";
 import { Share } from "@/components/Share";
 import { CompareTable } from "@/components/CompareTable";
-import { STANDARD_NOTE, LEVELS, PARTNERSHIP_PARAGRAPH, SEASON, SHIPPING, headlinePriceCents, altPriceCents, shippingAmount } from "@/lib/data";
+import { STANDARD_NOTE, LEVELS, PARTNERSHIP_PARAGRAPH, PICKUP, PICKUP_AVAILABLE, SEASON, SHIPPING, headlinePriceCents, altPriceCents, pickupPrice, pickupTowns, shippingAmount } from "@/lib/data";
 import { IMG, type Photo } from "@/lib/images";
 import { money } from "@/lib/orders";
 import { MEDIA } from "@/lib/trust";
@@ -60,7 +60,7 @@ const STEPS = [
   { n: "1", title: "Order and pay", body: "Choose your sets and where they go. Pay in full before ordering closes for the season." },
   { n: "2", title: "The Rabbanim sort", body: "Morei Hora'ah in Eretz Yisrael select and inspect every item. Nothing is packed until it passes." },
   { n: "3", title: "It flies in sealed", body: "Esrog boxed, hadassim and aravos bagged, lulav sealed. One day in the air." },
-  { n: "4", title: "It ships to your door", body: "Boxed and tracked the moment it lands, addressed to you. In time to open it in your own sukkah." },
+  { n: "4", title: "It comes to you", body: "Shipped to your door, tracked, or collected locally if you chose that. In time to open it in your own sukkah." },
 ];
 
 const FAQ = [
@@ -80,16 +80,29 @@ const FAQ = [
   },
   {
     q: "Can I order for my children?",
-    a: ["Yes. The Kosher L'Bracha (Chinuch) set is $40, so every boy holds his own minim. One order can hold a Mehudar A-A for you and Chinuch sets for the boys."],
+    a: ["Yes. The Kosher L'Bracha (Chinuch) set is $45, so every boy holds his own minim. One order can hold a Mehudar A-A for you and Chinuch sets for the boys."],
   },
   {
     q: "When will it arrive?",
-    a: ["Every set ships in time to arrive before Yom Tov. The shipment lands after Yom Kippur and goes straight out to the addresses on the orders; you get a tracking number by email the day yours leaves."],
+    a: ["Every set is here in time for Yom Tov. The shipment lands after Yom Kippur; orders to be shipped go straight out to the addresses on them and you get a tracking number by email the day yours leaves, and orders to be collected are ready at the pickup location, which emails you the moment yours is."],
   },
   {
     q: "How much is shipping?",
-    a: ["One flat rate per order, added at checkout, however many sets are on it. A set for you and Chinuch sets for the boys travel in one box for one shipping charge."],
+    a: [
+      `One flat rate per order, added at checkout, however many sets are on it. A set for you and Chinuch sets for the boys travel in one box for one shipping charge.${PICKUP_AVAILABLE && PICKUP.priceCents === 0 ? " Local pickup costs nothing." : ""}`,
+    ],
   },
+  /* Falls out of the FAQ on its own if every pickup location is retired. */
+  ...(PICKUP_AVAILABLE
+    ? [
+        {
+          q: "Can I pick my order up instead?",
+          a: [
+            `Yes. Local pickup in ${pickupTowns()} is ${pickupPrice().toLowerCase()}, and you choose it at checkout instead of shipping. The address and the collection window are on the confirmation you get when your order is ready, so there is nothing to arrange in advance.`,
+          ],
+        },
+      ]
+    : []),
   {
     q: "Who is behind this?",
     a: [
@@ -249,8 +262,8 @@ export default function HomePage() {
               <OrderLink className="flex h-14 items-center justify-center rounded-lg bg-leaf-800 px-8 text-[17px] font-semibold text-white shadow-lift transition hover:bg-leaf-900">
                 Order your set
               </OrderLink>
-              {/* The nearer question is "what do I get for $65 rather than
-                  $110", which is the sets, not the logistics. */}
+              {/* The nearer question is "what do I get for $70 rather than
+                  $120", which is the sets, not the logistics. */}
               <Link
                 href="#levels"
                 className="flex h-12 items-center justify-center rounded-lg px-4 text-[15px] font-semibold text-leaf-900 underline underline-offset-4 sm:h-14 sm:border sm:border-ink-900/15 sm:bg-white/80 sm:px-7 sm:text-[16px] sm:text-ink-900 sm:no-underline sm:transition sm:hover:border-leaf-800 sm:hover:text-leaf-800"
@@ -616,30 +629,36 @@ export default function HomePage() {
       <section id="delivery" className="scroll-mt-20 py-14 sm:py-20">
         <div className="mx-auto max-w-6xl px-4">
           <div className="max-w-2xl">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Delivery</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Getting it</p>
             <h2 className="mt-2 font-display text-[2rem] font-bold leading-tight text-ink-950 sm:text-[2.6rem]">
-              It comes to you.
+              {PICKUP_AVAILABLE ? "Shipped, or collected locally." : "It comes to you."}
             </h2>
             <p className="mt-3 text-[16px] leading-relaxed text-ink-700 sm:text-[17px]">
-              No collection point, no drive, no window to make. The shipment lands after Yom
-              Kippur and every order goes straight out to the address on it.
+              {PICKUP_AVAILABLE
+                ? `The shipment lands after Yom Kippur. From there your order either goes straight out to the address on it, or waits for you at the pickup location in ${pickupTowns()}. You pick between the two at checkout.`
+                : "No collection point, no drive, no window to make. The shipment lands after Yom Kippur and every order goes straight out to the address on it."}
             </p>
           </div>
 
           <div className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
             {[
               {
-                title: "Anywhere in the country",
-                body: SHIPPING.carrierNote,
+                title: "Shipped anywhere in the country",
+                body: `${SHIPPING.carrierNote} You get a tracking number by email the day your box leaves.`,
               },
               {
                 title: "One flat rate",
                 body: `${shippingAmount() ?? "Added at checkout"}, however many sets are on the order. Yours and the boys' travel in one box.`,
               },
-              {
-                title: "Tracked from the door",
-                body: "You get a tracking number by email the day your box leaves, so you know when to expect it.",
-              },
+              PICKUP_AVAILABLE
+                ? {
+                    title: "Or collect it locally",
+                    body: `${pickupPrice()} pickup in ${pickupTowns()}. Choose it at checkout instead of shipping; the address and the collection window come with your confirmation.`,
+                  }
+                : {
+                    title: "Tracked from the door",
+                    body: "You get a tracking number by email the day your box leaves, so you know when to expect it.",
+                  },
               {
                 title: "In time for Yom Tov",
                 body: SEASON.deliveryNote + " Sealed as it was packed in Eretz Yisrael, opened in your sukkah.",
@@ -705,7 +724,7 @@ export default function HomePage() {
             <Share
               compact
               path="/"
-              text="Rav-inspected Arba Minim sets from Eretz Yisrael, sealed and shipped to your door before Yom Tov. Sets from $40:"
+              text="Rav-inspected Arba Minim sets from Eretz Yisrael, sealed and shipped to your door before Yom Tov. Sets from $45:"
             />
           </div>
         </div>

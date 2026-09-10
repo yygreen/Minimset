@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { STANDARD_NOTE, SEASON, SHIPPING, shippingAmount } from "@/lib/data";
+import { STANDARD_NOTE, PICKUP_AVAILABLE, SEASON, SHIPPING, pickupPrice, pickupTowns, shippingAmount } from "@/lib/data";
 import { GRACE_MINUTES } from "@/lib/server/pricing";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/policies" },
   title: "Policies - V'samachta Arba Minim",
   description:
-    "Ordering, payment, shipping and delivery, changes and cancellation, the sorting standard, and what the order form stores.",
+    "Ordering, payment, shipping and local pickup, changes and cancellation, the sorting standard, and what the order form stores.",
 };
 
 /**
@@ -32,7 +32,7 @@ const CONTENTS = [
   ["ordering", "Ordering"],
   ["payment", "Payment"],
   ["changes", "Changes and cancellation"],
-  ["shipping", "Shipping and delivery"],
+  ["shipping", "Shipping and local pickup"],
   ["guarantee", "If something is not right"],
   ["privacy", "What we store about you"],
   ["contact", "Questions"],
@@ -128,9 +128,15 @@ export default function PoliciesPage() {
             </p>
           </Section>
 
-          <Section id="shipping" title="Shipping and delivery">
+          <Section id="shipping" title="Shipping and local pickup">
+            {PICKUP_AVAILABLE && (
+              <p>
+                There are two ways to take an order and you choose between them at checkout:
+                shipped to the address on the order, or collected in {pickupTowns()}.
+              </p>
+            )}
             <p>
-              Every order ships to the address on it. {SHIPPING.carrierNote} Shipping is one flat
+              A shipped order goes to the address on it. {SHIPPING.carrierNote} Shipping is one flat
               charge per order{shippingAmount() ? `, ${shippingAmount()}` : ""}, however many sets
               are on it — your own set and the boys&#39; travel in the same box.
             </p>
@@ -143,6 +149,17 @@ export default function PoliciesPage() {
               Check the address before you pay. A package returned as undeliverable can be sent
               again, but the second shipping charge is yours and time is short.
             </p>
+            {PICKUP_AVAILABLE && (
+              <p>
+                Local pickup is {pickupPrice().toLowerCase()}, and an order you collect carries no
+                shipping charge at all. The collection address and the window are on the notice you
+                get when your order is ready, and they are set by the pickup location rather than
+                named here, so go by that notice and not by anything on this page. Bring your order
+                number. An order
+                that is not collected within the window is not a refund on its own — get in touch
+                and we will sort it out, but the season is short.
+              </p>
+            )}
             <p>
               The sets fly in from Eretz Yisrael sealed: esrog in its box, hadassim and aravos in a
               sealed bag, lulav sealed. You open them in your sukkah.

@@ -1,7 +1,18 @@
 # Customer emails
 
-Shopify's defaults are generic e-commerce. These two carry what this program
-actually does. Both are in **Settings → Notifications**.
+Shopify's defaults are generic e-commerce. These three carry what this program
+actually does. All are in **Settings → Notifications**.
+
+| File | Shopify notification | Goes to |
+| --- | --- | --- |
+| `order-confirmation.txt` | Order confirmation | every order |
+| `shipping-confirmation.txt` | Shipping confirmation | orders being shipped |
+| `ready-for-pickup.txt` | Ready for pickup | orders collected locally |
+
+The last one only fires once local pickup is switched on for the location, and
+Shopify prints that location's address and hours itself — which is why the copy
+names neither. Keep the address and hours right on the location and the email
+stays right.
 
 ## How to edit them without breaking anything
 
@@ -14,9 +25,10 @@ If you break a template, Shopify has *Revert to default* on each one.
 
 ## Before you use them
 
-- **The deadline** appears in the order confirmation. One find-and-replace if
-  that date changes.
-- **The tracking block** in the shipping confirmation is Shopify's own. Leave
-  it alone; the copy here goes around it, not instead of it.
+- **The tracking block** in the shipping confirmation is Shopify's own, and so
+  is the pickup-details block in the ready-for-pickup email. Leave both alone;
+  the copy here goes around them, not instead of them.
+- **No template names a date.** They say "before ordering closes" so that a
+  moved deadline is one change in Shopify, not three find-and-replaces.
 - **Send yourself a test of each and read them on a phone.** That is where they
   will be read, with one hand free.

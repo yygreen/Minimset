@@ -16,13 +16,40 @@ Arba Minim should sit with the operator or an entity, not with a contractor.
 An EIN is free and issued in minutes at irs.gov; a personal SSN on a store
 handling community money is the worse of the two.
 
-**0.2 The real deadline.** The site currently says Motzaei Shabbos, September
-12, 8:30 PM EDT. That was an assumption. It decides when the products go back
-to Draft, and it is printed on every product description that just imported.
+**0.2 The real deadline.** `SEASON.deadlineIso` in `lib/data.ts` is
+`2026-09-13T00:30Z` — Motzaei Shabbos, September 12, 8:30 PM EDT. That was an
+assumption and nothing has confirmed it. It no longer appears anywhere a
+customer can read, but it is still the moment the site stops selling, and it is
+still the moment you have to put the three products back to Draft by hand.
 
-**0.3 Which Mehudar A-A variant is the default.** With pitom ($110) or without
-($100). Whichever is default is the price a customer sees first, and it should
+The season flyer says the pre-order deadline is **Erev Rosh Hashanah, Friday 29
+Elul** — September 11, 2026. That is a day and a half *earlier* than what is in
+the code, and it means the site as it stands would keep selling right through
+Rosh Hashanah. Settle which one is real and change `deadlineIso`.
+
+**0.3 Which Mehudar A-A variant is the default.** With pitom ($120) or without
+($110). Whichever is default is the price a customer sees first, and it should
 match what the homepage says.
+
+**0.4 URGENT — the prices in Shopify are the old ones.** The site now shows
+$120 / $110 / $70 / $45. The four live variants still cost $110 / $100 / $65 /
+$40, and Shopify is what actually charges the card. Until they are changed, a
+customer reads $120 on the page and is billed $110 at checkout.
+
+Products → each product → Variant → Price:
+
+| Product | Variant | New price |
+| --- | --- | --- |
+| Mehudar A-A | With pitom | **120.00** |
+| Mehudar A-A | No pitom | **110.00** |
+| Mehudar A | (single) | **70.00** |
+| Kosher L'Bracha (Chinuch) | (single) | **45.00** |
+
+Four fields by hand is faster and safer than a CSV re-import. `shopify/products-sets.csv`
+carries the same figures if you would rather import.
+
+**check** — add one of each to the cart on 4minimset.com, click through to
+Shopify checkout, and confirm the subtotal is $235 and not $215.
 
 ---
 
@@ -52,15 +79,10 @@ resolve rather than 404.
 
 ---
 
-## Phase 2 — shipping
+## Phase 2 — shipping and local pickup
 
-The pickup model is gone: no locations to add, no rep instructions, no
-collection window. One origin, one flat rate.
-
-**Blocked on the flat rate itself.** Everything else in this phase takes ten
-minutes once you have the figure. Work it out from what a boxed set actually
-costs to post — an esrog box plus a sealed lulav is long and light, which is the
-awkward shape for carrier pricing, so check a real quote rather than guessing.
+Two ways to take an order, chosen by the customer in checkout: shipped at one
+flat rate, or collected free in Airmont, NY.
 
 **2.1 The origin address is done.** Settings → Locations holds one active
 location, "Shop location" at 123 Highgrove Crescent, Lakewood NJ 08701, and
@@ -71,21 +93,33 @@ any label bought through Shopify Shipping. Nothing to change.
 **2.2 There is exactly one location**, which is what you want. A second one
 could receive an order and quietly split the shipment.
 
-**2.2a URGENT — three live policies still describe pickup.** Published and
-public right now on the store, linked from the checkout footer:
+**2.2a Re-paste the policies whenever the model changes.** `shipping.txt`,
+`terms.txt` and `refund.txt` in `shopify/policies/` were all rewritten when
+local pickup came back, and the versions live on the store predate that: they
+describe shipping as the only option. Settings → Policies, paste all three.
+`contact-information` and the Shopify-generated `privacy-policy` are unaffected.
 
-- `/policies/shipping-policy` opens *"Nothing is posted or couriered."*
-- `/policies/terms-of-service` says orders *"are collected in person"* and that
-  the order number is *"how it is handed to you at pickup"*.
-- `/policies/refund-policy` promises *"A Moreh Hora'ah will be present at
-  distribution... exchanged on the spot"* and *"contact your community rep
-  before the collection window closes."*
+**2.2b Local pickup.** The site tells customers there is free pickup in
+Airmont, NY, and that the address and the collection window reach them in the
+Ready for pickup email rather than being printed on the site — so the Shopify
+location is the single source of truth for both, and it has to be right.
 
-Every one contradicts the products they sit next to, and the shipping policy
-contradicts the checkout itself. Replace all three from `shopify/policies/`
-(`shipping.txt`, `terms.txt`, `refund.txt`) before any traffic. Settings →
-Policies. `contact-information` and the Shopify-generated `privacy-policy` are
-fine as they are.
+- Settings → Locations → add the Airmont location, with the address customers
+  will actually drive to and the hours they can actually collect.
+- Settings → Shipping and delivery → Local pickup → enable it for that location.
+  Set the cost to free, and write the pickup instructions and the expected
+  time — Shopify prints those verbatim in checkout and in the email.
+- Leave Lakewood as the shipping origin. A location that can receive orders but
+  is not meant to fulfil them can quietly split a shipment.
+- Settings → Notifications → Ready for pickup, from
+  `shopify/emails/ready-for-pickup.txt`.
+
+**check** — put a set in the cart and confirm checkout offers both *Ship* and
+*Pick up*, that pickup shows $0 and not $7.99, and that the address and window
+in checkout are the ones you would want a customer to drive to.
+
+*If pickup is ever switched off, empty `PICKUP.towns` in `lib/data.ts`. Every
+pickup sentence on the site disappears with it; there is no second flag.*
 
 **2.3 Set the flat rate.** Settings → Shipping and delivery → the shipping
 profile these products use → the zone covering the United States.

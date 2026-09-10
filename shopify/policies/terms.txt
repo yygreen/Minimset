@@ -8,9 +8,10 @@ a contract with that company.
 
 Ordering
 
-Orders are placed for the Sukkos 5787 season and are shipped to the address on
-the order. You choose your sets and how many, and give a name, a phone number,
-an email address and a delivery address.
+Orders are placed for the Sukkos 5787 season. You choose your sets and how
+many, whether the order is shipped to you or collected at our local pickup
+location, and you give a name, a phone number and an email address; a shipped
+order also needs a delivery address.
 
 Every order is given a number. That number is how you look your order up and
 how you change it before the deadline.
@@ -18,8 +19,9 @@ how you change it before the deadline.
 Payment
 
 Sets are paid for in full at the time of ordering, together with one flat
-shipping charge of $7.99 per order, however many sets are on it. The total is
-shown at checkout before you pay.
+shipping charge of $7.99 per order, however many sets are on it. An order you
+collect carries no shipping charge. The total is shown at checkout before you
+pay.
 
 The deadline
 
@@ -38,12 +40,14 @@ experts in hilchos Daled Minim, then sealed.
 Your order and payment make you a full partner in the Arba Minim being acquired
 for the season.
 
-Delivery
+Delivery and pickup
 
-Every set ships in time to arrive before Yom Tov, tracked, to the address on
-the order, typically 3 to 5 business days in carriage. Delivery dates are the
-carrier's. Shipping, wrong addresses and undeliverable packages are covered in
-the shipping policy.
+Every set is ready in time for Yom Tov. A shipped order goes tracked to the
+address on it, typically 3 to 5 business days in carriage; delivery dates are
+the carrier's. An order to be collected is held at the pickup location, and the
+address and window are on the notice sent when it is ready. Shipping charges,
+pickup, wrong addresses and undeliverable packages are covered in the shipping
+and local pickup policy.
 
 Questions
 

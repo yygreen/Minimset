@@ -20,10 +20,10 @@ Three products, one per level. Prices are per set and match the site.
 
 | Product | Variants | Price |
 | --- | --- | --- |
-| Mehudar A-A | `With pitom` | $110 |
-| | `No pitom` | $100 |
-| Mehudar A | (single variant) | $65 |
-| Kosher L'Bracha (Chinuch) | (single variant) | $40 |
+| Mehudar A-A | `With pitom` | $120 |
+| | `No pitom` | $110 |
+| Mehudar A | (single variant) | $70 |
+| Kosher L'Bracha (Chinuch) | (single variant) | $45 |
 
 For each product:
 

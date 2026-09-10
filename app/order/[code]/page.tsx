@@ -491,7 +491,7 @@ function OrderStatus() {
             path="/"
             label="WhatsApp"
             copyLabel="Copy page link"
-            text="Arba Minim: Rav-inspected sets from $40, sealed in Eretz Yisrael and shipped to your door before Yom Tov."
+            text="Arba Minim: Rav-inspected sets from $45, sealed in Eretz Yisrael and shipped to your door before Yom Tov."
           />
         </div>
       </section>

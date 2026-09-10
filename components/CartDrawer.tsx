@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
-import { SEASON, SHIPPING, shippingAmount } from "@/lib/data";
+import { PICKUP_AVAILABLE, SEASON, SHIPPING, pickupPrice, pickupTowns, shippingAmount } from "@/lib/data";
 import { money } from "@/lib/orders";
 import { cartUrl } from "@/lib/shopify";
 import { useCart } from "@/lib/cart";
@@ -133,8 +133,15 @@ export function CartDrawer() {
                 <span className="text-ink-700">Sets</span>
                 <span className="tnum font-semibold text-ink-950">{money(subtotalCents)}</span>
               </div>
-              <div className="mt-1.5 flex items-baseline justify-between text-[15px]">
-                <span className="text-ink-700">Shipping</span>
+              <div className="mt-1.5 flex items-baseline justify-between gap-3 text-[15px]">
+                <span className="text-ink-700">
+                  Shipping
+                  {PICKUP_AVAILABLE && (
+                    <span className="block text-[13px] text-ink-500">
+                      {pickupPrice()} if you collect in {pickupTowns()}
+                    </span>
+                  )}
+                </span>
                 <span className="tnum font-semibold text-ink-950">{ship ?? "At checkout"}</span>
               </div>
               <div className="mt-3 flex items-baseline justify-between border-t border-sand-200 pt-3">
@@ -169,7 +176,10 @@ export function CartDrawer() {
               </OpenOnly>
 
               <p className="mt-3 text-center text-[12px] leading-relaxed text-ink-500">
-                Payment, address and receipt are handled by Shopify. {SEASON.deliveryNote}
+                {PICKUP_AVAILABLE
+                  ? "Shipping or pickup is chosen at checkout, where payment and receipt are handled by Shopify. "
+                  : "Payment, address and receipt are handled by Shopify. "}
+                {SEASON.deliveryNote}
               </p>
             </div>
           </>

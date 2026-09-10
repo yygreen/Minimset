@@ -94,9 +94,19 @@ orders invisible to staff.
 The deadline lives in `SEASON` in `lib/data.ts`. `/brief` calls it sample season
 data and Joseph confirmed the real date is still to come.
 
-Collection dates used to live here too, in a `SITES` table of four communities.
-The program ships to the door now; `SITES` is gone and `SHIPPING` took its
-place.
+Collection dates used to live here too, in a `SITES` table of four invented
+communities. That table is gone. Fulfilment is now two constants beside each
+other in `lib/data.ts`, and the customer picks between them in Shopify's
+checkout:
+
+- `SHIPPING` — one flat rate per order, anywhere in the US.
+- `PICKUP` — the towns with a local pickup location, and what pickup costs.
+  Nothing else: the street address, the collection day and the window belong to
+  the Shopify location, because that is what Shopify prints in checkout and in
+  the Ready for pickup email. The site naming them separately is how they drift.
+
+Emptying `PICKUP.towns` removes every pickup sentence on the site. There is no
+second flag to remember.
 
 ### The site is already closed, correctly
 
@@ -145,8 +155,9 @@ documents.
 | `/staff/*` ×3 | Behind `STAFF_PIN`, `noindex` |
 
 Anchors carry the folded content: `/#mehudar-aa`, `/#mehudar-a`, `/#chinuch`,
-`/#delivery` and `/#compare`. The four `/#<town>` anchors went with the pickup
-model.
+`/#delivery` and `/#compare`. The four `/#<town>` anchors went with the invented
+communities and did not come back when local pickup did — there is one pickup
+location and it has no page.
 
 ### What was removed, and where it went
 

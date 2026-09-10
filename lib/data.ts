@@ -43,8 +43,10 @@ export const SEASON = {
   deadlineIso: "2026-09-13T00:30:00.000Z",
   deadlineLabelEt: "Motzaei Shabbos, September 12, 8:30 PM EDT",
   deadlineLabelIl: "3:30 AM IST, Sunday September 13",
-  /** What the customer is promised about arrival, in one sentence, everywhere. */
-  deliveryNote: "Every set ships in time to arrive before Yom Tov.",
+  /** What the customer is promised about arrival, in one sentence, everywhere.
+      Neutral between shipping and pickup on purpose: the same sentence runs
+      beside a tracking number and beside a collection window. */
+  deliveryNote: "Every set is ready in time for Yom Tov.",
 } as const;
 
 /**
@@ -87,6 +89,44 @@ export function shippingAmount(): string | null {
   return SHIPPING.flatRateCents === null ? null : moneyCents(SHIPPING.flatRateCents);
 }
 
+/**
+ * Local pickup.
+ *
+ * A second way to take the order, offered BESIDE shipping rather than instead
+ * of it. Shopify's local-pickup method puts the choice in checkout; this
+ * constant only decides what the site SAYS about it, exactly as SHIPPING does.
+ * Keep the two equal -- if a location is added or retired in Shopify, add or
+ * retire the town here in the same minute.
+ *
+ * Only what has been confirmed lives here. The town is confirmed; the street
+ * address, the collection day and the window are set on the Shopify location
+ * and reach the customer in the pickup confirmation, so the site names none of
+ * them rather than printing a time nobody has agreed to.
+ *
+ * An empty `towns` turns every pickup sentence on the site off -- there is no
+ * separate flag to forget.
+ */
+export const PICKUP = {
+  towns: ["Airmont, NY"] as readonly string[],
+  /** Free at the moment; a figure here fills itself into the copy. */
+  priceCents: 0,
+} as const;
+
+export const PICKUP_AVAILABLE = PICKUP.towns.length > 0;
+
+/** "Airmont, NY" / "Airmont, NY and Monsey, NY" / "A, B and C". */
+export function pickupTowns(): string {
+  const t = PICKUP.towns;
+  if (t.length === 0) return "";
+  if (t.length === 1) return t[0];
+  return `${t.slice(0, -1).join(", ")} and ${t[t.length - 1]}`;
+}
+
+/** "Free" or "$5", for a sentence that has already said "pickup". */
+export function pickupPrice(): string {
+  return PICKUP.priceCents === 0 ? "Free" : moneyCents(PICKUP.priceCents);
+}
+
 /** Local money formatter so this module stays free of order-layer imports. */
 function moneyCents(cents: number): string {
   return `$${(cents / 100).toLocaleString("en-US", {
@@ -102,7 +142,7 @@ export const LEVELS: Level[] = [
     name: "Mehudar A-A",
     tier: "Highest Level",
     headline: "The finest set in the program: shape, cleanliness and shilush at their best.",
-    basePriceCents: 10000,
+    basePriceCents: 11000,
     pitomSurchargeCents: 1000,
     spec: {
       esrog:
@@ -119,7 +159,7 @@ export const LEVELS: Level[] = [
     name: "Mehudar A",
     tier: "Intermediate Level",
     headline: "A full mehudar set, the level most balabatim take for themselves.",
-    basePriceCents: 6500,
+    basePriceCents: 7000,
     pitomSurchargeCents: null,
     spec: {
       esrog:
@@ -135,7 +175,7 @@ export const LEVELS: Level[] = [
     name: "Kosher L'Bracha (Chinuch)",
     tier: "For the children",
     headline: "A kosher, dignified set for a child, so every boy holds his own minim.",
-    basePriceCents: 4000,
+    basePriceCents: 4500,
     pitomSurchargeCents: null,
     spec: {
       esrog: "Clean of black dots as mentioned above, with more bletlech.",
@@ -149,7 +189,7 @@ export const LEVELS: Level[] = [
  * The price a customer meets first.
  *
  * Mehudar A-A is two variants, and the one WITH a pitom is the default in the
- * store -- so $110 is the headline and $100 is the alternative. The site and the
+ * store -- so $120 is the headline and $110 is the alternative. The site and the
  * store have to agree here, or the first click contradicts the page.
  *
  * basePriceCents stays the untouched catalog value that pricing and the order

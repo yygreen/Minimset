@@ -44,7 +44,7 @@ const T = {
     fulfillment: "Fulfilment",
     totals: "HQ Totals",
     allOrders: "All Orders",
-    stickyFrom: "Sets from $40",
+    stickyFrom: "Sets from $45",
     stickyDelivery: "Shipped to your door",
     footerBlurb:
       "Arba Minim mehudar l'chatchilah at affordable prices. Seventeen years in Eretz Yisrael, now serving American communities.",

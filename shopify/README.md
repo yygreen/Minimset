@@ -30,7 +30,7 @@ each one once and keeps its own copy.
 ## What the CSV already settled
 
 - **The A-A pitom question is two variants**, not one ambiguous price: with
-  pitom `$110`, no pitom `$100`. Whichever you make the default is the price a
+  pitom `$120`, no pitom `$110`. Whichever you make the default is the price a
   customer sees first.
 - **Inventory tracking is off** on every variant. A tracked product sitting at
   zero silently refuses orders, and that failure looks like a broken site.

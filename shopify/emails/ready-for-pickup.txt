@@ -1,0 +1,30 @@
+READY FOR PICKUP
+Settings -> Notifications -> Ready for pickup
+
+This notification only goes to orders where the customer chose local pickup at
+checkout. Shopify fills in the location's address and hours from the location
+itself, which is why nothing here names them: keep the address and the window
+correct on the Shopify location and this email stays correct on its own.
+
+Subject
+  Your Arba Minim are ready to collect
+
+Opening paragraph (replace Shopify's default)
+
+  Your order is here and set aside in your name. The address and the collection
+  times are below.
+
+After the pickup details, before the footer
+
+  Bring your order number. Anyone can collect on your behalf with it.
+
+  If you cannot make the times below, reply to this email before they pass
+  rather than after. The season is short and we would rather sort it out with
+  you now.
+
+  Every item was selected and inspected in Eretz Yisrael by Morei Hora'ah who
+  are experts in hilchos Daled Minim, then sealed: the esrog in its box, the
+  hadassim and aravos in a sealed bag, the lulav sealed. It stays sealed until
+  you open it in your sukkah.
+
+  If something is not right with what you collect, tell us there and then.
