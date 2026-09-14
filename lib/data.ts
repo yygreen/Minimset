@@ -36,13 +36,33 @@ export interface AddOn {
 export const SEASON = {
   name: "Sukkos 5787",
   year: 2026,
-  /** Motzaei Shabbos, September 12, 2026 — 8:30 PM EDT / 3:30 AM IST.
-      Every deadline on the site derives from this one value: the countdown, the
-      server-side cutoff in lib/server/pricing.ts, the open/closed state of the
-      order flow, and the labels below. Change it here and nowhere else. */
-  deadlineIso: "2026-09-13T00:30:00.000Z",
-  deadlineLabelEt: "Motzaei Shabbos, September 12, 8:30 PM EDT",
-  deadlineLabelIl: "3:30 AM IST, Sunday September 13",
+  /**
+   * The moment registration closes, or null to stay open.
+   *
+   * Every closing on the site derives from this one value: the server-side
+   * cutoff in lib/server/pricing.ts, the open/closed state of the order flow,
+   * the Add-to-cart buttons and the cart's Checkout. Change it here and
+   * nowhere else.
+   *
+   * It is null right now, on Joseph's instruction of 2026-09-14, because the
+   * previous value closed the site while the season was still running. That
+   * value -- 2026-09-13T00:30Z -- was never a fact. It was my assumption from
+   * the start of the project, flagged as an assumption repeatedly and never
+   * confirmed, and the season flyer disagreed with it in the other direction
+   * again (Erev Rosh Hashanah, Friday 29 Elul). Sukkos 5787 begins the evening
+   * of Friday 25 September 2026 and the shipment lands after Yom Kippur on
+   * Monday 21 September, so a cutoff on the 13th was simply early.
+   *
+   * Null is deliberately not a forever setting. It means "nobody has set the
+   * real one yet", so closing the season is an act somebody performs rather
+   * than a date nobody checked. Put the real timestamp here when it is known
+   * and everything closes off it, exactly as before.
+   */
+  deadlineIso: null as string | null,
+  /* The two human-readable labels that used to sit here are gone. They named
+     the assumed date, nothing has rendered them since the dates came off the
+     site, and a dead string naming a deadline that is no longer the deadline
+     is the next person's wrong answer. Derive any label from deadlineIso. */
   /** What the customer is promised about arrival, in one sentence, everywhere.
       Neutral between shipping and pickup on purpose: the same sentence runs
       beside a tracking number and beside a collection window. */

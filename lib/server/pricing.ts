@@ -78,7 +78,13 @@ export function addOnLabel(id: string): string {
   return getAddOn(id)?.name ?? id;
 }
 
-export const DEADLINE_MS = Date.parse(SEASON.deadlineIso);
+/**
+ * The server-side cutoff. Infinity while no deadline is set, which turns every
+ * `Date.now() >= DEADLINE_MS` guard in the API routes into a plain false
+ * without any of them needing to know the deadline became optional.
+ */
+export const DEADLINE_MS =
+  SEASON.deadlineIso === null ? Number.POSITIVE_INFINITY : Date.parse(SEASON.deadlineIso);
 
 /** Minutes after the deadline in which a ticket issued before it may still be completed. */
 export const GRACE_MINUTES = Number(process.env.GRACE_MINUTES ?? 15);

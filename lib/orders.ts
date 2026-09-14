@@ -122,18 +122,28 @@ export function makeCode(rand: () => number = Math.random): string {
   return out;
 }
 
-/* ---------- deadline ---------- */
+/* ---------- deadline ----------
 
-export function deadlineDate(): Date {
-  return new Date(SEASON.deadlineIso);
+   SEASON.deadlineIso may be null, meaning registration stays open until
+   somebody sets a real one. Every helper here answers "open" for null rather
+   than leaning on NaN comparisons: Date.parse(null) is NaN and every
+   comparison against NaN is false, which happens to behave correctly today and
+   would break the moment somebody wrote the comparison the other way round.
+   Infinity says what is meant and survives being reordered.                  */
+
+export function deadlineDate(): Date | null {
+  return SEASON.deadlineIso === null ? null : new Date(SEASON.deadlineIso);
 }
 
 export function isPastDeadline(now: Date = new Date()): boolean {
-  return now.getTime() > deadlineDate().getTime();
+  const d = deadlineDate();
+  return d === null ? false : now.getTime() > d.getTime();
 }
 
+/** Infinity while no deadline is set, so "is there time left" is simply yes. */
 export function msUntilDeadline(now: Date = new Date()): number {
-  return deadlineDate().getTime() - now.getTime();
+  const d = deadlineDate();
+  return d === null ? Number.POSITIVE_INFINITY : d.getTime() - now.getTime();
 }
 
 /* ---------- deterministic demo seed ---------- */
@@ -355,5 +365,6 @@ export function addOnTotals(orders: Order[]): { id: string; name: string; qty: n
   });
 }
 
+/** Null while registration is open with no cutoff set. */
 export const SEASON_DEADLINE_ISO = SEASON.deadlineIso;
 export type { LevelKey, OrderStatus };
