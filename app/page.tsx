@@ -127,12 +127,6 @@ const FAQ = [
       "Yes, any time before ordering closes. Reply to your confirmation email and we will change the sets or refund you in full. After that the shipment is packed against the totals, but a wrong delivery address can still be corrected until the box leaves.",
     ],
   },
-  {
-    q: "Why can't the deadline move?",
-    a: [
-      "The whole season travels as one shipment. When orders close the totals are pulled, that exact quantity is packed in Eretz Yisrael, and it flies in together with reserve stock for exchanges. Everything ordered by the deadline is on that flight.",
-    ],
-  },
 ];
 
 export default function HomePage() {
