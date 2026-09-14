@@ -35,6 +35,20 @@ Payment details
 Card details are handled by Shopify's payment processor and are never stored by
 the program.
 
+Visits to the website
+
+We count visits to 4minimset.com so we know whether people are finding it. The
+measurement is anonymous: no cookie, no advertising identifier, and nothing
+that says one visitor is the same person as another. It records the page, the
+country, the kind of device, and the site or campaign a visit arrived from.
+There is nothing to consent to and nothing to opt out of, because there is
+nothing there that points at you.
+
+If you arrived from a campaign -- a link in an email, or a printed flyer with a
+short code on it -- that campaign name is kept in your own browser and added to
+your order, so we can tell which way of reaching people actually worked. It is
+a campaign name, not a name. Clearing your browser data removes it.
+
 How long records are kept
 
 For the season and the reconciliation that follows it. To have your record

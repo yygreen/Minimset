@@ -195,6 +195,19 @@ export default function PoliciesPage() {
               anyone outside the program.
             </p>
             <p>
+              We also count visits to this site, so we know whether anybody is finding it. That
+              measurement is anonymous — no cookie, no advertising identifier, nothing that says
+              one visit is the same person as another. It records the page, the country, the kind
+              of device, and the site or campaign a visit came from. There is no banner asking you
+              to consent to it because there is nothing in it that points at you.
+            </p>
+            <p>
+              If you arrived from a campaign — a link in an email, or a printed flyer with a short
+              code on it — that campaign name is kept in your own browser and added to your order,
+              so we can tell which way of reaching people actually worked. A campaign name, not
+              your name. Clearing your browser data removes it.
+            </p>
+            <p>
               Records are kept for the season and the reconciliation that follows it. To have yours
               removed, get in touch.
             </p>

@@ -139,6 +139,63 @@ order flow — the deadline being respected at build time, not a regression.
 Setting a future deadline returns all four to the open flow, and the comparison
 should go back to 23/23.
 
+## Measurement, and the domain boundary
+
+Two halves, because the visit and the sale happen on different origins.
+
+**Vercel Web Analytics** counts the traffic on 4minimset.com. Cookieless and
+without an identifier, so there is no consent banner and none is owed. Mounted
+in `components/Analytics.tsx`. Two custom events mark the funnel:
+`add_to_cart` (carries `level`) and `checkout` (carries `sets` and `value`).
+Landing → add to cart → checkout is everything this side can see.
+
+**`lib/attribution.ts`** does the half that matters for money. A campaign
+arrives on 4minimset.com; the order is taken on 4minimset.myshopify.com. Two
+origins, and nothing joins them on its own — which is exactly how a season ends
+with good traffic numbers and no idea which campaign paid for itself. So the
+campaign is stored on arrival and pinned to the Shopify cart permalink as
+**cart attributes**, which land on the order in the admin under *Additional
+details* and come out in the order CSV. Attribution reaches the row with the
+dollar amount on it.
+
+Verified against the live store, 2026-09-14:
+
+```
+/cart/45801595633799:1?attributes[utm_source]=email&...   ->  200, checkout reached
+/cart.js -> {"attributes":{"utm_source":"email","utm_campaign":"sukkos-5787", ...}}
+```
+
+Rules it follows: **last non-direct click** (a visit with campaign parameters
+overwrites; a visit without one leaves the last campaign standing), hostname of
+the referrer only and never the full referring URL, values capped at 80
+characters, and nothing stored that identifies a person.
+
+### Tagging a campaign
+
+Full form, for anything clickable:
+
+```
+https://4minimset.com/?utm_source=email&utm_medium=newsletter&utm_campaign=sukkos-5788
+```
+
+Short form, for anything a human has to type off a flyer — it expands to
+`utm_source=flyer`, `utm_medium=referral`:
+
+```
+https://4minimset.com/?ref=flyer
+```
+
+Keep `utm_campaign` the same across every channel in one push and vary
+`utm_source`, or the report cannot add them together.
+
+### Before it can report anything
+
+Web Analytics has to be switched on for the project in the Vercel dashboard
+(Project → Analytics → Enable). Until it is, `/_vercel/insights/script.js`
+404s and the traffic half records nothing. **The attribution half does not
+depend on it** — that is our own code and our own storage, and it was built
+that way on purpose so the money question never rides on a dashboard toggle.
+
 ## Site structure
 
 Consolidated 2026-09-07 at Joseph's request: the product and community pages

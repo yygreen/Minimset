@@ -5,6 +5,8 @@ import { useEffect } from "react";
 import { PICKUP_AVAILABLE, SEASON, SHIPPING, pickupPrice, pickupTowns, shippingAmount } from "@/lib/data";
 import { money } from "@/lib/orders";
 import { cartUrl } from "@/lib/shopify";
+import { attributionAttributes, attributionParams } from "@/lib/attribution";
+import { track } from "@vercel/analytics";
 import { useCart } from "@/lib/cart";
 import { Stepper } from "./Ui";
 import { OpenOnly } from "./OpenOnly";
@@ -38,10 +40,14 @@ export function CartDrawer() {
   if (!open) return null;
 
   const ship = shippingAmount();
+  /* The campaign that brought this visitor, pinned to the permalink so it
+     lands on the Shopify order rather than dying at the domain boundary. */
   const checkoutHref = cartUrl(
     lines
       .filter((l) => l.variantId)
       .map((l) => ({ variantId: l.variantId as string, qty: l.qty })),
+    attributionAttributes(),
+    attributionParams(),
   );
 
   return (
@@ -164,6 +170,14 @@ export function CartDrawer() {
                   <a
                     href={checkoutHref}
                     rel="noopener"
+                    onClick={() =>
+                      /* The last thing measurable on this side. Everything
+                         after it belongs to Shopify's own reports. */
+                      track("checkout", {
+                        sets: count,
+                        value: (subtotalCents + (SHIPPING.flatRateCents ?? 0)) / 100,
+                      })
+                    }
                     className="mt-4 flex h-14 items-center justify-center rounded-lg bg-leaf-800 px-6 text-[17px] font-semibold text-white transition hover:bg-leaf-900"
                   >
                     Checkout

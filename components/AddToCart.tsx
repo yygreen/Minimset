@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { LevelKey } from "@/lib/data";
 import { SHOPIFY_LIVE } from "@/lib/shopify";
 import { useCart } from "@/lib/cart";
+import { track } from "@vercel/analytics";
 import { OrderLink } from "./OrderLink";
 
 /**
@@ -42,6 +43,10 @@ export function AddToCart({
       type="button"
       onClick={() => {
         add(level);
+        /* The middle of the funnel. Landing -> add_to_cart -> checkout is the
+           whole of what this side can see, and the drop between any two of
+           them is the only thing that says which set people balk at. */
+        track("add_to_cart", { level });
         setJustAdded(true);
         window.setTimeout(() => setJustAdded(false), 1400);
       }}

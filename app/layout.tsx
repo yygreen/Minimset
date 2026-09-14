@@ -5,6 +5,7 @@ import { Footer, Header, StickyCta } from "@/components/Chrome";
 import { StoreProvider } from "@/lib/store";
 import { CartProvider } from "@/lib/cart";
 import { CartDrawer } from "@/components/CartDrawer";
+import { Analytics } from "@/components/Analytics";
 
 const frank = Frank_Ruhl_Libre({
   variable: "--font-frank",
@@ -55,6 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Footer />
             <StickyCta />
             <CartDrawer />
+            <Analytics />
           </CartProvider>
         </StoreProvider>
       </body>

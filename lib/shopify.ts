@@ -117,11 +117,19 @@ export interface CartLine {
 
 /**
  * A Shopify cart permalink: /cart/<variant>:<qty>,<variant>:<qty>
- * Anything in `attributes` rides along as a cart attribute and shows on the
- * order in the Shopify admin -- useful for noting which page or campaign a
- * buyer came in from.
+ *
+ * Anything in `attributes` rides along as a cart attribute and lands ON THE
+ * ORDER in the Shopify admin, under Additional details, and in the order CSV
+ * export. That is how a campaign reaches the row that has the dollar amount on
+ * it -- see lib/attribution.ts, which is the only caller that fills it.
+ *
+ * `params` are plain query parameters for Shopify's own session attribution.
  */
-export function cartUrl(lines: CartLine[], attributes?: Record<string, string>): string | null {
+export function cartUrl(
+  lines: CartLine[],
+  attributes?: Record<string, string>,
+  params?: Record<string, string>,
+): string | null {
   if (!SHOPIFY_DOMAIN) return null;
   const parts = lines.filter((l) => l.variantId && l.qty > 0).map((l) => `${l.variantId}:${l.qty}`);
   if (parts.length === 0) return null;
@@ -129,6 +137,12 @@ export function cartUrl(lines: CartLine[], attributes?: Record<string, string>):
   const qs = new URLSearchParams();
   for (const [k, v] of Object.entries(attributes ?? {})) {
     if (v) qs.set(`attributes[${k}]`, v);
+  }
+  // Plain params ride alongside: they survive the same redirect chain onto the
+  // checkout URL and feed Shopify's own session attribution, where the
+  // attributes above feed the order record. Two different reports, one trip.
+  for (const [k, v] of Object.entries(params ?? {})) {
+    if (v && !qs.has(k)) qs.set(k, v);
   }
   const query = qs.toString();
   return `https://${SHOPIFY_DOMAIN}/cart/${parts.join(",")}${query ? `?${query}` : ""}`;
