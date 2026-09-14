@@ -152,7 +152,7 @@ documents.
 | `/order/new` | The checkout flow — kept, it is a flow rather than content |
 | `/order`, `/order/[code]` | Order lookup and confirmation, `noindex` |
 | `/brief` | The operator's page, `noindex`, no PIN |
-| `/staff/*` ×3 | Behind `STAFF_PIN`, `noindex` |
+| `/staff/*` ×3 | Behind `STAFF_PIN`, `noindex`, disallowed in `robots.txt`, and **not linked from anywhere public** — staff type `/staff`. The footer used to carry the three links on every page, which told every customer and every crawler exactly where the back office was |
 
 Anchors carry the folded content: `/#mehudar-aa`, `/#mehudar-a`, `/#chinuch`,
 `/#delivery` and `/#compare`. The four `/#<town>` anchors went with the invented

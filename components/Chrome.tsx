@@ -69,7 +69,6 @@ const T = {
       },
 
     ],
-    staffLine: "Staff",
     legal:
       'B"SD. V\'samachta Arba Minim. Every set is sorted and sealed in Eretz Yisrael and shipped to your door.',
   },
@@ -323,13 +322,12 @@ export function Footer() {
       </div>
       <div className="border-t border-sand-200">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-5 text-[12px] text-ink-500">
+          {/* No staff links here. They used to sit in this bar on every public
+              page, which advertised the existence and the exact paths of the
+              back office to every customer and every crawler. Staff reach the
+              screens from /staff, and the in-header staff bar above takes over
+              once they are on one. */}
           <p>{t.legal}</p>
-          <p className="flex flex-wrap items-center gap-x-3">
-            <span className="font-semibold uppercase tracking-wider">{t.staffLine}</span>
-            <Link href="/staff/fulfillment" className="inline-block py-1 hover:text-leaf-800">{t.fulfillment}</Link>
-            <Link href="/staff/totals" className="inline-block py-1 hover:text-leaf-800">{t.totals}</Link>
-            <Link href="/staff/orders" className="inline-block py-1 hover:text-leaf-800">{t.allOrders}</Link>
-          </p>
         </div>
       </div>
     </footer>
