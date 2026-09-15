@@ -7,7 +7,7 @@ import { LevelCard } from "@/components/LevelCard";
 import { OpenOnly } from "@/components/OpenOnly";
 import { Share } from "@/components/Share";
 import { CompareTable } from "@/components/CompareTable";
-import { STANDARD_NOTE, LEVELS, PARTNERSHIP_PARAGRAPH, PICKUP, PICKUP_AVAILABLE, SEASON, SHIPPING, headlinePriceCents, altPriceCents, pickupPrice, pickupTowns, shippingAmount } from "@/lib/data";
+import { STANDARD_NOTE, LEVELS, PARTNERSHIP_PARAGRAPH, PICKUP, PICKUP_AVAILABLE, SEASON, SHIPPING, headlinePriceCents, altPriceCents, pickupPrice, pickupTowns, shippingAmount, storeCards } from "@/lib/data";
 import { IMG, type Photo } from "@/lib/images";
 import { money } from "@/lib/orders";
 import { MEDIA } from "@/lib/trust";
@@ -327,17 +327,21 @@ export default function HomePage() {
           <div className="max-w-3xl">
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">The sets</p>
             <h2 className="mt-2 font-display text-[2rem] font-bold leading-tight text-ink-950 sm:text-[2.6rem]">
-              Three levels of hiddur. Every one a complete set.
+              Three levels of hiddur. Four ways to order.
             </h2>
             <p className="mt-3 text-[16px] leading-relaxed text-ink-700 sm:text-[17px]">
               Esrog, lulav, hadassim and aravos in each. The levels differ only in how strictly each
-              item was sorted.
+              item was sorted; Mehudar A-A comes with or without a pitom, priced separately so you
+              can see both before you choose.
             </p>
           </div>
 
-          <div className="mt-6 grid gap-5 sm:mt-7 md:grid-cols-3 md:gap-6">
-            {LEVELS.map((level, i) => (
-              <LevelCard key={level.key} level={level} featured={i === 0} />
+          {/* Four cards, two of them the same standard at different prices, so
+              two across on a tablet and four on a wide screen. Three columns
+              would strand one card on a row of its own. */}
+          <div className="mt-6 grid gap-5 sm:mt-7 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
+            {storeCards().map((card, i) => (
+              <LevelCard key={card.id} card={card} featured={i === 0} />
             ))}
           </div>
 

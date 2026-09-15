@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AddToCart } from "@/components/AddToCart";
 import { OpenOnly } from "@/components/OpenOnly";
-import { headlinePriceCents, type Level } from "@/lib/data";
+import { type Level, type StoreCard } from "@/lib/data";
 import { IMG, type Photo } from "@/lib/images";
 import { money } from "@/lib/orders";
 
@@ -12,10 +12,22 @@ const PHOTO: Record<Level["key"], Photo> = {
   CHINUCH: IMG.levelChinuch,
 };
 
-const WHO: Record<Level["key"], string> = {
-  MEHUDAR_AA: "Shape, cleanliness and shilush at their best",
+/* One line per CARD, not per level: the two A-A cards share a standard and a
+   photo, so the sub-line is the only thing telling them apart at a glance. */
+const WHO: Record<string, string> = {
+  "MEHUDAR_AA:pitom": "Shape, cleanliness and shilush at their best",
+  "MEHUDAR_AA:nopitom": "The same A-A sorting, on an esrog without a pitom",
   MEHUDAR_A: "The level most balabatim choose",
   CHINUCH: "For every boy, his own set",
+};
+
+/* The second line, which has to earn its place now that the price above it is
+   this card's own price rather than a range. */
+const NOTE: Record<string, string> = {
+  "MEHUDAR_AA:pitom": "The set most people mean by A-A",
+  "MEHUDAR_AA:nopitom": "Same standard, ten dollars less",
+  MEHUDAR_A: "Esrog, lulav, hadassim and aravos included",
+  CHINUCH: "Esrog, lulav, hadassim and aravos included",
 };
 
 /**
@@ -24,18 +36,19 @@ const WHO: Record<Level["key"], string> = {
  * never paraphrases the standard; it only points to it.
  */
 export function LevelCard({
-  level,
+  card,
   href: hrefProp,
   featured = false,
   priority = false,
 }: {
-  level: Level;
+  card: StoreCard;
   href?: string;
   featured?: boolean;
   priority?: boolean;
 }) {
+  const level = card.level;
   const photo = PHOTO[level.key];
-  const href = hrefProp ?? `#${level.slug}`;
+  const href = hrefProp ?? card.href;
   /* The photo goes to the detail block on the page; the button starts the
      order, carrying this level with it so the choice is not lost. */
   return (
@@ -66,25 +79,17 @@ export function LevelCard({
           {level.tier}
         </p>
         <h3 className="mt-1.5 font-display text-2xl font-bold leading-tight text-ink-950 sm:text-[1.7rem] md:min-h-[4.25rem]">
-          {level.name}
+          {card.name}
         </h3>
-        <p className="mt-2 text-[15px] leading-relaxed text-ink-700 md:min-h-[3.05rem]">{WHO[level.key]}</p>
+        <p className="mt-2 text-[15px] leading-relaxed text-ink-700 md:min-h-[3.05rem]">{WHO[card.id]}</p>
 
         <div className="mt-5 flex items-baseline gap-2">
           <span className="tnum font-display text-[2.6rem] font-bold leading-none text-leaf-900">
-            {money(headlinePriceCents(level))}
+            {money(card.priceCents)}
           </span>
           <span className="text-sm text-ink-500">per set</span>
         </div>
-        {level.pitomSurchargeCents ? (
-          <p className="mt-1.5 text-sm text-ink-700 md:min-h-[2.6rem]">
-            {money(level.basePriceCents)} without a pitom - your choice at checkout
-          </p>
-        ) : (
-          <p className="mt-1.5 text-sm text-ink-500 md:min-h-[2.6rem]">
-            Esrog, lulav, hadassim and aravos included
-          </p>
-        )}
+        <p className="mt-1.5 text-sm text-ink-500 md:min-h-[2.6rem]">{NOTE[card.id]}</p>
 
         <p className="mt-4 text-[13px] leading-relaxed text-ink-500">Shipped to your door. Change or cancel free until the deadline.</p>
 
@@ -106,6 +111,7 @@ export function LevelCard({
           >
             <AddToCart
               level={level.key}
+              withPitom={card.withPitom}
               className={`flex min-h-13 items-center justify-center rounded-lg px-5 py-3 text-center text-[15px] font-semibold leading-snug transition ${
                 featured
                   ? "bg-leaf-800 text-white hover:bg-leaf-900"

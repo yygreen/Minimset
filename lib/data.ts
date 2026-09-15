@@ -224,6 +224,67 @@ export function altPriceCents(level: Level): number | null {
   return level.pitomSurchargeCents ? level.basePriceCents : null;
 }
 
+/**
+ * What the storefront actually sells, one entry per thing a customer can buy.
+ *
+ * LEVELS is the catalog of halachic STANDARDS -- there are three, and that is a
+ * fact about the sorting, not about the shop. The pitom is a variant of the
+ * A-A standard rather than a fourth standard. The front page nonetheless shows
+ * four cards, because "Mehudar A-A" at two prices behind one button made the
+ * customer discover the cheaper option only at checkout.
+ *
+ * Derived rather than hand-listed: a level with a pitom surcharge yields two
+ * cards, a level without yields one. Move the pitom option to another level, or
+ * drop it, and the card count follows on its own.
+ */
+export interface StoreCard {
+  /** Stable key for React, and what AddToCart carries. */
+  id: string;
+  level: Level;
+  withPitom: boolean;
+  /** The card's own name, which may be narrower than the level's. */
+  name: string;
+  /** This card's price. Not a range, not a "from". */
+  priceCents: number;
+  /** The anchor on the homepage that carries this level's standard. */
+  href: string;
+}
+
+export function storeCards(): StoreCard[] {
+  const out: StoreCard[] = [];
+  for (const level of LEVELS) {
+    const href = `#${level.slug}`;
+    if (level.pitomSurchargeCents) {
+      out.push({
+        id: `${level.key}:pitom`,
+        level,
+        withPitom: true,
+        name: `${level.name} with pitom`,
+        priceCents: level.basePriceCents + level.pitomSurchargeCents,
+        href,
+      });
+      out.push({
+        id: `${level.key}:nopitom`,
+        level,
+        withPitom: false,
+        name: `${level.name} without pitom`,
+        priceCents: level.basePriceCents,
+        href,
+      });
+    } else {
+      out.push({
+        id: level.key,
+        level,
+        withPitom: false,
+        name: level.name,
+        priceCents: level.basePriceCents,
+        href,
+      });
+    }
+  }
+  return out;
+}
+
 export const ADDONS: AddOn[] = [
   {
     id: "extra-hadassim",

@@ -71,6 +71,13 @@ const T = {
     ],
     legal:
       'B"SD. V\'samachta Arba Minim. Every set is sorted and sealed in Eretz Yisrael and shipped to your door.',
+    /* The program's location, shown on every page. Deliberately just the town:
+       the collection address and window belong to the Shopify pickup location,
+       which is what customers actually receive, and a street address printed
+       here would be a second copy to drift out of date. Not the registered
+       company address either -- that is in the policies and is a different
+       fact. */
+    location: 'Airmont, NY',
   },
 } as const;
 
@@ -328,6 +335,7 @@ export function Footer() {
               screens from /staff, and the in-header staff bar above takes over
               once they are on one. */}
           <p>{t.legal}</p>
+          <p className="font-semibold">{t.location}</p>
         </div>
       </div>
     </footer>

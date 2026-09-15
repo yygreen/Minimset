@@ -14,16 +14,21 @@ import { OrderLink } from "./OrderLink";
  * still lands somewhere that works rather than filling a cart with nowhere to
  * take it.
  *
- * Mehudar A-A adds with a pitom, which is the set most people mean and the
- * price the page leads with; the choice is changeable in the cart, where the
- * two prices sit side by side.
+ * Mehudar A-A defaults to WITH a pitom, which is the set most people mean.
+ * The front page no longer relies on that default -- it shows the two A-A
+ * variants as their own cards and each passes its own withPitom -- but the
+ * default still covers every other caller, and the choice stays changeable in
+ * the cart where the two prices sit side by side.
  */
 export function AddToCart({
   level,
+  withPitom = true,
   className,
   children = "Add to cart",
 }: {
   level: LevelKey;
+  /** Only meaningful for Mehudar A-A; harmless on the others. */
+  withPitom?: boolean;
   className?: string;
   children?: React.ReactNode;
 }) {
@@ -42,11 +47,11 @@ export function AddToCart({
     <button
       type="button"
       onClick={() => {
-        add(level);
+        add(level, withPitom);
         /* The middle of the funnel. Landing -> add_to_cart -> checkout is the
            whole of what this side can see, and the drop between any two of
            them is the only thing that says which set people balk at. */
-        track("add_to_cart", { level });
+        track("add_to_cart", { level, pitom: withPitom });
         setJustAdded(true);
         window.setTimeout(() => setJustAdded(false), 1400);
       }}
