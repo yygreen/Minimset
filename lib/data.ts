@@ -88,9 +88,30 @@ export const SEASON = {
  * site that names none.
  */
 export const SHIPPING = {
+  /**
+   * Whether the program ships at all.
+   *
+   * FALSE since 2026-09-15, on Joseph's instruction: no direct shipping, local
+   * pickup only. The store had already been switched -- /cart/shipping_rates.json
+   * returned an empty array for NJ, NY, MD, CA and FL, where on 2026-09-09 it
+   * quoted $7.99 in all fifty states -- which meant a customer choosing "Ship"
+   * in checkout could not complete the order at all while this site was still
+   * advertising shipping as the main path.
+   *
+   * The timing is the season's, not a policy change: the shipment lands after
+   * Yom Kippur on Monday 21 September and Sukkos begins the evening of Friday
+   * the 25th, so three to five business days of carriage does not reliably beat
+   * Yom Tov. Pickup has no carriage time.
+   *
+   * Set it back to true, with a rate live in Shopify, and every shipping
+   * sentence on the site returns on its own.
+   */
+  available: false,
   flatRateCents: 799,
   carrierNote: "Tracked shipping to anywhere in the United States, 3 to 5 business days.",
 } as const;
+
+export const SHIPPING_AVAILABLE = SHIPPING.available;
 
 /**
  * Two renderings of the same fact, because a sentence that already says "flat
@@ -100,12 +121,15 @@ export const SHIPPING = {
  * sentence that has already set the context, and is null while no rate is set.
  */
 export function shippingLabel(): string {
+  if (!SHIPPING.available) return "Collected in person, nothing to post";
   return SHIPPING.flatRateCents === null
     ? "Flat-rate shipping added at checkout"
     : `${moneyCents(SHIPPING.flatRateCents)} flat-rate shipping`;
 }
 
+/** The figure, or null when nothing is charged -- which now includes "we do not ship". */
 export function shippingAmount(): string | null {
+  if (!SHIPPING.available) return null;
   return SHIPPING.flatRateCents === null ? null : moneyCents(SHIPPING.flatRateCents);
 }
 

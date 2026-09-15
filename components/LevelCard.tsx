@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AddToCart } from "@/components/AddToCart";
 import { OpenOnly } from "@/components/OpenOnly";
-import { type Level, type StoreCard } from "@/lib/data";
+import { SHIPPING_AVAILABLE, pickupTowns, type Level, type StoreCard } from "@/lib/data";
 import { IMG, type Photo } from "@/lib/images";
 import { money } from "@/lib/orders";
 
@@ -103,7 +103,11 @@ export function LevelCard({
         </div>
         <p className="mt-1.5 text-sm text-ink-500 md:min-h-[2.6rem]">{NOTE[card.id]}</p>
 
-        <p className="mt-4 text-[13px] leading-relaxed text-ink-500">Shipped to your door. Change or cancel free until the deadline.</p>
+        <p className="mt-4 text-[13px] leading-relaxed text-ink-500">
+          {SHIPPING_AVAILABLE
+            ? "Shipped to your door. Change or cancel free until the deadline."
+            : `Collected in ${pickupTowns()}. Change or cancel free until ordering closes.`}
+        </p>
 
 
         {/* The wrapper owns the spacing, not the button. md:mt-auto pushes the

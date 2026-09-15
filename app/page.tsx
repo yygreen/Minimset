@@ -7,7 +7,7 @@ import { LevelCard } from "@/components/LevelCard";
 import { OpenOnly } from "@/components/OpenOnly";
 import { Share } from "@/components/Share";
 import { CompareTable } from "@/components/CompareTable";
-import { STANDARD_NOTE, LEVELS, PARTNERSHIP_PARAGRAPH, PICKUP, PICKUP_AVAILABLE, SEASON, SHIPPING, headlinePriceCents, altPriceCents, pickupPrice, pickupTowns, shippingAmount, storeCards } from "@/lib/data";
+import { STANDARD_NOTE, LEVELS, PARTNERSHIP_PARAGRAPH, PICKUP, PICKUP_AVAILABLE, SEASON, SHIPPING, headlinePriceCents, altPriceCents, pickupPrice, pickupTowns, shippingAmount, storeCards, SHIPPING_AVAILABLE } from "@/lib/data";
 import { IMG, type Photo } from "@/lib/images";
 import { money } from "@/lib/orders";
 import { MEDIA } from "@/lib/trust";
@@ -60,7 +60,7 @@ const STEPS = [
   { n: "1", title: "Order and pay", body: "Choose your sets and where they go. Pay in full before ordering closes for the season." },
   { n: "2", title: "The Rabbanim sort", body: "Morei Hora'ah in Eretz Yisrael select and inspect every item. Nothing is packed until it passes." },
   { n: "3", title: "It flies in sealed", body: "Esrog boxed, hadassim and aravos bagged, lulav sealed. One day in the air." },
-  { n: "4", title: "It comes to you", body: "Shipped to your door, tracked, or collected locally if you chose that. In time to open it in your own sukkah." },
+  { n: "4", title: "You collect it", body: `Ready for you in ${pickupTowns()}, sealed as it was packed. In time to open it in your own sukkah.` },
 ];
 
 const FAQ = [
@@ -84,21 +84,21 @@ const FAQ = [
   },
   {
     q: "When will it arrive?",
-    a: ["Every set is here in time for Yom Tov. The shipment lands after Yom Kippur; orders to be shipped go straight out to the addresses on them and you get a tracking number by email the day yours leaves, and orders to be collected are ready at the pickup location, which emails you the moment yours is."],
+    a: [`Every set is here in time for Yom Tov. The shipment lands after Yom Kippur and orders are set aside at the pickup location in ${pickupTowns()}; you get a notice the moment yours is ready, with the address and the collection window on it.`],
   },
   {
-    q: "How much is shipping?",
+    q: "How much is delivery?",
     a: [
-      `One flat rate per order, added at checkout, however many sets are on it. A set for you and Chinuch sets for the boys travel in one box for one shipping charge.${PICKUP_AVAILABLE && PICKUP.priceCents === 0 ? " Local pickup costs nothing." : ""}`,
+      `Nothing. There is no shipping this season - every order is collected in ${pickupTowns()}, so the price on the card is the price you pay.`,
     ],
   },
   /* Falls out of the FAQ on its own if every pickup location is retired. */
   ...(PICKUP_AVAILABLE
     ? [
         {
-          q: "Can I pick my order up instead?",
+          q: "Where do I collect my order?",
           a: [
-            `Yes. Local pickup in ${pickupTowns()} is ${pickupPrice().toLowerCase()}, and you choose it at checkout instead of shipping. The address and the collection window are on the confirmation you get when your order is ready, so there is nothing to arrange in advance.`,
+            `In ${pickupTowns()}. The exact address and the collection window are on the notice you get when your order is ready, so there is nothing to arrange in advance - bring your order number, and anyone can collect on your behalf with it.`,
           ],
         },
       ]
@@ -116,15 +116,15 @@ const FAQ = [
     ],
   },
   {
-    q: "What if nobody is home when it arrives?",
+    q: "What if I cannot make the collection window?",
     a: [
-      "That is between you and the carrier - the tracking number lets you redirect it, hold it, or leave delivery instructions. Use an address where somebody can take a box before Yom Tov.",
+      "Get in touch before it passes rather than after. Anyone can collect on your behalf with your order number, which solves most of it; where it does not, tell us early and we will sort something out. The season is short.",
     ],
   },
   {
     q: "Can I change or cancel my order?",
     a: [
-      "Yes, any time before ordering closes. Reply to your confirmation email and we will change the sets or refund you in full. After that the shipment is packed against the totals, but a wrong delivery address can still be corrected until the box leaves.",
+      "Yes, any time before ordering closes. Reply to your confirmation email and we will change the sets or refund you in full. After that the shipment is packed against the totals.",
     ],
   },
 ];
@@ -140,7 +140,7 @@ export default function HomePage() {
       url: "https://4minimset.com",
       logo: "https://4minimset.com/og.jpg",
       description:
-        "Pre-order program for complete lulav and etrog sets sorted by Morei Hora'ah in Eretz Yisrael and shipped sealed to your door in the United States.",
+        "Pre-order program for complete lulav and etrog sets sorted by Morei Hora'ah in Eretz Yisrael, sealed, and collected in Airmont, New York.",
     },
     {
       "@context": "https://schema.org",
@@ -235,20 +235,22 @@ export default function HomePage() {
             </OpenOnly>
             <h1 className="rise rise-2 mt-5 font-display text-[2.5rem] font-bold leading-[1.04] text-ink-950 sm:text-[3.4rem] lg:text-[3rem] xl:text-[3.5rem]">
               Your Arba Minim, chosen by a Rav.
-              <span className="block text-leaf-800">Delivered to your door.</span>
+              <span className="block text-leaf-800">
+                {SHIPPING_AVAILABLE ? "Delivered to your door." : `Collect in ${pickupTowns()}.`}
+              </span>
             </h1>
             <p className="rise rise-3 mt-5 max-w-md text-[17px] leading-relaxed text-ink-700 sm:text-lg">
-              Mehudar sets from Eretz Yisrael, sealed in the box they were packed in and shipped
-              to your address. The system Meah Shearim and Kiryas Joel already use, now anywhere
-              in the country.
+              {SHIPPING_AVAILABLE
+                ? "Mehudar sets from Eretz Yisrael, sealed in the box they were packed in and shipped to your address. The system Meah Shearim and Kiryas Joel already use, now anywhere in the country."
+                : `Mehudar sets from Eretz Yisrael, sealed in the box they were packed in and set aside for you in ${pickupTowns()}. The system Meah Shearim and Kiryas Joel already use.`}
             </p>
 
             <OpenOnly closed={
               <div className="rise rise-4 mt-7 rounded-2xl border border-esrog-300 bg-esrog-100 p-5">
                 <p className="font-display text-xl font-bold text-ink-950">Registration for {SEASON.name} has closed.</p>
                 <p className="mt-1 text-[15px] text-ink-700">
-                  The shipment is packed against the final totals. Already ordered? Your delivery
-                  details and tracking are in your confirmation email.
+                  The shipment is packed against the final totals. Already ordered? Your
+                  collection details are in your confirmation email.
                 </p>
               </div>
             }>
@@ -560,11 +562,12 @@ export default function HomePage() {
           <div className="mt-10 grid gap-5 md:grid-cols-2 md:gap-6">
             <div className="rounded-2xl border border-sand-200 bg-white p-6 shadow-card sm:p-7">
               <h3 className="font-display text-xl font-bold text-ink-950 sm:text-2xl">
-                One order, one box
+                One order, one collection
               </h3>
               <p className="mt-3 text-[15px] leading-relaxed text-ink-700">
                 Ordering takes about three minutes. Everything on the order travels together -
-                your own set and a Chinuch set for each boy - in one box, for one shipping charge.
+                your own set and a Chinuch set for each boy - and waits for you under one name,
+                on one trip.
               </p>
               <p className="mt-3 text-[15px] leading-relaxed text-ink-700">
                 You get a code the moment you pay. It opens your order on any phone, and it is
@@ -629,39 +632,65 @@ export default function HomePage() {
           <div className="max-w-2xl">
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Getting it</p>
             <h2 className="mt-2 font-display text-[2rem] font-bold leading-tight text-ink-950 sm:text-[2.6rem]">
-              {PICKUP_AVAILABLE ? "Shipped, or collected locally." : "It comes to you."}
+              {SHIPPING_AVAILABLE
+                ? PICKUP_AVAILABLE
+                  ? "Shipped, or collected locally."
+                  : "It comes to you."
+                : `Collected in ${pickupTowns()}.`}
             </h2>
             <p className="mt-3 text-[16px] leading-relaxed text-ink-700 sm:text-[17px]">
-              {PICKUP_AVAILABLE
-                ? `The shipment lands after Yom Kippur. From there your order either goes straight out to the address on it, or waits for you at the pickup location in ${pickupTowns()}. You pick between the two at checkout.`
-                : "No collection point, no drive, no window to make. The shipment lands after Yom Kippur and every order goes straight out to the address on it."}
+              {SHIPPING_AVAILABLE
+                ? PICKUP_AVAILABLE
+                  ? `The shipment lands after Yom Kippur. From there your order either goes straight out to the address on it, or waits for you at the pickup location in ${pickupTowns()}. You pick between the two at checkout.`
+                  : "No collection point, no drive, no window to make. The shipment lands after Yom Kippur and every order goes straight out to the address on it."
+                : `There is no shipping this season. The whole season flies in together, lands after Yom Kippur, and your order is set aside under your name in ${pickupTowns()} for you to collect.`}
             </p>
           </div>
 
           <div className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
-            {[
-              {
-                title: "Shipped anywhere in the country",
-                body: `${SHIPPING.carrierNote} You get a tracking number by email the day your box leaves.`,
-              },
-              {
-                title: "One flat rate",
-                body: `${shippingAmount() ?? "Added at checkout"}, however many sets are on the order. Yours and the boys' travel in one box.`,
-              },
-              PICKUP_AVAILABLE
-                ? {
-                    title: "Or collect it locally",
-                    body: `${pickupPrice()} pickup in ${pickupTowns()}. Choose it at checkout instead of shipping; the address and the collection window come with your confirmation.`,
-                  }
-                : {
-                    title: "Tracked from the door",
-                    body: "You get a tracking number by email the day your box leaves, so you know when to expect it.",
+            {(SHIPPING_AVAILABLE
+              ? [
+                  {
+                    title: "Shipped anywhere in the country",
+                    body: `${SHIPPING.carrierNote} You get a tracking number by email the day your box leaves.`,
                   },
-              {
-                title: "In time for Yom Tov",
-                body: SEASON.deliveryNote + " Sealed as it was packed in Eretz Yisrael, opened in your sukkah.",
-              },
-            ].map((card) => (
+                  {
+                    title: "One flat rate",
+                    body: `${shippingAmount() ?? "Added at checkout"}, however many sets are on the order. Yours and the boys' travel in one box.`,
+                  },
+                  PICKUP_AVAILABLE
+                    ? {
+                        title: "Or collect it locally",
+                        body: `${pickupPrice()} pickup in ${pickupTowns()}. Choose it at checkout instead of shipping; the address and the collection window come with your confirmation.`,
+                      }
+                    : {
+                        title: "Tracked from the door",
+                        body: "You get a tracking number by email the day your box leaves, so you know when to expect it.",
+                      },
+                  {
+                    title: "In time for Yom Tov",
+                    body: SEASON.deliveryNote + " Sealed as it was packed in Eretz Yisrael, opened in your sukkah.",
+                  },
+                ]
+              : [
+                  {
+                    title: `Collect in ${pickupTowns()}`,
+                    body: "One location, one trip. The exact address and the collection window reach you by email the moment your order is ready.",
+                  },
+                  {
+                    title: "Nothing to pay on top",
+                    body: "No shipping charge, because nothing is posted. The price on the card is the price you pay.",
+                  },
+                  {
+                    title: "Anyone can collect for you",
+                    body: "Your order number is what identifies it, not your face. Send whoever is passing.",
+                  },
+                  {
+                    title: "In time for Yom Tov",
+                    body: SEASON.deliveryNote + " Sealed as it was packed in Eretz Yisrael, opened in your sukkah.",
+                  },
+                ]
+            ).map((card) => (
               <article
                 key={card.title}
                 className="flex flex-col rounded-2xl border border-sand-200 bg-white p-5 shadow-card sm:p-6"
@@ -704,7 +733,7 @@ export default function HomePage() {
             Order while the season is open. Open your box in your sukkah.
           </h2>
           <p className="mx-auto mt-3 max-w-md text-[16px] text-ink-700">
-            Sets from ${from}. Sealed, inspected, and shipped to your door.
+            Sets from ${from}. Sealed, inspected, and waiting for you in {pickupTowns()}.
           </p>
           <OpenOnly
             closed={
@@ -722,7 +751,7 @@ export default function HomePage() {
             <Share
               compact
               path="/"
-              text="Rav-inspected Arba Minim sets from Eretz Yisrael, sealed and shipped to your door before Yom Tov. Sets from $45:"
+              text="Rav-inspected Arba Minim sets from Eretz Yisrael, sealed and collected in Airmont, NY before Yom Tov. Sets from $45:"
             />
           </div>
         </div>

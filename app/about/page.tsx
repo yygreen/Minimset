@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { OrderLink } from "@/components/OrderLink";
-import { PARTNERSHIP_PARAGRAPH } from "@/lib/data";
+import { PARTNERSHIP_PARAGRAPH, SHIPPING_AVAILABLE, pickupTowns } from "@/lib/data";
 import { IMG } from "@/lib/images";
 
 export const metadata: Metadata = {
@@ -78,15 +78,15 @@ export default function AboutPage() {
           </div>
 
           <div className="mt-8 lg:mt-0">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Delivery</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-esrog-800">Collection</p>
             <h2 className="mt-2 font-display text-[2rem] font-bold leading-tight text-ink-950 sm:text-[2.6rem]">
-              It arrives at your door.
+              {SHIPPING_AVAILABLE ? "It arrives at your door." : `Ready for you in ${pickupTowns()}.`}
             </h2>
             <div className="mt-4 space-y-4 text-[17px] leading-relaxed text-ink-700">
               <p>
-                As the shipment is unpacked, every order goes out to the address on it, tracked,
-                in time to arrive before Yom Tov. Nobody drives anywhere and nobody waits in a
-                line; you get a tracking number the day your box leaves.
+                {SHIPPING_AVAILABLE
+                  ? "As the shipment is unpacked, every order goes out to the address on it, tracked, in time to arrive before Yom Tov. Nobody drives anywhere and nobody waits in a line; you get a tracking number the day your box leaves."
+                  : `As the shipment is unpacked, every order is set aside under the name on it, in time for Yom Tov. You get a notice the moment yours is ready, carrying the collection address and the window; bring your order number, and anyone can collect on your behalf with it.`}
               </p>
               <p>
                 Everything arrives closed up: the esrog in its box, the hadassim and aravos in a

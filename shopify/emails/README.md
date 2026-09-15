@@ -6,8 +6,12 @@ actually does. All are in **Settings → Notifications**.
 | File | Shopify notification | Goes to |
 | --- | --- | --- |
 | `order-confirmation.txt` | Order confirmation | every order |
-| `shipping-confirmation.txt` | Shipping confirmation | orders being shipped |
-| `ready-for-pickup.txt` | Ready for pickup | orders collected locally |
+| `ready-for-pickup.txt` | Ready for pickup | **every order this season** |
+| `shipping-confirmation.txt` | Shipping confirmation | nothing — see below |
+
+There is no shipping this season, so the shipping confirmation never fires and
+**Ready for pickup is the notification every customer receives**. Get that one
+right before anything else.
 
 The last one only fires once local pickup is switched on for the location, and
 Shopify prints that location's address and hours itself — which is why the copy

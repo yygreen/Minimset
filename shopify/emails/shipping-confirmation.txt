@@ -1,4 +1,9 @@
 SHIPPING CONFIRMATION
+
+NOT IN USE THIS SEASON. There is no shipping: every order is collected in
+Airmont, NY, so Shopify never sends this notification. Kept because the copy is
+still right the moment shipping comes back. Use ready-for-pickup.txt instead.
+
 Settings -> Notifications -> Shipping confirmation
 
 The most-read email of the season, now that nobody is walking to a table for

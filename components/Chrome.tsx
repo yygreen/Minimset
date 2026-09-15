@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { SEASON } from "@/lib/data";
+import { SEASON, SHIPPING_AVAILABLE, pickupTowns } from "@/lib/data";
 import { OrderLink } from "./OrderLink";
 import { CartButton } from "./CartButton";
 import { SHOPIFY_LIVE } from "@/lib/shopify";
@@ -45,7 +45,7 @@ const T = {
     totals: "HQ Totals",
     allOrders: "All Orders",
     stickyFrom: "Sets from $45",
-    stickyDelivery: "Shipped to your door",
+    stickyDelivery: SHIPPING_AVAILABLE ? "Shipped to your door" : `Collect in ${pickupTowns()}`,
     footerBlurb:
       "Arba Minim mehudar l'chatchilah at affordable prices. Seventeen years in Eretz Yisrael, now serving American communities.",
     cols: [
@@ -69,8 +69,9 @@ const T = {
       },
 
     ],
-    legal:
-      'B"SD. V\'samachta Arba Minim. Every set is sorted and sealed in Eretz Yisrael and shipped to your door.',
+    legal: SHIPPING_AVAILABLE
+      ? 'B"SD. V\'samachta Arba Minim. Every set is sorted and sealed in Eretz Yisrael and shipped to your door.'
+      : `B"SD. V'samachta Arba Minim. Every set is sorted and sealed in Eretz Yisrael and collected in ${pickupTowns()}.`,
     /* The program's location, shown on every page. Deliberately just the town:
        the collection address and window belong to the Shopify pickup location,
        which is what customers actually receive, and a street address printed

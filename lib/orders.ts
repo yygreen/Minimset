@@ -82,8 +82,10 @@ export function orderTotal(items: OrderItem[]): number {
   return items.reduce((sum, i) => sum + i.unitPriceCents * i.quantity, 0);
 }
 
-/** The shipping charge to apply to a new order, in cents. Null rate means none yet. */
+/** The shipping charge to apply to a new order, in cents. Zero while the
+    program does not ship, and for a null rate that has not been set yet. */
 export function currentShippingCents(): number {
+  if (!SHIPPING.available) return 0;
   return SHIPPING.flatRateCents ?? 0;
 }
 

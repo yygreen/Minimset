@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
-import { PICKUP_AVAILABLE, SEASON, SHIPPING, pickupPrice, pickupTowns, shippingAmount } from "@/lib/data";
+import { PICKUP_AVAILABLE, SEASON, SHIPPING, SHIPPING_AVAILABLE, pickupPrice, pickupTowns, shippingAmount } from "@/lib/data";
 import { money } from "@/lib/orders";
 import { cartUrl } from "@/lib/shopify";
 import { attributionAttributes, attributionParams } from "@/lib/attribution";
@@ -141,19 +141,24 @@ export function CartDrawer() {
               </div>
               <div className="mt-1.5 flex items-baseline justify-between gap-3 text-[15px]">
                 <span className="text-ink-700">
-                  Shipping
-                  {PICKUP_AVAILABLE && (
+                  {SHIPPING_AVAILABLE ? "Shipping" : "Pickup"}
+                  {!SHIPPING_AVAILABLE && PICKUP_AVAILABLE && (
+                    <span className="block text-[13px] text-ink-500">{pickupTowns()}</span>
+                  )}
+                  {SHIPPING_AVAILABLE && PICKUP_AVAILABLE && (
                     <span className="block text-[13px] text-ink-500">
                       {pickupPrice()} if you collect in {pickupTowns()}
                     </span>
                   )}
                 </span>
-                <span className="tnum font-semibold text-ink-950">{ship ?? "At checkout"}</span>
+                <span className="tnum font-semibold text-ink-950">
+                  {SHIPPING_AVAILABLE ? ship ?? "At checkout" : pickupPrice()}
+                </span>
               </div>
               <div className="mt-3 flex items-baseline justify-between border-t border-sand-200 pt-3">
                 <span className="font-display text-lg font-bold text-ink-950">Total</span>
                 <span className="tnum font-display text-2xl font-bold text-ink-950">
-                  {money(subtotalCents + (SHIPPING.flatRateCents ?? 0))}
+                  {money(subtotalCents + (SHIPPING_AVAILABLE ? SHIPPING.flatRateCents ?? 0 : 0))}
                 </span>
               </div>
 
@@ -190,9 +195,11 @@ export function CartDrawer() {
               </OpenOnly>
 
               <p className="mt-3 text-center text-[12px] leading-relaxed text-ink-500">
-                {PICKUP_AVAILABLE
-                  ? "Shipping or pickup is chosen at checkout, where payment and receipt are handled by Shopify. "
-                  : "Payment, address and receipt are handled by Shopify. "}
+                {!SHIPPING_AVAILABLE
+                  ? `Collection only this season, in ${pickupTowns()}. Payment and receipt are handled by Shopify. `
+                  : PICKUP_AVAILABLE
+                    ? "Shipping or pickup is chosen at checkout, where payment and receipt are handled by Shopify. "
+                    : "Payment, address and receipt are handled by Shopify. "}
                 {SEASON.deliveryNote}
               </p>
             </div>

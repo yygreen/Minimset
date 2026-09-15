@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { STANDARD_NOTE, PICKUP_AVAILABLE, SEASON, SHIPPING, pickupPrice, pickupTowns, shippingAmount } from "@/lib/data";
+import { STANDARD_NOTE, PICKUP_AVAILABLE, SEASON, SHIPPING, SHIPPING_AVAILABLE, pickupPrice, pickupTowns, shippingAmount } from "@/lib/data";
 import { GRACE_MINUTES } from "@/lib/server/pricing";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/policies" },
   title: "Policies - V'samachta Arba Minim",
   description:
-    "Ordering, payment, shipping and local pickup, changes and cancellation, the sorting standard, and what the order form stores.",
+    "Ordering, payment, collection, changes and cancellation, the sorting standard, and what the order form stores.",
 };
 
 /**
@@ -32,7 +32,7 @@ const CONTENTS = [
   ["ordering", "Ordering"],
   ["payment", "Payment"],
   ["changes", "Changes and cancellation"],
-  ["shipping", "Shipping and local pickup"],
+  ["shipping", SHIPPING_AVAILABLE ? "Shipping and local pickup" : "Collection"],
   ["guarantee", "If something is not right"],
   ["privacy", "What we store about you"],
   ["contact", "Questions"],
@@ -95,10 +95,12 @@ export default function PoliciesPage() {
 
           <Section id="payment" title="Payment">
             <p>
-              Sets are paid for in full at the time of ordering, together with one flat shipping
-              charge per order{shippingAmount() ? ` of ${shippingAmount()}` : ""}, however many
-              sets are on it. The total is shown before you pay, and prices are calculated on the
-              server, never in your browser.
+              Sets are paid for in full at the time of ordering.{" "}
+              {SHIPPING_AVAILABLE
+                ? `There is one flat shipping charge per order${shippingAmount() ? ` of ${shippingAmount()}` : ""}, however many sets are on it.`
+                : "There is nothing added on top: orders are collected in person, so no shipping is charged."}{" "}
+              The total is shown before you pay, and prices are calculated on the server, never in
+              your browser.
             </p>
             <div className="rounded-2xl border border-esrog-300 bg-esrog-100 p-5 text-ink-900">
               <p className="font-display text-lg font-bold text-ink-950">Card processing is not live yet</p>
@@ -128,37 +130,60 @@ export default function PoliciesPage() {
             </p>
           </Section>
 
-          <Section id="shipping" title="Shipping and local pickup">
-            {PICKUP_AVAILABLE && (
-              <p>
-                There are two ways to take an order and you choose between them at checkout:
-                shipped to the address on the order, or collected in {pickupTowns()}.
-              </p>
-            )}
-            <p>
-              A shipped order goes to the address on it. {SHIPPING.carrierNote} Shipping is one flat
-              charge per order{shippingAmount() ? `, ${shippingAmount()}` : ""}, however many sets
-              are on it — your own set and the boys&#39; travel in the same box.
-            </p>
-            <p>
-              {SEASON.deliveryNote} The shipment lands after Yom Kippur and orders go out as it is
-              unpacked; you get a tracking number by email the day yours leaves. Delivery dates are
-              the carrier&#39;s, not ours, so keep an eye on the tracking as Yom Tov approaches.
-            </p>
-            <p>
-              Check the address before you pay. A package returned as undeliverable can be sent
-              again, but the second shipping charge is yours and time is short.
-            </p>
-            {PICKUP_AVAILABLE && (
-              <p>
-                Local pickup is {pickupPrice().toLowerCase()}, and an order you collect carries no
-                shipping charge at all. The collection address and the window are on the notice you
-                get when your order is ready, and they are set by the pickup location rather than
-                named here, so go by that notice and not by anything on this page. Bring your order
-                number. An order
-                that is not collected within the window is not a refund on its own — get in touch
-                and we will sort it out, but the season is short.
-              </p>
+          <Section id="shipping" title={SHIPPING_AVAILABLE ? "Shipping and local pickup" : "Collection"}>
+            {!SHIPPING_AVAILABLE ? (
+              <>
+                <p>
+                  There is no shipping this season. Every order is collected in person in{" "}
+                  {pickupTowns()}, and nothing is posted or couriered.
+                </p>
+                <p>
+                  {SEASON.deliveryNote} The whole season flies in together and lands after Yom
+                  Kippur; your order is set aside under your name and you get a notice the moment
+                  it is ready, carrying the collection address and the window. Those come from the
+                  pickup location rather than from this page, so go by the notice.
+                </p>
+                <p>
+                  Bring your order number. It is what identifies the order, so anyone can collect
+                  on your behalf with it.
+                </p>
+                <p>
+                  If you cannot make the window, get in touch before it passes rather than after.
+                  An order left uncollected is not refunded on that basis alone, but the season is
+                  short and we would rather sort it out with you than after Yom Tov.
+                </p>
+              </>
+            ) : (
+              <>
+                {PICKUP_AVAILABLE && (
+                  <p>
+                    There are two ways to take an order and you choose between them at checkout:
+                    shipped to the address on the order, or collected in {pickupTowns()}.
+                  </p>
+                )}
+                <p>
+                  A shipped order goes to the address on it. {SHIPPING.carrierNote} Shipping is one
+                  flat charge per order{shippingAmount() ? `, ${shippingAmount()}` : ""}, however
+                  many sets are on it — your own set and the boys&#39; travel in the same box.
+                </p>
+                <p>
+                  {SEASON.deliveryNote} The shipment lands after Yom Kippur and orders go out as it
+                  is unpacked; you get a tracking number by email the day yours leaves. Delivery
+                  dates are the carrier&#39;s, not ours, so keep an eye on the tracking as Yom Tov
+                  approaches.
+                </p>
+                <p>
+                  Check the address before you pay. A package returned as undeliverable can be sent
+                  again, but the second shipping charge is yours and time is short.
+                </p>
+                {PICKUP_AVAILABLE && (
+                  <p>
+                    Local pickup is {pickupPrice().toLowerCase()}, and an order you collect carries
+                    no shipping charge at all. The collection address and the window are on the
+                    notice you get when your order is ready. Bring your order number.
+                  </p>
+                )}
+              </>
             )}
             <p>
               The sets fly in from Eretz Yisrael sealed: esrog in its box, hadassim and aravos in a
@@ -188,8 +213,8 @@ export default function PoliciesPage() {
               how a set reaches the right door.
             </p>
             <p>
-              Your email address is used to send your order confirmation and, when your box
-              leaves, your tracking number. Both come from Shopify, which processes the order.
+              Your email address is used to send your order confirmation and the notice that
+              your order is ready to collect. Both come from Shopify, which processes the order.
               Checkout also offers a box to hear from us when next season opens; that is the only
               thing we would ever email you beyond your own order, and nothing is sold or passed to
               anyone outside the program.
