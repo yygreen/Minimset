@@ -59,6 +59,17 @@ export const IMG = {
     width: 1100,
     height: 1100,
   },
+  /* The second Mehudar A-A card. Chosen so the two A-A cards do not sit side
+     by side showing the same photograph, and chosen for what it does NOT
+     claim: the esrogim lie on their sides with the oketz showing, so nothing
+     in the frame asserts a pitom on a card that is selling an esrog without
+     one. */
+  levelAANoPitom: {
+    src: "/img/esrog-real-sq.jpg",
+    alt: "Sleeved esrogim and hadassim laid out on the market table",
+    width: 1200,
+    height: 900,
+  },
   levelA: {
     src: "/img/esrog-single-b.jpg",
     alt: "Esrogim waiting on the market table",

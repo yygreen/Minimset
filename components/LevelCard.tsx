@@ -12,6 +12,17 @@ const PHOTO: Record<Level["key"], Photo> = {
   CHINUCH: IMG.levelChinuch,
 };
 
+/* Per-CARD overrides, for where two cards share a level. Without this the two
+   Mehudar A-A cards sit side by side carrying the same photograph and the same
+   tier label, which reads as a rendering fault rather than as two products. */
+const CARD_PHOTO: Record<string, Photo> = {
+  "MEHUDAR_AA:nopitom": IMG.levelAANoPitom,
+};
+
+const CARD_TIER: Record<string, string> = {
+  "MEHUDAR_AA:nopitom": "Highest Level, No Pitom",
+};
+
 /* One line per CARD, not per level: the two A-A cards share a standard and a
    photo, so the sub-line is the only thing telling them apart at a glance. */
 const WHO: Record<string, string> = {
@@ -47,7 +58,8 @@ export function LevelCard({
   priority?: boolean;
 }) {
   const level = card.level;
-  const photo = PHOTO[level.key];
+  const photo = CARD_PHOTO[card.id] ?? PHOTO[level.key];
+  const tier = CARD_TIER[card.id] ?? level.tier;
   const href = hrefProp ?? card.href;
   /* The photo goes to the detail block on the page; the button starts the
      order, carrying this level with it so the choice is not lost. */
@@ -76,7 +88,7 @@ export function LevelCard({
 
       <div className="flex flex-1 flex-col p-6 md:p-5 lg:p-7">
         <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-esrog-800">
-          {level.tier}
+          {tier}
         </p>
         <h3 className="mt-1.5 font-display text-2xl font-bold leading-tight text-ink-950 sm:text-[1.7rem] md:min-h-[4.25rem]">
           {card.name}
