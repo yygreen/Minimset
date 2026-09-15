@@ -99,27 +99,78 @@ local pickup came back, and the versions live on the store predate that: they
 describe shipping as the only option. Settings → Policies, paste all three.
 `contact-information` and the Shopify-generated `privacy-policy` are unaffected.
 
-**2.2b Local pickup.** The site tells customers there is free pickup in
-Airmont, NY, and that the address and the collection window reach them in the
-Ready for pickup email rather than being printed on the site — so the Shopify
-location is the single source of truth for both, and it has to be right.
+**2.2b Local pickup — the store takes no orders until this is done.**
 
-- Settings → Locations → add the Airmont location, with the address customers
-  will actually drive to and the hours they can actually collect.
-- Settings → Shipping and delivery → Local pickup → enable it for that location.
-  Set the cost to free, and write the pickup instructions and the expected
-  time — Shopify prints those verbatim in checkout and in the email.
-- Leave Lakewood as the shipping origin. A location that can receive orders but
-  is not meant to fulfil them can quietly split a shipment.
-- Settings → Notifications → Ready for pickup, from
-  `shopify/emails/ready-for-pickup.txt`.
+Verified against the live checkout on 2026-09-15:
 
-**check** — put a set in the cart and confirm checkout offers both *Ship* and
-*Pick up*, that pickup shows $0 and not $7.99, and that the address and window
-in checkout are the ones you would want a customer to drive to.
+```
+"enabledDeliveryMethods":["SHIPPING"]
+"pickUp":[]   "pickupPoint":[]   "local":[]
+/cart/shipping_rates.json -> [] for NJ, NY, MD, CA, FL
+```
 
-*If pickup is ever switched off, empty `PICKUP.towns` in `lib/data.ts`. Every
-pickup sentence on the site disappears with it; there is no second flag.*
+Shipping is the only method enabled and it quotes nothing, so a customer
+reaches checkout and cannot finish. Pickup goes on BEFORE shipping comes off,
+so the store is never left with no method at all.
+
+**Step 1 — Settings → Locations → Add location.**
+
+| Field | Value |
+| --- | --- |
+| Name | `Airmont, NY` — this shows to the customer in checkout, so it is a place name, not "Location 2" |
+| Address | `Exact address emailed before collection` (see below) |
+| City | `Airmont` |
+| State | `New York` |
+| ZIP | the real one for the collection point — Airmont spans more than one |
+| Fulfil online orders | **on** |
+
+The street is a placeholder because the client has not settled one. The town,
+state and ZIP are not placeholders and must be right: Shopify calculates sales
+tax on a pickup order from the pickup location, so a New Jersey address here
+taxes every collected order as a New Jersey sale when it is a New York one.
+
+If Shopify's address validation refuses the placeholder, accept its "use
+anyway" option rather than substituting a real address in another town.
+
+**Step 2 — Settings → Shipping and delivery → Local pickup → the Airmont
+location → "This location offers local pickup".**
+
+- Cost: **free**
+- Expected pickup time: whatever is true
+- Pickup instructions: paste this. Shopify prints it verbatim in checkout and
+  in the Ready for pickup email, and it is the only place the customer learns
+  the street address is still coming.
+
+```
+Your order will be ready to collect in Airmont, NY.
+
+The exact street address and the collection times are emailed to you the
+moment your order is ready - watch for that email, and go by it rather than
+by the address shown here.
+
+Bring your order number. It is what identifies the order, so anyone can
+collect on your behalf with it.
+```
+
+**Step 3 — check before going further.** Open
+`https://4minimset.myshopify.com/cart/45801595797639:1` and confirm checkout
+now offers **Pick up** beside Ship, at $0. Nothing below matters until it does.
+
+**Step 4 — now remove shipping.** Settings → Shipping and delivery → the
+profile these products use → delete the rate and the zone, so *Ship* stops
+being offered at all. Doing this first would have left zero methods.
+
+**Step 5 — Settings → Notifications → Ready for pickup**, from
+`shopify/emails/ready-for-pickup.txt`. With no shipping, this is the
+notification EVERY customer receives; the shipping confirmation never fires.
+
+**Leave alone:** the Lakewood location stays as the registered business
+address, and `Variant Requires Shipping` stays TRUE on all four variants —
+FALSE makes them digital goods and removes local pickup along with shipping.
+
+*If pickup is ever switched off, empty `PICKUP.towns` in `lib/data.ts`; if
+shipping ever comes back, set `SHIPPING.available` to true. Each is one flag
+and the whole site follows it.*
 
 **2.3 Set the flat rate.** Settings → Shipping and delivery → the shipping
 profile these products use → the zone covering the United States.
